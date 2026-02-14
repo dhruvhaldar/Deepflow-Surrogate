@@ -4,6 +4,7 @@ It also includes a function to generate a mesh using Gmsh.
 """
 
 import argparse
+import sys
 import numpy as np
 import gmsh
 
@@ -38,9 +39,11 @@ def generate_airfoil_points(num_points):
 
 def generate_gmsh_mesh(points_for_gmsh, output_file=None):
     """Generates a mesh using Gmsh based on the provided points."""
+    # pylint: disable=too-many-locals
     print(f"\n⚙️  Generating mesh for {len(points_for_gmsh)} points using Gmsh...", flush=True)
     try:
         gmsh.initialize()
+        gmsh.option.setNumber("General.Verbosity", 2)  # Reduce console noise
         gmsh.model.add("airfoil")
 
         lc = 0.1
@@ -63,9 +66,27 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         gmsh.model.geo.synchronize()
         gmsh.model.mesh.generate(2)
 
+        # Get mesh statistics
+        node_tags, _, _ = gmsh.model.mesh.getNodes()
+        num_nodes = len(node_tags)
+
+        _, element_tags, _ = gmsh.model.mesh.getElements()
+        num_elements = sum(len(tags) for tags in element_tags)
+
+        print(
+            f"📊 Mesh Statistics: {num_nodes} nodes, {num_elements} elements",
+            flush=True
+        )
+
         if output_file:
             gmsh.write(output_file)
             print(f"💾 Mesh written to {output_file}", flush=True)
+        else:
+            print(
+                "⚠️  No output file specified. Mesh generated in memory only. "
+                "Use --output to save.",
+                flush=True
+            )
 
         print("✅ Mesh generation successful.", flush=True)
 
@@ -74,11 +95,29 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         print(f"❌ Gmsh error: {e}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate airfoil mesh.")
-    parser.add_argument("--num-points", type=int, default=100, help="Number of points along the airfoil surface")
-    parser.add_argument("--output", type=str, default=None, help="Output mesh file path (e.g., airfoil.msh)")
+    parser = argparse.ArgumentParser(
+        description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
+        epilog="Example: python mesh_generation.py --num-points 200 --output airfoil.msh"
+    )
+    parser.add_argument(
+        "--num-points",
+        type=int,
+        default=100,
+        help="Number of points along the airfoil surface (must be > 0)"
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=None,
+        help="Path to save the generated mesh (e.g., 'mesh.msh'). "
+             "If omitted, mesh is generated but not saved."
+    )
 
     args = parser.parse_args()
 
-    points = generate_airfoil_points(args.num_points)
-    generate_gmsh_mesh(points, args.output)
+    if args.num_points <= 0:
+        print("Error: --num-points must be a positive integer.")
+        sys.exit(1)
+
+    airfoil_points = generate_airfoil_points(args.num_points)
+    generate_gmsh_mesh(airfoil_points, args.output)
