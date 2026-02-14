@@ -3,6 +3,7 @@ This module provides functions for efficient airfoil point generation using NumP
 It also includes a function to generate a mesh using Gmsh.
 """
 
+import argparse
 import numpy as np
 import gmsh
 
@@ -37,7 +38,7 @@ def generate_airfoil_points(num_points):
 
 def generate_gmsh_mesh(points_for_gmsh, output_file=None):
     """Generates a mesh using Gmsh based on the provided points."""
-    print(f"\nGenerating mesh for {len(points_for_gmsh)} points using Gmsh...")
+    print(f"\n⚙️  Generating mesh for {len(points_for_gmsh)} points using Gmsh...", flush=True)
     try:
         gmsh.initialize()
         gmsh.model.add("airfoil")
@@ -64,10 +65,20 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
 
         if output_file:
             gmsh.write(output_file)
-            print(f"Mesh written to {output_file}")
+            print(f"💾 Mesh written to {output_file}", flush=True)
 
-        print("Mesh generation successful.")
+        print("✅ Mesh generation successful.", flush=True)
 
         gmsh.finalize()
     except Exception as e: # pylint: disable=broad-exception-caught
-        print(f"Gmsh error: {e}")
+        print(f"❌ Gmsh error: {e}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate airfoil mesh.")
+    parser.add_argument("--num-points", type=int, default=100, help="Number of points along the airfoil surface")
+    parser.add_argument("--output", type=str, default=None, help="Output mesh file path (e.g., airfoil.msh)")
+
+    args = parser.parse_args()
+
+    points = generate_airfoil_points(args.num_points)
+    generate_gmsh_mesh(points, args.output)
