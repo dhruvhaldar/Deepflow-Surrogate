@@ -5,8 +5,21 @@ It also includes a function to generate a mesh using Gmsh.
 
 import argparse
 import sys
+import os
+import time
 import numpy as np
 import gmsh
+
+class Colors: # pylint: disable=too-few-public-methods
+    """ANSI color codes for CLI output."""
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
 
 def naca0012_y(x, t=0.12):
     """Calculates the y-coordinate of a NACA 0012 airfoil."""
@@ -40,7 +53,11 @@ def generate_airfoil_points(num_points):
 def generate_gmsh_mesh(points_for_gmsh, output_file=None):
     """Generates a mesh using Gmsh based on the provided points."""
     # pylint: disable=too-many-locals
-    print(f"\n⚙️  Generating mesh for {len(points_for_gmsh)} points using Gmsh...", flush=True)
+    print(
+        f"\n{Colors.OKBLUE}⚙️  Generating mesh for {len(points_for_gmsh)} "
+        f"points using Gmsh...{Colors.ENDC}",
+        flush=True
+    )
     try:
         gmsh.initialize()
         gmsh.option.setNumber("General.Verbosity", 2)  # Reduce console noise
@@ -74,25 +91,51 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         num_elements = sum(len(tags) for tags in element_tags)
 
         print(
-            f"📊 Mesh Statistics: {num_nodes} nodes, {num_elements} elements",
+            f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes} nodes, "
+            f"{num_elements} elements{Colors.ENDC}",
             flush=True
         )
 
         if output_file:
             gmsh.write(output_file)
-            print(f"💾 Mesh written to {output_file}", flush=True)
+            print(f"{Colors.OKGREEN}💾 Mesh written to {output_file}{Colors.ENDC}", flush=True)
         else:
             print(
-                "⚠️  No output file specified. Mesh generated in memory only. "
-                "Use --output to save.",
+                f"{Colors.WARNING}⚠️  No output file specified. Mesh generated in memory only. "
+                f"Use --output to save.{Colors.ENDC}",
                 flush=True
             )
 
-        print("✅ Mesh generation successful.", flush=True)
+        print(f"{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
 
         gmsh.finalize()
     except Exception as e: # pylint: disable=broad-exception-caught
-        print(f"❌ Gmsh error: {e}")
+        print(f"{Colors.FAIL}❌ Gmsh error: {e}{Colors.ENDC}")
+
+def check_overwrite(filepath, force):
+    """Checks if output file exists and prompts user if needed."""
+    if not filepath or not os.path.exists(filepath) or force:
+        return True
+
+    if sys.stdout.isatty():
+        print(f"{Colors.WARNING}⚠️  File '{filepath}' already exists.{Colors.ENDC}")
+        try:
+            response = input("Overwrite? [y/N] ").lower()
+        except EOFError:
+            return False
+
+        if response == 'y':
+            return True
+
+        print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
+        return False
+
+    # Non-interactive mode, just warn
+    print(
+        f"{Colors.WARNING}⚠️  Overwriting existing file '{filepath}' "
+        f"(non-interactive).{Colors.ENDC}"
+    )
+    return True
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -112,12 +155,23 @@ if __name__ == "__main__":
         help="Path to save the generated mesh (e.g., 'mesh.msh'). "
              "If omitted, mesh is generated but not saved."
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite output file without confirmation if it exists."
+    )
 
     args = parser.parse_args()
 
     if args.num_points <= 0:
-        print("Error: --num-points must be a positive integer.")
+        print(f"{Colors.FAIL}Error: --num-points must be a positive integer.{Colors.ENDC}")
         sys.exit(1)
 
+    if not check_overwrite(args.output, args.force):
+        sys.exit(0)
+
+    start_time = time.time()
     airfoil_points = generate_airfoil_points(args.num_points)
     generate_gmsh_mesh(airfoil_points, args.output)
+    elapsed_time = time.time() - start_time
+    print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {elapsed_time:.4f}s{Colors.ENDC}")
