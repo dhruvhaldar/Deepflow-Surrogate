@@ -7,8 +7,40 @@ import argparse
 import sys
 import os
 import time
+import threading
+import itertools
 import numpy as np
 import gmsh
+
+class Spinner:
+    """A simple spinner for CLI feedback."""
+    def __init__(self, message="Processing..."):
+        self.message = message
+        self.stop_running = False
+        self.thread = None
+
+    def spin(self):
+        """Displays the spinning animation."""
+        spinner_chars = itertools.cycle(['-', '/', '|', '\\'])
+        while not self.stop_running:
+            sys.stdout.write(f"\r{self.message} {next(spinner_chars)}")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        # Clear line
+        sys.stdout.write('\r' + ' ' * (len(self.message) + 2) + '\r')
+        sys.stdout.flush()
+
+    def __enter__(self):
+        if sys.stdout.isatty():
+            self.stop_running = False
+            self.thread = threading.Thread(target=self.spin)
+            self.thread.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.thread:
+            self.stop_running = True
+            self.thread.join()
 
 class Colors: # pylint: disable=too-few-public-methods
     """ANSI color codes for CLI output."""
@@ -81,7 +113,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         gmsh.model.geo.addPlaneSurface([curve_loop])
 
         gmsh.model.geo.synchronize()
-        gmsh.model.mesh.generate(2)
+        with Spinner(f"{Colors.OKBLUE}   Working...{Colors.ENDC}"):
+            gmsh.model.mesh.generate(2)
 
         # Get mesh statistics
         node_tags, _, _ = gmsh.model.mesh.getNodes()

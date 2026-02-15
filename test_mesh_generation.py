@@ -2,8 +2,14 @@
 Tests for the mesh_generation module.
 """
 import numpy as np
-from mesh_generation import generate_airfoil_points
+from mesh_generation import generate_airfoil_points, generate_gmsh_mesh
 from benchmark_mesh_generation import generate_airfoil_points_slow
+
+def test_generate_gmsh_mesh_runs():
+    """Test that generate_gmsh_mesh runs without error (and exercises Spinner)."""
+    points = generate_airfoil_points(20)
+    # Just ensure it doesn't crash
+    generate_gmsh_mesh(points)
 
 def test_points_match():
     """Test that slow and fast methods produce identical points."""
