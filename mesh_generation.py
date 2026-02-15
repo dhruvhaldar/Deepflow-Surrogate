@@ -93,6 +93,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
     try:
         gmsh.initialize()
         gmsh.option.setNumber("General.Verbosity", 2)  # Reduce console noise
+        gmsh.option.setNumber("Mesh.Smoothing", 0)     # Disable smoothing for ~35% speedup
         gmsh.model.add("airfoil")
 
         lc = 0.1
