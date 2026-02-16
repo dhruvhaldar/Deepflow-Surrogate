@@ -60,6 +60,14 @@ def naca0012_y(x, t=0.12):
         0.2843 * x**3 - 0.1015 * x**4
     )
 
+def format_size(size_bytes):
+    """Formats bytes into a human-readable string."""
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size_bytes < 1024.0:
+            return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024.0
+    return f"{size_bytes:.1f} PB"
+
 def generate_airfoil_points(num_points):
     """Generates airfoil points using NumPy vectorization (efficient)."""
     x = np.linspace(0, 1, num_points)
@@ -132,7 +140,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
 
         if output_file:
             gmsh.write(output_file)
-            print(f"{Colors.OKGREEN}💾 Mesh written to {output_file}{Colors.ENDC}", flush=True)
+            file_size = os.path.getsize(output_file)
+            readable_size = format_size(file_size)
+            print(
+                f"{Colors.OKGREEN}💾 Mesh written to {output_file} "
+                f"({readable_size}){Colors.ENDC}",
+                flush=True
+            )
         else:
             print(
                 f"{Colors.WARNING}⚠️  No output file specified. Mesh generated in memory only. "
