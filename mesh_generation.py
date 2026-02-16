@@ -94,7 +94,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
     """Generates a mesh using Gmsh based on the provided points."""
     # pylint: disable=too-many-locals
     print(
-        f"\n{Colors.OKBLUE}⚙️  Generating mesh for {len(points_for_gmsh)} "
+        f"\n{Colors.OKBLUE}⚙️  Generating mesh for {len(points_for_gmsh):,} "
         f"points using Gmsh...{Colors.ENDC}",
         flush=True
     )
@@ -134,7 +134,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         gmsh.model.geo.addPlaneSurface([curve_loop])
 
         gmsh.model.geo.synchronize()
-        with Spinner(f"{Colors.OKBLUE}   Working...{Colors.ENDC}"):
+        with Spinner(f"{Colors.OKBLUE}   Meshing...{Colors.ENDC}"):
             gmsh.model.mesh.generate(2)
 
         # Get mesh statistics
@@ -145,8 +145,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         num_elements = sum(len(tags) for tags in element_tags)
 
         print(
-            f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes} nodes, "
-            f"{num_elements} elements{Colors.ENDC}",
+            f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes:,} nodes, "
+            f"{num_elements:,} elements{Colors.ENDC}",
             flush=True
         )
 
@@ -199,6 +199,7 @@ def check_overwrite(filepath, force):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
         epilog="Example: python mesh_generation.py --num-points 200 --output airfoil.msh"
     )
