@@ -108,19 +108,29 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
 
         lc = 0.1
         point_tags = []
-        for p in points_for_gmsh:
+
+        # Check if the last point is a duplicate of the first (closed loop)
+        # If so, exclude the last point to avoid zero-length segments.
+        # We handle loop closure explicitly via addPolyline.
+        if len(points_for_gmsh) > 1 and np.allclose(points_for_gmsh[0], points_for_gmsh[-1]):
+            points_to_add = points_for_gmsh[:-1]
+        else:
+            points_to_add = points_for_gmsh
+
+        for p in points_to_add:
             tag = gmsh.model.geo.addPoint(p[0], p[1], p[2], lc)
             point_tags.append(tag)
 
-        # Connect points with splines or lines
-        # For simplicity, we use a loop of lines
-        line_tags = []
-        for i, p1 in enumerate(point_tags):
-            p2 = point_tags[(i + 1) % len(point_tags)]
-            l = gmsh.model.geo.addLine(p1, p2)
-            line_tags.append(l)
-
-        curve_loop = gmsh.model.geo.addCurveLoop(line_tags)
+        # Connect points with a single polyline
+        # Append the first point tag to the end to close the loop
+        if point_tags:
+            polyline_tags = point_tags + [point_tags[0]]
+            # Returns a single curve tag
+            polyline = gmsh.model.geo.addPolyline(polyline_tags)
+            curve_loop = gmsh.model.geo.addCurveLoop([polyline])
+        else:
+            # Fallback for empty points (shouldn't happen with valid input)
+            curve_loop = gmsh.model.geo.addCurveLoop([])
         gmsh.model.geo.addPlaneSurface([curve_loop])
 
         gmsh.model.geo.synchronize()
