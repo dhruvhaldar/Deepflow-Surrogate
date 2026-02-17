@@ -198,13 +198,17 @@ def check_overwrite(filepath, force):
         return True
 
     if sys.stdout.isatty():
-        print(f"{Colors.WARNING}⚠️  File '{filepath}' already exists.{Colors.ENDC}")
+        print(
+            f"{Colors.WARNING}⚠️  File '{Colors.BOLD}{filepath}{Colors.ENDC}{Colors.WARNING}' "
+            f"already exists.{Colors.ENDC}"
+        )
         try:
-            response = input("Overwrite? [y/N] ").lower()
+            prompt = f"{Colors.OKBLUE}Overwrite? [y/N] {Colors.ENDC}"
+            response = input(prompt).strip().lower()
         except EOFError:
             return False
 
-        if response == 'y':
+        if response in ('y', 'yes'):
             return True
 
         print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
