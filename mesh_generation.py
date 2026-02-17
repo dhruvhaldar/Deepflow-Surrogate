@@ -53,6 +53,22 @@ class Colors: # pylint: disable=too-few-public-methods
     ENDC = '\033[0m'
     BOLD = '\033[1m'
 
+    @classmethod
+    def disable(cls):
+        """Disables all colors."""
+        cls.HEADER = ''
+        cls.OKBLUE = ''
+        cls.OKCYAN = ''
+        cls.OKGREEN = ''
+        cls.WARNING = ''
+        cls.FAIL = ''
+        cls.ENDC = ''
+        cls.BOLD = ''
+
+# Disable colors if NO_COLOR env var is set or output is not a TTY
+if os.getenv('NO_COLOR') or not sys.stdout.isatty():
+    Colors.disable()
+
 def naca0012_y(x, t=0.12):
     """Calculates the y-coordinate of a NACA 0012 airfoil."""
     return 5 * t * (
@@ -64,6 +80,8 @@ def format_size(size_bytes):
     """Formats bytes into a human-readable string."""
     for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
         if size_bytes < 1024.0:
+            if unit == 'B':
+                return f"{int(size_bytes)} {unit}"
             return f"{size_bytes:.1f} {unit}"
         size_bytes /= 1024.0
     return f"{size_bytes:.1f} PB"
