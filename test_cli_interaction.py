@@ -23,20 +23,56 @@ class TestMeshGenerationCLI(unittest.TestCase):
     def test_overwrite_yes_interactive(self, mock_input, mock_isatty):
         """Test interactive overwrite confirmation (Yes)"""
         # pylint: disable=unused-argument
-        print("\nTesting: Interactive Overwrite -> Yes")
+        print("\nTesting: Interactive Overwrite -> y")
         result = mesh_generation.check_overwrite(self.test_file, force=False)
         self.assertTrue(result)
         mock_input.assert_called_once()
+
+    @patch('sys.stdout.isatty', return_value=True)
+    @patch('builtins.input', return_value='yes')
+    def test_overwrite_full_yes_interactive(self, mock_input, mock_isatty):
+        """Test interactive overwrite confirmation (full 'yes')"""
+        # pylint: disable=unused-argument
+        print("\nTesting: Interactive Overwrite -> yes")
+        result = mesh_generation.check_overwrite(self.test_file, force=False)
+        self.assertTrue(result)
+
+    @patch('sys.stdout.isatty', return_value=True)
+    @patch('builtins.input', return_value='YES')
+    def test_overwrite_case_insensitive_interactive(self, mock_input, mock_isatty):
+        """Test interactive overwrite confirmation (case insensitive 'YES')"""
+        # pylint: disable=unused-argument
+        print("\nTesting: Interactive Overwrite -> YES")
+        result = mesh_generation.check_overwrite(self.test_file, force=False)
+        self.assertTrue(result)
 
     @patch('sys.stdout.isatty', return_value=True)
     @patch('builtins.input', return_value='n')
     def test_overwrite_no_interactive(self, mock_input, mock_isatty):
         """Test interactive overwrite confirmation (No)"""
         # pylint: disable=unused-argument
-        print("\nTesting: Interactive Overwrite -> No")
+        print("\nTesting: Interactive Overwrite -> n")
         result = mesh_generation.check_overwrite(self.test_file, force=False)
         self.assertFalse(result)
         mock_input.assert_called_once()
+
+    @patch('sys.stdout.isatty', return_value=True)
+    @patch('builtins.input', return_value='NO')
+    def test_overwrite_no_upper_interactive(self, mock_input, mock_isatty):
+        """Test interactive overwrite confirmation (NO)"""
+        # pylint: disable=unused-argument
+        print("\nTesting: Interactive Overwrite -> NO")
+        result = mesh_generation.check_overwrite(self.test_file, force=False)
+        self.assertFalse(result)
+
+    @patch('sys.stdout.isatty', return_value=True)
+    @patch('builtins.input', return_value='')
+    def test_overwrite_empty_interactive(self, mock_input, mock_isatty):
+        """Test interactive overwrite confirmation (Empty input)"""
+        # pylint: disable=unused-argument
+        print("\nTesting: Interactive Overwrite -> Empty")
+        result = mesh_generation.check_overwrite(self.test_file, force=False)
+        self.assertFalse(result)
 
     @patch('sys.stdout.isatty', return_value=True)
     def test_overwrite_force_interactive(self, mock_isatty):
