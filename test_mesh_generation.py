@@ -2,8 +2,17 @@
 Tests for the mesh_generation module.
 """
 import numpy as np
-from mesh_generation import generate_airfoil_points, generate_gmsh_mesh
+from mesh_generation import generate_airfoil_points, generate_gmsh_mesh, format_size
 from benchmark_mesh_generation import generate_airfoil_points_slow
+
+def test_format_size():
+    """Test the format_size utility function."""
+    assert format_size(100) == "100 B"
+    assert format_size(1023) == "1023 B"
+    assert format_size(1024) == "1.0 KB"
+    assert format_size(1536) == "1.5 KB"
+    assert format_size(1024 * 1024) == "1.0 MB"
+    assert format_size(1024 * 1024 * 1024) == "1.0 GB"
 
 def test_generate_gmsh_mesh_runs():
     """Test that generate_gmsh_mesh runs without error (and exercises Spinner)."""
