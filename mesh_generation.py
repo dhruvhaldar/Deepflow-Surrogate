@@ -135,7 +135,9 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         else:
             points_to_add = points_for_gmsh
 
-        for p in points_to_add:
+        # Convert to list for faster iteration (avoids NumPy overhead in loop)
+        points_list = points_to_add.tolist()
+        for p in points_list:
             tag = gmsh.model.geo.addPoint(p[0], p[1], p[2], lc)
             point_tags.append(tag)
 
