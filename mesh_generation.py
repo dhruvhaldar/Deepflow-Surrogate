@@ -191,6 +191,34 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
     except Exception as e: # pylint: disable=broad-exception-caught
         print(f"{Colors.FAIL}❌ Gmsh error: {e}{Colors.ENDC}")
 
+def validate_output_path(filepath):
+    """
+    Validates the output filepath.
+    - Adds .msh extension if missing.
+    - Warns if extension is suspicious (e.g. .txt).
+    Returns the (possibly modified) filepath.
+    """
+    if not filepath:
+        return filepath
+
+    _, ext = os.path.splitext(filepath)
+
+    if not ext:
+        new_filepath = f"{filepath}.msh"
+        print(
+            f"{Colors.OKCYAN}ℹ️  Output filename '{filepath}' has no extension. "
+            f"Defaulting to '{new_filepath}'.{Colors.ENDC}"
+        )
+        return new_filepath
+
+    if ext.lower() in ['.txt', '.md', '.json', '.yaml', '.yml', '.py', '.sh']:
+        print(
+            f"{Colors.WARNING}⚠️  Warning: The extension '{ext}' is likely not supported by Gmsh. "
+            f"The generation might fail.{Colors.ENDC}"
+        )
+
+    return filepath
+
 def check_overwrite(filepath, force):
     """Checks if output file exists and prompts user if needed."""
     if not filepath or not os.path.exists(filepath) or force:
@@ -264,6 +292,8 @@ if __name__ == "__main__":
     if args.num_points <= 0:
         print(f"{Colors.FAIL}Error: --num-points must be a positive integer.{Colors.ENDC}")
         sys.exit(1)
+
+    args.output = validate_output_path(args.output)
 
     if not check_overwrite(args.output, args.force):
         sys.exit(0)
