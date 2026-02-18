@@ -139,5 +139,34 @@ class TestMeshGenerationCLI(unittest.TestCase):
         result = mesh_generation.check_overwrite(self.test_file, force=False)
         self.assertTrue(result)
 
+class TestOutputPathValidation(unittest.TestCase):
+    """Tests for output path validation."""
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_no_extension(self, mock_stdout):
+        """Test that .msh is appended if extension is missing."""
+        result = mesh_generation.validate_output_path("output_file")
+        self.assertEqual(result, "output_file.msh")
+        self.assertIn("Defaulting to 'output_file.msh'", mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_valid_extension(self, mock_stdout):
+        """Test that valid extension is unchanged."""
+        result = mesh_generation.validate_output_path("output_file.msh")
+        self.assertEqual(result, "output_file.msh")
+        self.assertEqual(mock_stdout.getvalue(), "")
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_suspicious_extension(self, mock_stdout):
+        """Test that suspicious extension triggers a warning."""
+        result = mesh_generation.validate_output_path("output_file.txt")
+        self.assertEqual(result, "output_file.txt")
+        self.assertIn("likely not supported", mock_stdout.getvalue())
+
+    def test_none_filepath(self):
+        """Test that None filepath is handled gracefully."""
+        result = mesh_generation.validate_output_path(None)
+        self.assertIsNone(result)
+
 if __name__ == '__main__':
     unittest.main()
