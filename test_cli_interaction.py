@@ -3,8 +3,49 @@ Tests for the CLI interaction logic in mesh_generation.py.
 """
 import unittest
 import os
+from io import StringIO
 from unittest.mock import patch
 import mesh_generation
+
+class TestDirectoryCreation(unittest.TestCase):
+    """Tests for directory creation logic."""
+
+    @patch('os.makedirs')
+    @patch('os.path.exists', return_value=True)
+    def test_directory_exists(self, mock_exists, mock_makedirs):
+        """Test that nothing happens if directory exists."""
+        # pylint: disable=unused-argument
+        mesh_generation.ensure_directory_exists("existing_dir/file.msh")
+        mock_makedirs.assert_not_called()
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('os.makedirs')
+    @patch('os.path.exists', return_value=False)
+    def test_directory_does_not_exist(self, mock_exists, mock_makedirs, mock_stdout):
+        """Test that directory is created if it does not exist."""
+        # pylint: disable=unused-argument
+        # Note: os.path.dirname("new_dir/file.msh") -> "new_dir"
+        mesh_generation.ensure_directory_exists("new_dir/file.msh")
+        mock_makedirs.assert_called_with("new_dir", exist_ok=True)
+        self.assertIn("Created directory 'new_dir'", mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('os.makedirs')
+    @patch('os.path.exists', return_value=False)
+    def test_directory_creation_fails(self, mock_exists, mock_makedirs, mock_stdout):
+        """Test that script exits if directory creation fails."""
+        # pylint: disable=unused-argument
+        mock_makedirs.side_effect = OSError("Permission denied")
+        with self.assertRaises(SystemExit) as cm:
+            mesh_generation.ensure_directory_exists("root_dir/file.msh")
+        self.assertEqual(cm.exception.code, 1)
+        self.assertIn("Error creating directory 'root_dir'", mock_stdout.getvalue())
+
+    @patch('os.makedirs')
+    def test_no_output_file(self, mock_makedirs):
+        """Test that function returns early if no filepath is provided."""
+        mesh_generation.ensure_directory_exists(None)
+        mock_makedirs.assert_not_called()
 
 class TestMeshGenerationCLI(unittest.TestCase):
     """Tests for CLI interaction logic."""

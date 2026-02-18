@@ -220,6 +220,20 @@ def check_overwrite(filepath, force):
     )
     return True
 
+def ensure_directory_exists(filepath):
+    """Ensures the directory for the given filepath exists."""
+    if not filepath:
+        return
+
+    directory = os.path.dirname(filepath)
+    if directory and not os.path.exists(directory):
+        try:
+            os.makedirs(directory, exist_ok=True)
+            print(f"{Colors.OKBLUE}📂 Created directory '{directory}'{Colors.ENDC}")
+        except OSError as e:
+            print(f"{Colors.FAIL}❌ Error creating directory '{directory}': {e}{Colors.ENDC}")
+            sys.exit(1)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -253,6 +267,8 @@ if __name__ == "__main__":
 
     if not check_overwrite(args.output, args.force):
         sys.exit(0)
+
+    ensure_directory_exists(args.output)
 
     start_time = time.time()
     airfoil_points = generate_airfoil_points(args.num_points)
