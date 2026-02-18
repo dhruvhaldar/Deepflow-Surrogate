@@ -157,16 +157,14 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         with Spinner(f"{Colors.OKBLUE}   Meshing...{Colors.ENDC}"):
             gmsh.model.mesh.generate(2)
 
-        # Get mesh statistics
-        node_tags, _, _ = gmsh.model.mesh.getNodes()
-        num_nodes = len(node_tags)
-
-        _, element_tags, _ = gmsh.model.mesh.getElements()
-        num_elements = sum(len(tags) for tags in element_tags)
+        # Get mesh statistics efficiently (O(1)) without fetching all data
+        # 'Mesh.NbNodes' and 'Mesh.NbTriangles' are faster than getNodes/getElements
+        num_nodes = int(gmsh.option.getNumber("Mesh.NbNodes"))
+        num_triangles = int(gmsh.option.getNumber("Mesh.NbTriangles"))
 
         print(
             f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes:,} nodes, "
-            f"{num_elements:,} elements{Colors.ENDC}",
+            f"{num_triangles:,} triangles{Colors.ENDC}",
             flush=True
         )
 
