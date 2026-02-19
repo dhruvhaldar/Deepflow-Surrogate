@@ -160,12 +160,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         # Efficiently get node count without copying large arrays (O(1) vs O(N))
         num_nodes = int(gmsh.option.getNumber("Mesh.NbNodes"))
 
-        _, element_tags, _ = gmsh.model.mesh.getElements()
-        num_elements = sum(len(tags) for tags in element_tags)
+        # Efficiently get element count (O(1) vs O(N))
+        # This counts 2D elements (triangles + quads), excluding boundary lines/points
+        num_triangles = int(gmsh.option.getNumber("Mesh.NbTriangles"))
+        num_quads = int(gmsh.option.getNumber("Mesh.NbQuadrangles"))
+        num_elements = num_triangles + num_quads
 
         print(
             f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes:,} nodes, "
-            f"{num_elements:,} elements{Colors.ENDC}",
+            f"{num_elements:,} elements (2D){Colors.ENDC}",
             flush=True
         )
 
