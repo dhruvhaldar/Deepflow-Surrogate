@@ -187,9 +187,11 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
 
         print(f"{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
 
-        gmsh.finalize()
     except Exception as e: # pylint: disable=broad-exception-caught
         print(f"{Colors.FAIL}❌ Gmsh error: {e}{Colors.ENDC}")
+    finally:
+        if gmsh.isInitialized():
+            gmsh.finalize()
 
 def validate_output_path(filepath):
     """
@@ -300,8 +302,12 @@ if __name__ == "__main__":
 
     ensure_directory_exists(args.output)
 
-    start_time = time.time()
-    airfoil_points = generate_airfoil_points(args.num_points)
-    generate_gmsh_mesh(airfoil_points, args.output)
-    elapsed_time = time.time() - start_time
-    print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {elapsed_time:.4f}s{Colors.ENDC}")
+    try:
+        start_time = time.time()
+        airfoil_points = generate_airfoil_points(args.num_points)
+        generate_gmsh_mesh(airfoil_points, args.output)
+        elapsed_time = time.time() - start_time
+        print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {elapsed_time:.4f}s{Colors.ENDC}")
+    except KeyboardInterrupt:
+        print(f"\n{Colors.WARNING}🛑 Operation cancelled by user.{Colors.ENDC}")
+        sys.exit(130)
