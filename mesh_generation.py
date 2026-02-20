@@ -35,7 +35,7 @@ class Spinner:
             sys.stdout.write("\033[?25l")  # Hide cursor
             sys.stdout.flush()
             self.stop_running = False
-            self.thread = threading.Thread(target=self.spin)
+            self.thread = threading.Thread(target=self.spin, daemon=True)
             self.thread.start()
         else:
             print(self.message)
@@ -206,8 +206,10 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         print(f"{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
 
         gmsh.finalize()
+        return True
     except Exception as e: # pylint: disable=broad-exception-caught
         print(f"{Colors.FAIL}❌ Gmsh error: {e}{Colors.ENDC}")
+        return False
 
 def validate_output_path(filepath):
     """
@@ -280,7 +282,8 @@ def ensure_directory_exists(filepath):
             print(f"{Colors.FAIL}❌ Error creating directory '{directory}': {e}{Colors.ENDC}")
             sys.exit(1)
 
-if __name__ == "__main__":
+def main():
+    """Main execution function."""
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
@@ -320,6 +323,17 @@ if __name__ == "__main__":
 
     start_time = time.time()
     airfoil_points = generate_airfoil_points(args.num_points)
-    generate_gmsh_mesh(airfoil_points, args.output)
+    success = generate_gmsh_mesh(airfoil_points, args.output)
+
+    if not success:
+        sys.exit(1)
+
     elapsed_time = time.time() - start_time
     print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {elapsed_time:.4f}s{Colors.ENDC}")
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f"\n{Colors.FAIL}❌ Operation cancelled by user.{Colors.ENDC}")
+        sys.exit(130)
