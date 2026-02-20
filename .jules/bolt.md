@@ -7,7 +7,7 @@
 **Action:** Use `gmsh.option.getNumber("Mesh.NbNodes")` when only the node count is needed, instead of retrieving the full mesh data.
 
 ## 2025-02-14 - Gmsh Element Count Optimization
-**Learning:** `gmsh.model.mesh.getElements()` is an O(N) operation that returns all mesh entities (including boundary lines/points). For reporting 2D mesh statistics, summing `gmsh.option.getNumber("Mesh.NbTriangles")` and `"Mesh.NbQuadrangles"` is O(1), avoids large array allocations, and correctly reflects the number of computational cells.
+**Learning:** `gmsh.model.mesh.getElements()` is an O(N) operation that returns all mesh entities (including boundary lines and points). For reporting 2D mesh statistics, summing `gmsh.option.getNumber("Mesh.NbTriangles")` and `"Mesh.NbQuadrangles"` is O(1), avoids large array allocations, and correctly reflects the number of computational cells.
 **Action:** Use `gmsh.option.getNumber` for element counting when only statistics are needed, avoiding `getElements()`.
 
 ## 2025-05-23 - NumPy Array Optimization
@@ -17,3 +17,7 @@
 ## 2025-05-23 - Horner's Method for Polynomials
 **Learning:** Using Horner's method for polynomial evaluation reduces the number of floating-point operations and, more importantly in NumPy, avoids the creation of multiple temporary arrays for intermediate power terms (`x**2`, `x**3`), yielding a ~23% speedup.
 **Action:** Rewrite high-order polynomials using nested multiplication (Horner's method) in performance-critical code.
+
+## 2025-05-23 - List Flattening for Loop Performance
+**Learning:** When passing large arrays of coordinates to a C-extension loop (like `gmsh.model.geo.addPoint`), flattening the array to a single Python list of floats (`ravel().tolist()`) and iterating with `zip` chunking is ~2x faster than iterating over a nested list of lists (`tolist()`), due to reduced object creation overhead.
+**Action:** Use `ravel().tolist()` and `zip(it, it, it)` for iterating over coordinate arrays in tight loops.
