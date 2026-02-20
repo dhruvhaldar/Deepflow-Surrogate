@@ -26,9 +26,6 @@ class Spinner:
             sys.stdout.write(f"\r{self.message} {next(spinner_chars)}")
             sys.stdout.flush()
             time.sleep(0.1)
-        # Clear line
-        sys.stdout.write('\r' + ' ' * (len(self.message) + 2) + '\r')
-        sys.stdout.flush()
 
     def __enter__(self):
         if sys.stdout.isatty():
@@ -46,6 +43,12 @@ class Spinner:
             self.stop_running = True
             self.thread.join()
             sys.stdout.write("\033[?25h")  # Show cursor
+
+            # Print final status, overwriting the spinner character
+            if exc_type is None:
+                sys.stdout.write(f"\r{self.message} ✅   \n")
+            else:
+                sys.stdout.write(f"\r{self.message} ❌   \n")
             sys.stdout.flush()
 
 class Colors: # pylint: disable=too-few-public-methods
@@ -293,7 +296,7 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
-        epilog="Example: python mesh_generation.py --num-points 200 --output airfoil.msh"
+        epilog=f"Example: {Colors.OKCYAN}python mesh_generation.py --num-points 200 --output airfoil.msh{Colors.ENDC}"
     )
     parser.add_argument(
         "--num-points",
