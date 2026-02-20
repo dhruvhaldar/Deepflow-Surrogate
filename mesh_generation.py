@@ -77,9 +77,17 @@ if os.getenv('NO_COLOR') or not sys.stdout.isatty():
 
 def naca0012_y(x, t=0.12):
     """Calculates the y-coordinate of a NACA 0012 airfoil."""
+    # Use Horner's method for efficiency (fewer FLOPs and temporary arrays)
     return 5 * t * (
-        0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 +
-        0.2843 * x**3 - 0.1015 * x**4
+        0.2969 * np.sqrt(x) + x * (
+            -0.1260 + x * (
+                -0.3516 + x * (
+                    0.2843 + x * (
+                        -0.1015
+                    )
+                )
+            )
+        )
     )
 
 def format_size(size_bytes):
@@ -101,17 +109,19 @@ def generate_airfoil_points(num_points):
     # Upper surface: x from 1 to 0, y positive
     # Lower surface: x from 0 to 1, y negative
 
-    x_upper = x[::-1]
-    y_upper = y[::-1]
+    # Pre-allocate the result array to avoid intermediate allocations
+    # Total points = num_points (upper) + (num_points - 1) (lower)
+    total_points = 2 * num_points - 1
+    points = np.zeros((total_points, 3))
 
-    x_lower = x[1:]
-    y_lower = -y[1:]
+    # Upper surface (reversed)
+    points[:num_points, 0] = x[::-1]
+    points[:num_points, 1] = y[::-1]
 
-    x_coords = np.concatenate([x_upper, x_lower])
-    y_coords = np.concatenate([y_upper, y_lower])
-    z_coords = np.zeros_like(x_coords)
+    # Lower surface (skip leading edge point to avoid duplicate)
+    points[num_points:, 0] = x[1:]
+    points[num_points:, 1] = -y[1:]
 
-    points = np.column_stack([x_coords, y_coords, z_coords])
     return points
 
 def generate_gmsh_mesh(points_for_gmsh, output_file=None):
