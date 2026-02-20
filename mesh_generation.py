@@ -32,15 +32,21 @@ class Spinner:
 
     def __enter__(self):
         if sys.stdout.isatty():
+            sys.stdout.write("\033[?25l")  # Hide cursor
+            sys.stdout.flush()
             self.stop_running = False
             self.thread = threading.Thread(target=self.spin)
             self.thread.start()
+        else:
+            print(self.message)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.thread:
             self.stop_running = True
             self.thread.join()
+            sys.stdout.write("\033[?25h")  # Show cursor
+            sys.stdout.flush()
 
 class Colors: # pylint: disable=too-few-public-methods
     """ANSI color codes for CLI output."""

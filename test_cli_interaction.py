@@ -168,5 +168,35 @@ class TestOutputPathValidation(unittest.TestCase):
         result = mesh_generation.validate_output_path(None)
         self.assertIsNone(result)
 
+class TestSpinner(unittest.TestCase):
+    """Tests for the Spinner class."""
+
+    @patch('threading.Thread')
+    def test_spinner_tty(self, mock_thread):
+        """Test spinner behavior in TTY mode."""
+        # pylint: disable=unused-argument
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            mock_stdout.isatty = lambda: True
+            spinner = mesh_generation.Spinner("Testing...")
+            with spinner:
+                pass
+
+            output = mock_stdout.getvalue()
+            self.assertIn("\033[?25l", output, "Should hide cursor in TTY mode")
+            self.assertIn("\033[?25h", output, "Should show cursor after spinner")
+
+    def test_spinner_non_tty(self):
+        """Test spinner behavior in non-TTY mode."""
+        # pylint: disable=unused-argument
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            mock_stdout.isatty = lambda: False
+            spinner = mesh_generation.Spinner("Testing...")
+            with spinner:
+                pass
+
+            output = mock_stdout.getvalue()
+            self.assertIn("Testing...", output, "Should print message in non-TTY mode")
+            self.assertNotIn("\033[?25l", output, "Should NOT hide cursor in non-TTY mode")
+
 if __name__ == '__main__':
     unittest.main()
