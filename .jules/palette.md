@@ -13,3 +13,7 @@
 ## 2026-02-24 - Persistent CLI Progress
 **Learning:** CLI spinners that clear the line upon completion remove context, making it hard for users to review what steps were successful.
 **Action:** Replace spinners with a persistent success (✅) or failure (❌) indicator upon completion to provide a clear history of actions.
+
+## 2026-02-25 - Post-Execution Guidance
+**Learning:** CLI tools that finish silently or with generic success messages leave users guessing the next step, increasing friction for new users.
+**Action:** Always include a specific, actionable "Tip" message (e.g., "💡 Tip: View the mesh using 'gmsh <file>'") at the end of successful CLI operations to guide the user's workflow.

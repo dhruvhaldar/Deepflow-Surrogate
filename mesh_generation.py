@@ -205,6 +205,10 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
                 f"({readable_size}){Colors.ENDC}",
                 flush=True
             )
+            print(
+                f"{Colors.OKCYAN}💡 Tip: View the mesh using 'gmsh {output_file}'{Colors.ENDC}",
+                flush=True
+            )
         else:
             print(
                 f"{Colors.WARNING}⚠️  No output file specified. Mesh generated in memory only. "
