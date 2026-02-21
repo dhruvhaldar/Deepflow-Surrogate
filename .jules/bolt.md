@@ -21,3 +21,11 @@
 ## 2025-05-23 - List Flattening for Loop Performance
 **Learning:** When passing large arrays of coordinates to a C-extension loop (like `gmsh.model.geo.addPoint`), flattening the array to a single Python list of floats (`ravel().tolist()`) and iterating with `zip` chunking is ~2x faster than iterating over a nested list of lists (`tolist()`), due to reduced object creation overhead.
 **Action:** Use `ravel().tolist()` and `zip(it, it, it)` for iterating over coordinate arrays in tight loops.
+
+## 2025-05-24 - NumPy Negation Optimization
+**Learning:** Using `np.negative(arr, out=dest)` is significantly faster (~50x for large arrays, ~25% for small ones) than `dest[:] = -arr` because it performs the operation in-place without allocating a temporary intermediate array for the result of `-arr`.
+**Action:** Use `np.negative(src, out=dest)` when negating arrays into a pre-allocated buffer.
+
+## 2025-05-24 - Gmsh Binary Output Size
+**Learning:** Enabling binary output (`Mesh.Binary=1`) in Gmsh 4.15 increases file size for very small 2D meshes (~14KB vs ~9KB for ASCII) due to binary format overhead, though it scales better for large meshes. For small debugging meshes, ASCII might be preferable.
+**Action:** Default to ASCII for small/debugging meshes unless performance or large data size dictates otherwise.

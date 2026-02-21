@@ -123,7 +123,8 @@ def generate_airfoil_points(num_points):
 
     # Lower surface (skip leading edge point to avoid duplicate)
     points[num_points:, 0] = x[1:]
-    points[num_points:, 1] = -y[1:]
+    # Use np.negative with out=... to avoid temporary array allocation for -y[1:]
+    np.negative(y[1:], out=points[num_points:, 1])
 
     return points
 
