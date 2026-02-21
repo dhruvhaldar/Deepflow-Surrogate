@@ -13,3 +13,7 @@
 ## 2026-02-24 - Persistent CLI Progress
 **Learning:** CLI spinners that clear the line upon completion remove context, making it hard for users to review what steps were successful.
 **Action:** Replace spinners with a persistent success (✅) or failure (❌) indicator upon completion to provide a clear history of actions.
+
+## 2026-02-24 - Actionable CLI Success Messages
+**Learning:** Users often complete a CLI task (e.g. generation) and immediately wonder "what next?", leading to friction in verification.
+**Action:** Append a contextual "Tip" or next step (e.g. viewer command) to success messages to bridge the gap between creation and verification.

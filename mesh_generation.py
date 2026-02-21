@@ -192,7 +192,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
 
         print(
             f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes:,} nodes, "
-            f"{num_elements:,} elements{Colors.ENDC}",
+            f"{num_elements:,} elements (Triangles: {num_triangles:,}, "
+            f"Quads: {num_quadrangles:,}){Colors.ENDC}",
             flush=True
         )
 
@@ -203,6 +204,10 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
             print(
                 f"{Colors.OKGREEN}💾 Mesh written to {output_file} "
                 f"({readable_size}){Colors.ENDC}",
+                flush=True
+            )
+            print(
+                f"{Colors.OKBLUE}💡 Tip: View the mesh using 'gmsh {output_file}'{Colors.ENDC}",
                 flush=True
             )
         else:

@@ -198,5 +198,43 @@ class TestSpinner(unittest.TestCase):
             self.assertIn("Testing...", output, "Should print message in non-TTY mode")
             self.assertNotIn("\033[?25l", output, "Should NOT hide cursor in non-TTY mode")
 
+class TestMeshStatistics(unittest.TestCase):
+    """Tests for the mesh statistics output."""
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_output_format_with_file(self, mock_stdout):
+        """Test that the output format includes element breakdown and tip when file is saved."""
+        # Use a small number of points for speed
+        points = mesh_generation.generate_airfoil_points(20)
+        output_file = "test_stats.msh"
+
+        try:
+            # We don't need to actually write to disk for the logic test, but the function does.
+            # We can let it write and then clean up.
+            mesh_generation.generate_gmsh_mesh(points, output_file)
+
+            output = mock_stdout.getvalue()
+            self.assertIn("Mesh Statistics:", output)
+            self.assertIn("Triangles:", output)
+            self.assertIn("Quads:", output)
+            self.assertIn(f"Tip: View the mesh using 'gmsh {output_file}'", output)
+
+        finally:
+            if os.path.exists(output_file):
+                os.remove(output_file)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_output_format_without_file(self, mock_stdout):
+        """Test that the output format includes element breakdown but NO tip when file is not saved."""
+        points = mesh_generation.generate_airfoil_points(20)
+
+        mesh_generation.generate_gmsh_mesh(points, None)
+
+        output = mock_stdout.getvalue()
+        self.assertIn("Mesh Statistics:", output)
+        self.assertIn("Triangles:", output)
+        self.assertIn("Quads:", output)
+        self.assertNotIn("Tip: View the mesh", output)
+
 if __name__ == '__main__':
     unittest.main()
