@@ -29,3 +29,7 @@
 ## 2025-05-24 - Gmsh Binary Output Size
 **Learning:** Enabling binary output (`Mesh.Binary=1`) in Gmsh 4.15 increases file size for very small 2D meshes (~14KB vs ~9KB for ASCII) due to binary format overhead, though it scales better for large meshes. For small debugging meshes, ASCII might be preferable.
 **Action:** Default to ASCII for small/debugging meshes unless performance or large data size dictates otherwise.
+
+## 2025-05-24 - Threaded Spinner Optimization
+**Learning:** Using `threading.Event().wait(timeout)` instead of `time.sleep(timeout)` in a threaded spinner loop allows immediate interruption via `set()`. This eliminates the latency (e.g., ~100ms) caused by waiting for the sleep to finish during thread join, which is critical for short-lived tasks.
+**Action:** Always use `threading.Event` for cancellation and timing in worker threads to ensure responsive exits.
