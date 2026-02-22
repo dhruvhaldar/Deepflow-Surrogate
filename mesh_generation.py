@@ -243,6 +243,20 @@ def validate_output_path(filepath):
     if not filepath:
         return filepath
 
+    # Check if filepath is a directory or ends with a separator
+    # This prevents creating hidden files like .msh or dir/.msh
+    is_dir_path = filepath.endswith(os.sep)
+    if os.altsep:
+        is_dir_path = is_dir_path or filepath.endswith(os.altsep)
+
+    if os.path.isdir(filepath) or is_dir_path:
+        new_filepath = os.path.join(filepath, "airfoil.msh")
+        print(
+            f"{Colors.OKCYAN}ℹ️  Output path '{filepath}' appears to be a directory. "
+            f"Using '{new_filepath}'.{Colors.ENDC}"
+        )
+        return new_filepath
+
     _, ext = os.path.splitext(filepath)
 
     if not ext:
