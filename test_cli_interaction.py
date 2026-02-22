@@ -198,6 +198,33 @@ class TestSpinner(unittest.TestCase):
             self.assertIn("Testing...", output, "Should print message in non-TTY mode")
             self.assertNotIn("\033[?25l", output, "Should NOT hide cursor in non-TTY mode")
 
+    def test_spinner_non_tty_completion(self):
+        """Test spinner completion feedback in non-TTY mode."""
+        # pylint: disable=unused-argument
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            mock_stdout.isatty = lambda: False
+            spinner = mesh_generation.Spinner("Testing...")
+            with spinner:
+                pass
+
+            output = mock_stdout.getvalue()
+            self.assertIn("Testing... ✅", output, "Should print completion feedback")
+
+    def test_spinner_non_tty_failure(self):
+        """Test spinner failure feedback in non-TTY mode."""
+        # pylint: disable=unused-argument
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            mock_stdout.isatty = lambda: False
+            spinner = mesh_generation.Spinner("Testing...")
+            try:
+                with spinner:
+                    raise ValueError("Simulated error")
+            except ValueError:
+                pass
+
+            output = mock_stdout.getvalue()
+            self.assertIn("Testing... ❌", output, "Should print failure feedback")
+
 class TestMeshStatistics(unittest.TestCase):
     """Tests for the mesh statistics output."""
 
@@ -217,7 +244,10 @@ class TestMeshStatistics(unittest.TestCase):
             self.assertIn("Mesh Statistics:", output)
             self.assertIn("Triangles:", output)
             self.assertIn("Quads:", output)
-            self.assertIn(f"Tip: View the mesh using 'gmsh {output_file}'", output)
+            self.assertIn(
+                f"Tip: View the mesh using 'gmsh {output_file}'",
+                output
+            )
 
         finally:
             if os.path.exists(output_file):
@@ -225,7 +255,10 @@ class TestMeshStatistics(unittest.TestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_output_format_without_file(self, mock_stdout):
-        """Test that the output format includes element breakdown but NO tip when file is not saved."""
+        """
+        Test that the output format includes element breakdown but NO tip
+        when file is not saved.
+        """
         points = mesh_generation.generate_airfoil_points(20)
 
         mesh_generation.generate_gmsh_mesh(points, None)

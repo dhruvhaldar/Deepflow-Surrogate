@@ -17,3 +17,7 @@
 ## 2026-02-24 - Actionable CLI Success Messages
 **Learning:** Users often complete a CLI task (e.g. generation) and immediately wonder "what next?", leading to friction in verification.
 **Action:** Append a contextual "Tip" or next step (e.g. viewer command) to success messages to bridge the gap between creation and verification.
+
+## 2026-02-25 - Non-TTY Spinner Completion Feedback
+**Learning:** In non-interactive environments (CI/CD, logs), spinners that only print a start message ("Processing...") leave ambiguity about whether the step finished successfully or hung.
+**Action:** Ensure non-TTY spinner fallbacks explicitly print a completion indicator (e.g., "Processing... ✅") to provide clear step verification in logs.

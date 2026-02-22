@@ -50,6 +50,12 @@ class Spinner:
             else:
                 sys.stdout.write(f"\r{self.message} ❌   \n")
             sys.stdout.flush()
+        else:
+            # Provide completion feedback for non-interactive environments
+            if exc_type is None:
+                print(f"{self.message} ✅")
+            else:
+                print(f"{self.message} ❌")
 
 class Colors: # pylint: disable=too-few-public-methods
     """ANSI color codes for CLI output."""
