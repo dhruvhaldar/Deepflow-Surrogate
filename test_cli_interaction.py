@@ -168,6 +168,37 @@ class TestOutputPathValidation(unittest.TestCase):
         result = mesh_generation.validate_output_path(None)
         self.assertIsNone(result)
 
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_directory_separator(self, mock_stdout):
+        """Test that path ending in separator is treated as directory."""
+        sep = os.sep
+        path = f"some_dir{sep}"
+        expected = os.path.join(path, "airfoil.msh")
+
+        result = mesh_generation.validate_output_path(path)
+        self.assertEqual(result, expected)
+        self.assertIn("appears to be a directory", mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('os.path.isdir', return_value=True)
+    def test_existing_directory(self, mock_isdir, mock_stdout):
+        """Test that existing directory is handled correctly."""
+        path = "existing_dir"
+        expected = os.path.join(path, "airfoil.msh")
+
+        result = mesh_generation.validate_output_path(path)
+        self.assertEqual(result, expected)
+        self.assertIn("appears to be a directory", mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('os.path.isdir', return_value=True)
+    def test_dot_path(self, mock_isdir, mock_stdout):
+        """Test that '.' is treated as directory."""
+        result = mesh_generation.validate_output_path(".")
+        expected = os.path.join(".", "airfoil.msh")
+        self.assertEqual(result, expected)
+        self.assertIn("appears to be a directory", mock_stdout.getvalue())
+
 class TestSpinner(unittest.TestCase):
     """Tests for the Spinner class."""
 

@@ -21,3 +21,7 @@
 ## 2026-02-25 - Non-TTY Spinner Completion Feedback
 **Learning:** In non-interactive environments (CI/CD, logs), spinners that only print a start message ("Processing...") leave ambiguity about whether the step finished successfully or hung.
 **Action:** Ensure non-TTY spinner fallbacks explicitly print a completion indicator (e.g., "Processing... ✅") to provide clear step verification in logs.
+
+## 2026-02-26 - CLI Directory Output Handling
+**Learning:** Users often provide directory paths (e.g. `dir/`) expecting the file to be placed inside, but standard filename validation logic may create hidden files (e.g. `dir/.msh`) or confusing names if not handled explicitly.
+**Action:** Detect if output path is a directory (existing or trailing separator) and automatically append a sensible default filename (e.g. `dir/default.msh`).
