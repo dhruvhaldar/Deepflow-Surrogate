@@ -88,13 +88,20 @@ if os.getenv('NO_COLOR') or not sys.stdout.isatty():
 def naca0012_y(x, t=0.12):
     """Calculates the y-coordinate of a NACA 0012 airfoil."""
     # Use Horner's method for efficiency (fewer FLOPs and temporary arrays)
-    return 5 * t * (
-        0.2969 * np.sqrt(x) + x * (
-            -0.1260 + x * (
-                -0.3516 + x * (
-                    0.2843 + x * (
-                        -0.1015
-                    )
+    # Optimization: Fold the 5*t scaling factor into the coefficients
+    # This saves one array multiplication pass (N operations) and one temporary array allocation.
+    scale = 5 * t
+    c0 = 0.2969 * scale
+    c1 = -0.1260 * scale
+    c2 = -0.3516 * scale
+    c3 = 0.2843 * scale
+    c4 = -0.1015 * scale
+
+    return c0 * np.sqrt(x) + x * (
+        c1 + x * (
+            c2 + x * (
+                c3 + x * (
+                    c4
                 )
             )
         )
@@ -169,8 +176,9 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
         # Use iterator and zip to process coordinates in chunks of 3 (x, y, z)
         # This is ~2x faster than iterating over nested lists
         it = iter(points_flat)
+        add_point = gmsh.model.geo.addPoint
         point_tags = [
-            gmsh.model.geo.addPoint(x, y, z, lc)
+            add_point(x, y, z, lc)
             for x, y, z in zip(it, it, it)
         ]
 
