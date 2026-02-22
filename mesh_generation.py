@@ -16,22 +16,23 @@ class Spinner:
     """A simple spinner for CLI feedback."""
     def __init__(self, message="Processing..."):
         self.message = message
-        self.stop_running = False
+        self.stop_event = threading.Event()
         self.thread = None
 
     def spin(self):
         """Displays the spinning animation."""
         spinner_chars = itertools.cycle(['-', '/', '|', '\\'])
-        while not self.stop_running:
+        while not self.stop_event.is_set():
             sys.stdout.write(f"\r{self.message} {next(spinner_chars)}")
             sys.stdout.flush()
-            time.sleep(0.1)
+            # use wait instead of sleep to be responsive to stop signals
+            self.stop_event.wait(0.1)
 
     def __enter__(self):
         if sys.stdout.isatty():
             sys.stdout.write("\033[?25l")  # Hide cursor
             sys.stdout.flush()
-            self.stop_running = False
+            self.stop_event.clear()
             self.thread = threading.Thread(target=self.spin, daemon=True)
             self.thread.start()
         else:
@@ -40,7 +41,7 @@ class Spinner:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.thread:
-            self.stop_running = True
+            self.stop_event.set()
             self.thread.join()
             sys.stdout.write("\033[?25h")  # Show cursor
 
