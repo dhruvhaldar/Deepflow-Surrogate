@@ -29,7 +29,7 @@ class Spinner:
             self.stop_event.wait(0.1)
 
     def __enter__(self):
-        if sys.stdout.isatty():
+        if sys.stdout.isatty() and not os.getenv('NO_COLOR'):
             sys.stdout.write("\033[?25l")  # Hide cursor
             sys.stdout.flush()
             self.stop_event.clear()
