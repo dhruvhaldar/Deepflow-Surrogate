@@ -142,7 +142,31 @@ def generate_airfoil_points(num_points):
 
     return points
 
-def generate_gmsh_mesh(points_for_gmsh, output_file=None):
+def preview_mesh():
+    """Opens the generated mesh in Gmsh GUI."""
+    # Check for display environment (Linux/Unix requires DISPLAY)
+    # macOS and Windows usually handle GUI without explicit env var
+    is_headless = os.getenv("DISPLAY") is None and \
+                  sys.platform != "darwin" and \
+                  os.name != "nt"
+
+    if sys.stdout.isatty() and not is_headless:
+        print(
+            f"{Colors.OKBLUE}👀 Opening preview... "
+            f"(Close window to finish){Colors.ENDC}",
+            flush=True
+        )
+        try:
+            gmsh.fltk.run()
+        except Exception as e: # pylint: disable=broad-exception-caught
+            print(f"{Colors.WARNING}⚠️  Preview failed: {e}{Colors.ENDC}")
+    else:
+        reason = "No display detected" if is_headless else "Non-interactive session"
+        print(
+            f"{Colors.WARNING}⚠️  Preview skipped: {reason}.{Colors.ENDC}"
+        )
+
+def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
     """Generates a mesh using Gmsh based on the provided points."""
     # pylint: disable=too-many-locals
     print(
@@ -233,6 +257,10 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None):
                 f"Use --output to save.{Colors.ENDC}",
                 flush=True
             )
+
+        # Handle preview if requested
+        if preview:
+            preview_mesh()
 
         print(f"{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
 
@@ -353,6 +381,11 @@ def main():
         action="store_true",
         help="Overwrite output file without confirmation if it exists."
     )
+    parser.add_argument(
+        "--preview",
+        action="store_true",
+        help="Open the generated mesh in Gmsh GUI immediately."
+    )
 
     args = parser.parse_args()
 
@@ -369,7 +402,7 @@ def main():
 
     start_time = time.time()
     airfoil_points = generate_airfoil_points(args.num_points)
-    success = generate_gmsh_mesh(airfoil_points, args.output)
+    success = generate_gmsh_mesh(airfoil_points, args.output, args.preview)
 
     if not success:
         sys.exit(1)

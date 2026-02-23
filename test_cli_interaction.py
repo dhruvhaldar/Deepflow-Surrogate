@@ -300,5 +300,47 @@ class TestMeshStatistics(unittest.TestCase):
         self.assertIn("Quads:", output)
         self.assertNotIn("Tip: View the mesh", output)
 
+class TestPreviewFlag(unittest.TestCase):
+    """Tests for the --preview flag functionality."""
+
+    @patch('mesh_generation.gmsh')
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_preview_calls_fltk_run(self, mock_stdout, mock_gmsh):
+        """Test that preview=True calls gmsh.fltk.run()."""
+        # Mock environment to simulate display available
+        with patch.dict(os.environ, {"DISPLAY": ":0"}), \
+             patch('sys.stdout.isatty', return_value=True):
+
+            # Use small points to run fast
+            points = mesh_generation.generate_airfoil_points(10)
+
+            mesh_generation.generate_gmsh_mesh(points, preview=True)
+
+            # Verify gmsh.fltk.run was called
+            mock_gmsh.fltk.run.assert_called_once()
+            self.assertIn("Opening preview...", mock_stdout.getvalue())
+
+    @patch('mesh_generation.gmsh')
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_preview_skipped_no_display(self, mock_stdout, mock_gmsh):
+        """Test that preview is skipped if no display is detected."""
+        # Mock environment to simulate NO display
+        # Remove DISPLAY if present
+        env = os.environ.copy()
+        if "DISPLAY" in env:
+            del env["DISPLAY"]
+
+        with patch.dict(os.environ, env, clear=True), \
+             patch('sys.platform', "linux"), \
+             patch('sys.stdout.isatty', return_value=True):
+
+            points = mesh_generation.generate_airfoil_points(10)
+
+            mesh_generation.generate_gmsh_mesh(points, preview=True)
+
+            # Verify gmsh.fltk.run was NOT called
+            mock_gmsh.fltk.run.assert_not_called()
+            self.assertIn("Preview skipped", mock_stdout.getvalue())
+
 if __name__ == '__main__':
     unittest.main()
