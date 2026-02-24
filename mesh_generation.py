@@ -176,7 +176,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
     )
     try:
         gmsh.initialize()
-        gmsh.option.setNumber("General.Verbosity", 2)  # Reduce console noise
+        gmsh.option.setNumber("General.Verbosity", 0)  # Silence console noise (saves I/O & locks)
         gmsh.option.setNumber("Mesh.Smoothing", 0)     # Disable smoothing for ~35% speedup
         gmsh.option.setNumber("Mesh.Algorithm", 5)     # Delaunay is ~32% faster for 2D meshes
         gmsh.option.setNumber("General.NumThreads", 0) # Enable parallel mesh generation (all cores)
