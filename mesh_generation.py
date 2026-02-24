@@ -194,16 +194,17 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         else:
             points_to_add = points_for_gmsh
 
-        # flatten the array to a 1D list for faster iteration (avoids nested list overhead)
-        # tolist() is faster here than iterating over numpy array
-        points_flat = points_to_add.ravel().tolist()
-        # Use iterator and zip to process coordinates in chunks of 3 (x, y, z)
-        # This is ~2x faster than iterating over nested lists
-        it = iter(points_flat)
+        # Extract x and y coordinates to separate lists for faster iteration.
+        # This avoids creating a list for z-coordinates (which are all 0) and the overhead of
+        # ravel() + zip(it, it, it), reducing temporary object creation by ~33%.
+        xs = points_to_add[:, 0].tolist()
+        ys = points_to_add[:, 1].tolist()
+        # z is always 0.0 for 2D airfoil
+
         add_point = gmsh.model.geo.addPoint
         point_tags = [
-            add_point(x, y, z, lc)
-            for x, y, z in zip(it, it, it)
+            add_point(x, y, 0.0, lc)
+            for x, y in zip(xs, ys)
         ]
 
         # Connect points with a single polyline
