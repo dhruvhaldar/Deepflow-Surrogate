@@ -317,6 +317,23 @@ class TestMeshStatistics(unittest.TestCase):
         self.assertIn("Quads:", output)
         self.assertNotIn("Tip: View the mesh", output)
 
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('mesh_generation.gmsh')
+    def test_empty_mesh_warning(self, mock_gmsh, mock_stdout):
+        """Test that a warning is printed if mesh has 0 elements."""
+        # Mock gmsh to return 0 elements
+        mock_gmsh.option.getNumber.return_value = 0
+        # Mock getBoundingBox to return something valid (or fail gracefully)
+        mock_gmsh.model.getBoundingBox.return_value = (0, 0, 0, 0, 0, 0)
+
+        # Call generate_gmsh_mesh
+        # Use dummy points
+        points = np.zeros((10, 3))
+        mesh_generation.generate_gmsh_mesh(points, None)
+
+        output = mock_stdout.getvalue()
+        self.assertIn("Warning: The generated mesh has 0 elements", output)
+
 class TestPreviewFlag(unittest.TestCase):
     """Tests for the --preview flag functionality."""
 

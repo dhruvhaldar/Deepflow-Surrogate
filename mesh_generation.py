@@ -240,6 +240,26 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             flush=True
         )
 
+        # Retrieve and display bounding box
+        try:
+            bbox = gmsh.model.getBoundingBox(-1, -1)
+            # bbox is (minX, minY, minZ, maxX, maxY, maxZ)
+            print(
+                f"{Colors.OKCYAN}📏 Bounding Box:   "
+                f"[{bbox[0]:.4f}, {bbox[1]:.4f}] x [{bbox[3]:.4f}, {bbox[4]:.4f}]{Colors.ENDC}",
+                flush=True
+            )
+        except Exception: # pylint: disable=broad-exception-caught
+            # Bounding box might fail if model is empty; ignore silently or handle gracefully
+            pass
+
+        if num_elements == 0:
+            print(
+                f"{Colors.WARNING}⚠️  Warning: The generated mesh has 0 elements. "
+                f"Try increasing --num-points or adjusting geometry settings.{Colors.ENDC}",
+                flush=True
+            )
+
         # Suggest saving if running interactively and no output specified
         if not output_file and sys.stdout.isatty():
             print(f"{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
