@@ -41,3 +41,7 @@
 ## 2025-05-25 - [Memory Optimization: Separate Coordinate Lists]
 **Learning:** When passing coordinates to `gmsh.model.geo.addPoint`, creating separate lists for `x` and `y` (e.g., `points[:, 0].tolist()`) and using `zip(xs, ys)` is ~1.5x faster and uses ~33% less memory than flattening the entire array (`ravel().tolist()`) and using `zip(it, it, it)`, especially when one coordinate (Z) is constant and can be passed as a literal.
 **Action:** Avoid creating full 3D coordinate lists if one dimension is constant; pass it as a literal in the loop.
+
+## 2025-05-25 - Gmsh AutoCoherence Performance
+**Learning:** Disabling `Geometry.AutoCoherence` (`gmsh.option.setNumber("Geometry.AutoCoherence", 0)`) when adding a large number of known-unique points (e.g. 200k) improves `addPoint` loop performance by ~6-10% by skipping duplicate entity checks. Also, the OpenCASCADE kernel (`model.occ`) is significantly slower (~18x) than the built-in `geo` kernel for adding large numbers of points individually in a Python loop.
+**Action:** Disable `Geometry.AutoCoherence` when programmatically generating geometry where point uniqueness is already guaranteed.
