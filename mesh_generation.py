@@ -181,6 +181,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         gmsh.option.setNumber("Mesh.Algorithm", 5)     # Delaunay is ~32% faster for 2D meshes
         gmsh.option.setNumber("General.NumThreads", 0) # Enable parallel mesh generation (all cores)
         gmsh.option.setNumber("Mesh.Binary", 1)        # Binary output is ~3.4x faster for writing
+        # Disable duplicate checks for speedup (points are unique)
+        gmsh.option.setNumber("Geometry.AutoCoherence", 0)
         gmsh.model.add("airfoil")
 
         lc = 0.1
@@ -210,9 +212,9 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         # Connect points with a single polyline
         # Append the first point tag to the end to close the loop
         if point_tags:
-            polyline_tags = point_tags + [point_tags[0]]
+            point_tags.append(point_tags[0])
             # Returns a single curve tag
-            polyline = gmsh.model.geo.addPolyline(polyline_tags)
+            polyline = gmsh.model.geo.addPolyline(point_tags)
             curve_loop = gmsh.model.geo.addCurveLoop([polyline])
         else:
             # Fallback for empty points (shouldn't happen with valid input)
