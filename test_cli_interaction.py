@@ -5,6 +5,7 @@ import unittest
 import os
 from io import StringIO
 from unittest.mock import patch
+import numpy as np
 import mesh_generation
 
 class TestDirectoryCreation(unittest.TestCase):
@@ -325,7 +326,8 @@ class TestPreviewFlag(unittest.TestCase):
         """Test that preview=True calls gmsh.fltk.run()."""
         # Mock environment to simulate display available
         with patch.dict(os.environ, {"DISPLAY": ":0"}), \
-             patch('sys.stdout.isatty', return_value=True):
+             patch('sys.stdout.isatty', return_value=True), \
+             patch('builtins.input', return_value='n'):
 
             # Use small points to run fast
             points = mesh_generation.generate_airfoil_points(10)
@@ -348,7 +350,8 @@ class TestPreviewFlag(unittest.TestCase):
 
         with patch.dict(os.environ, env, clear=True), \
              patch('sys.platform', "linux"), \
-             patch('sys.stdout.isatty', return_value=True):
+             patch('sys.stdout.isatty', return_value=True), \
+             patch('builtins.input', return_value='n'):
 
             points = mesh_generation.generate_airfoil_points(10)
 
@@ -357,6 +360,61 @@ class TestPreviewFlag(unittest.TestCase):
             # Verify gmsh.fltk.run was NOT called
             mock_gmsh.fltk.run.assert_not_called()
             self.assertIn("Preview skipped", mock_stdout.getvalue())
+
+class TestInteractiveSave(unittest.TestCase):
+    """Tests for the interactive save prompt."""
+
+    @patch('mesh_generation.gmsh')
+    @patch('os.path.getsize', return_value=1024)
+    @patch('mesh_generation.check_overwrite', return_value=True)
+    @patch('builtins.input', return_value='y')
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_interactive_save_yes(self, mock_isatty, mock_input, mock_check, mock_getsize, mock_gmsh):
+        """Test that user can save to default file interactively."""
+        # Setup mocks to avoid actual gmsh calls
+        mock_gmsh.option.getNumber.return_value = 0
+
+        # Use a small number of points
+        points = np.zeros((10, 3))
+
+        # Call function with output_file=None
+        mesh_generation.generate_gmsh_mesh(points, output_file=None)
+
+        # Verify prompt was shown
+        mock_input.assert_called_once()
+        self.assertIn("Save to 'airfoil.msh'?", mock_input.call_args[0][0])
+
+        # Verify check_overwrite was called
+        mock_check.assert_called_with("airfoil.msh", force=False)
+
+        # Verify gmsh.write was called with default file
+        mock_gmsh.write.assert_called_with("airfoil.msh")
+
+    @patch('mesh_generation.gmsh')
+    @patch('builtins.input', return_value='n')
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_interactive_save_no(self, mock_isatty, mock_input, mock_gmsh):
+        """Test that user can decline saving."""
+        mock_gmsh.option.getNumber.return_value = 0
+        points = np.zeros((10, 3))
+
+        mesh_generation.generate_gmsh_mesh(points, output_file=None)
+
+        mock_input.assert_called_once()
+
+        # Verify gmsh.write was NOT called
+        mock_gmsh.write.assert_not_called()
+
+    @patch('mesh_generation.gmsh')
+    @patch('sys.stdout.isatty', return_value=False)
+    def test_non_interactive_no_prompt(self, mock_isatty, mock_gmsh):
+        """Test that prompt is skipped in non-interactive mode."""
+        mock_gmsh.option.getNumber.return_value = 0
+        points = np.zeros((10, 3))
+
+        with patch('builtins.input') as mock_input:
+            mesh_generation.generate_gmsh_mesh(points, output_file=None)
+            mock_input.assert_not_called()
 
 if __name__ == '__main__':
     unittest.main()

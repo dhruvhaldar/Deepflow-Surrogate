@@ -240,6 +240,17 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             flush=True
         )
 
+        # Suggest saving if running interactively and no output specified
+        if not output_file and sys.stdout.isatty():
+            print(f"{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
+            try:
+                prompt = f"{Colors.OKBLUE}Save to 'airfoil.msh'? [y/N] {Colors.ENDC}"
+                if input(prompt).strip().lower() in ('y', 'yes'):
+                    if check_overwrite("airfoil.msh", force=False):
+                        output_file = "airfoil.msh"
+            except EOFError:
+                pass
+
         if output_file:
             gmsh.write(output_file)
             file_size = os.path.getsize(output_file)
@@ -254,11 +265,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 flush=True
             )
         else:
-            print(
-                f"{Colors.WARNING}⚠️  No output file specified. Mesh generated in memory only. "
-                f"Use --output to save.{Colors.ENDC}",
-                flush=True
-            )
+            # Only show warning if not interactive, to avoid nagging after a 'no' response
+            if not sys.stdout.isatty():
+                print(
+                    f"{Colors.WARNING}⚠️  No output file specified. Mesh generated in memory only. "
+                    f"Use --output to save.{Colors.ENDC}",
+                    flush=True
+                )
 
         # Handle preview if requested
         if preview:
