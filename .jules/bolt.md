@@ -45,3 +45,7 @@
 ## 2025-05-25 - Gmsh AutoCoherence Performance
 **Learning:** Disabling `Geometry.AutoCoherence` (`gmsh.option.setNumber("Geometry.AutoCoherence", 0)`) when adding a large number of known-unique points (e.g. 200k) improves `addPoint` loop performance by ~6-10% by skipping duplicate entity checks. Also, the OpenCASCADE kernel (`model.occ`) is significantly slower (~18x) than the built-in `geo` kernel for adding large numbers of points individually in a Python loop.
 **Action:** Disable `Geometry.AutoCoherence` when programmatically generating geometry where point uniqueness is already guaranteed.
+
+## 2025-05-25 - Zero-Allocation NumPy Computations
+**Learning:** For numerical functions like polynomial evaluation, modifying the function to accept an `out` parameter (slice of a larger pre-allocated array) and using in-place operators (`*=`, `+=`, `.fill()`) can eliminate all intermediate array allocations. This yields significant speedups (e.g., >5x for simple functions) by reducing memory allocation overhead and improving cache locality.
+**Action:** Design numerical utility functions to support an optional `out` parameter for in-place computation.
