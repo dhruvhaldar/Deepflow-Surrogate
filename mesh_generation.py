@@ -85,11 +85,13 @@ class Colors: # pylint: disable=too-few-public-methods
 if os.getenv('NO_COLOR') or not sys.stdout.isatty():
     Colors.disable()
 
-def naca0012_y(x, t=0.12):
-    """Calculates the y-coordinate of a NACA 0012 airfoil."""
+def naca0012_y(x, t=0.12, out=None):
+    """
+    Calculates the y-coordinate of a NACA 0012 airfoil.
+    Supports in-place modification to avoid temporary allocations.
+    """
     # Use Horner's method for efficiency (fewer FLOPs and temporary arrays)
     # Optimization: Fold the 5*t scaling factor into the coefficients
-    # This saves one array multiplication pass (N operations) and one temporary array allocation.
     scale = 5 * t
     c0 = 0.2969 * scale
     c1 = -0.1260 * scale
@@ -97,15 +99,26 @@ def naca0012_y(x, t=0.12):
     c3 = 0.2843 * scale
     c4 = -0.1015 * scale
 
-    return c0 * np.sqrt(x) + x * (
-        c1 + x * (
-            c2 + x * (
-                c3 + x * (
-                    c4
-                )
-            )
-        )
-    )
+    if out is None:
+        out = np.empty_like(x)
+
+    # Use in-place operations to avoid temporary array allocations
+    # Corresponds to: out = x * (c1 + x * (c2 + x * (c3 + x * c4))) + c0 * sqrt(x)
+    out.fill(c4)
+    out *= x
+    out += c3
+    out *= x
+    out += c2
+    out *= x
+    out += c1
+    out *= x
+
+    # Add sqrt term (requires one temporary for sqrt)
+    sqrt_x = np.sqrt(x)
+    sqrt_x *= c0
+    out += sqrt_x
+
+    return out
 
 def format_size(size_bytes):
     """Formats bytes into a human-readable string."""
@@ -120,25 +133,24 @@ def format_size(size_bytes):
 def generate_airfoil_points(num_points):
     """Generates airfoil points using NumPy vectorization (efficient)."""
     x = np.linspace(0, 1, num_points)
-    y = naca0012_y(x)
-
-    # Combine upper and lower surfaces efficiently
-    # Upper surface: x from 1 to 0, y positive
-    # Lower surface: x from 0 to 1, y negative
 
     # Pre-allocate the result array to avoid intermediate allocations
     # Total points = num_points (upper) + (num_points - 1) (lower)
     total_points = 2 * num_points - 1
     points = np.zeros((total_points, 3))
 
-    # Upper surface (reversed)
+    # Upper surface (reversed): x from 1 to 0
     points[:num_points, 0] = x[::-1]
-    points[:num_points, 1] = y[::-1]
+    # Calculate y directly into the points array slice
+    # Passing a reversed view means naca0012_y writes to it in reverse order, matching x
+    naca0012_y(x, out=points[:num_points, 1][::-1])
 
-    # Lower surface (skip leading edge point to avoid duplicate)
+    # Lower surface (skip leading edge point): x from 0 to 1
     points[num_points:, 0] = x[1:]
-    # Use np.negative with out=... to avoid temporary array allocation for -y[1:]
-    np.negative(y[1:], out=points[num_points:, 1])
+    # Calculate y directly into the points array slice (positive y)
+    naca0012_y(x[1:], out=points[num_points:, 1])
+    # Negate y in-place for lower surface
+    np.negative(points[num_points:, 1], out=points[num_points:, 1])
 
     return points
 
