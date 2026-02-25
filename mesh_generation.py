@@ -233,20 +233,29 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         num_quadrangles = int(gmsh.option.getNumber("Mesh.NbQuadrangles"))
         num_elements = num_triangles + num_quadrangles
 
-        print(
-            f"{Colors.OKCYAN}📊 Mesh Statistics: {num_nodes:,} nodes, "
-            f"{num_elements:,} elements (Triangles: {num_triangles:,}, "
-            f"Quads: {num_quadrangles:,}){Colors.ENDC}",
-            flush=True
-        )
+        print(f"\n{Colors.OKCYAN}📊 Mesh Statistics:{Colors.ENDC}", flush=True)
+        print(f"   • Nodes:      {num_nodes:,}", flush=True)
+        print(f"   • Elements:   {num_elements:,}", flush=True)
+
+        if num_elements > 0:
+            pct_tri = (num_triangles / num_elements) * 100
+            pct_quad = (num_quadrangles / num_elements) * 100
+            print(f"     - Triangles: {num_triangles:,} ({pct_tri:.1f}%)", flush=True)
+            print(f"     - Quads:     {num_quadrangles:,} ({pct_quad:.1f}%)", flush=True)
 
         # Retrieve and display bounding box
         try:
             bbox = gmsh.model.getBoundingBox(-1, -1)
             # bbox is (minX, minY, minZ, maxX, maxY, maxZ)
+            width = bbox[3] - bbox[0]
+            height = bbox[4] - bbox[1]
+            print(f"{Colors.OKCYAN}📏 Bounding Box:{Colors.ENDC}", flush=True)
             print(
-                f"{Colors.OKCYAN}📏 Bounding Box:   "
-                f"[{bbox[0]:.4f}, {bbox[1]:.4f}] x [{bbox[3]:.4f}, {bbox[4]:.4f}]{Colors.ENDC}",
+                f"   • X Range:    [{bbox[0]:.4f}, {bbox[3]:.4f}] (Width: {width:.4f})",
+                flush=True
+            )
+            print(
+                f"   • Y Range:    [{bbox[1]:.4f}, {bbox[4]:.4f}] (Height: {height:.4f})",
                 flush=True
             )
         except Exception: # pylint: disable=broad-exception-caught

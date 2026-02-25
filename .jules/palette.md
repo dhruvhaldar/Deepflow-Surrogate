@@ -25,3 +25,7 @@
 ## 2026-02-26 - CLI Directory Output Handling
 **Learning:** Users often provide directory paths (e.g. `dir/`) expecting the file to be placed inside, but standard filename validation logic may create hidden files (e.g. `dir/.msh`) or confusing names if not handled explicitly.
 **Action:** Detect if output path is a directory (existing or trailing separator) and automatically append a sensible default filename (e.g. `dir/default.msh`).
+
+## 2026-02-27 - Technical Statistics Formatting
+**Learning:** Dense, single-line technical output (like node counts and bounding boxes) forces users to perform mental parsing and calculations, reducing the immediate utility of the tool.
+**Action:** Format key statistics (e.g., mesh element counts, dimensions) into clear, multi-line indented blocks with pre-calculated derived values (e.g., width/height, percentages) to improve readability and decision-making speed.
