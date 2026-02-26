@@ -257,6 +257,20 @@ class TestSpinner(unittest.TestCase):
             output = mock_stdout.getvalue()
             self.assertIn("Testing... ❌", output, "Should print failure feedback")
 
+    def test_spinner_non_tty_no_duplication(self):
+        """Test that spinner message is not duplicated in non-TTY mode."""
+        # pylint: disable=unused-argument
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            mock_stdout.isatty = lambda: False
+            spinner = mesh_generation.Spinner("Testing...")
+            with spinner:
+                pass
+
+            output = mock_stdout.getvalue()
+            # Expect "Testing... ✅\n"
+            # It should appear exactly once
+            self.assertEqual(output.count("Testing..."), 1, "Message should appear exactly once")
+
     @patch('threading.Thread')
     @patch.dict(os.environ, {"NO_COLOR": "1"})
     def test_spinner_no_color(self, mock_thread):

@@ -36,7 +36,8 @@ class Spinner:
             self.thread = threading.Thread(target=self.spin, daemon=True)
             self.thread.start()
         else:
-            print(self.message)
+            sys.stdout.write(self.message)
+            sys.stdout.flush()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -54,9 +55,10 @@ class Spinner:
         else:
             # Provide completion feedback for non-interactive environments
             if exc_type is None:
-                print(f"{self.message} ✅")
+                sys.stdout.write(" ✅\n")
             else:
-                print(f"{self.message} ❌")
+                sys.stdout.write(" ❌\n")
+            sys.stdout.flush()
 
 class Colors: # pylint: disable=too-few-public-methods
     """ANSI color codes for CLI output."""
