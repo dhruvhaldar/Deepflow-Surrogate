@@ -139,18 +139,24 @@ def generate_airfoil_points(num_points):
     total_points = 2 * num_points - 1
     points = np.zeros((total_points, 3))
 
+    # Compute Y values for all x once, storing in the unused Z column (scratchpad)
+    # This avoids recalculating the same values for the lower surface
+    y_buffer = points[:num_points, 2]
+    naca0012_y(x, out=y_buffer)
+
     # Upper surface (reversed): x from 1 to 0
     points[:num_points, 0] = x[::-1]
-    # Calculate y directly into the points array slice
-    # Passing a reversed view means naca0012_y writes to it in reverse order, matching x
-    naca0012_y(x, out=points[:num_points, 1][::-1])
+    # Copy pre-calculated Y values (reversed)
+    points[:num_points, 1] = y_buffer[::-1]
 
     # Lower surface (skip leading edge point): x from 0 to 1
     points[num_points:, 0] = x[1:]
-    # Calculate y directly into the points array slice (positive y)
-    naca0012_y(x[1:], out=points[num_points:, 1])
-    # Negate y in-place for lower surface
-    np.negative(points[num_points:, 1], out=points[num_points:, 1])
+    # Negate the pre-calculated Y values for the lower surface
+    # Note: x[1:] corresponds to y_buffer[1:]
+    np.negative(y_buffer[1:], out=points[num_points:, 1])
+
+    # Clean up the Z column used as scratchpad
+    y_buffer.fill(0.0)
 
     return points
 
@@ -223,9 +229,9 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         # Connect points with a single polyline
         # Append the first point tag to the end to close the loop
         if point_tags:
-            polyline_tags = point_tags + [point_tags[0]]
+            point_tags.append(point_tags[0])
             # Returns a single curve tag
-            polyline = gmsh.model.geo.addPolyline(polyline_tags)
+            polyline = gmsh.model.geo.addPolyline(point_tags)
             curve_loop = gmsh.model.geo.addCurveLoop([polyline])
         else:
             # Fallback for empty points (shouldn't happen with valid input)
