@@ -258,8 +258,23 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         if num_elements > 0:
             pct_tri = (num_triangles / num_elements) * 100
             pct_quad = (num_quadrangles / num_elements) * 100
-            print(f"     - Triangles: {num_triangles:,} ({pct_tri:.1f}%)", flush=True)
-            print(f"     - Quads:     {num_quadrangles:,} ({pct_quad:.1f}%)", flush=True)
+
+            def draw_bar(p, length=20):
+                if not Colors.OKBLUE:
+                    return ""
+                fill = int(p / 100 * length)
+                return '█' * fill + '░' * (length - fill)
+
+            print(
+                f"     - Triangles: {num_triangles:,} ({pct_tri:.1f}%) "
+                f"{Colors.OKBLUE}{draw_bar(pct_tri)}{Colors.ENDC}",
+                flush=True
+            )
+            print(
+                f"     - Quads:     {num_quadrangles:,} ({pct_quad:.1f}%) "
+                f"{Colors.OKBLUE}{draw_bar(pct_quad)}{Colors.ENDC}",
+                flush=True
+            )
 
         # Retrieve and display bounding box
         try:

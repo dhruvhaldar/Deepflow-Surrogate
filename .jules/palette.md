@@ -29,3 +29,7 @@
 ## 2026-02-27 - Technical Statistics Formatting
 **Learning:** Dense, single-line technical output (like node counts and bounding boxes) forces users to perform mental parsing and calculations, reducing the immediate utility of the tool.
 **Action:** Format key statistics (e.g., mesh element counts, dimensions) into clear, multi-line indented blocks with pre-calculated derived values (e.g., width/height, percentages) to improve readability and decision-making speed.
+
+## 2026-02-28 - Visual Data Representation in CLI
+**Learning:** Purely numerical statistics (like percentages) in CLI output can be hard to scan quickly, slowing down user comprehension of data distribution.
+**Action:** Augment numerical percentages with simple ASCII visual bars (e.g., `████░░`) to allow users to instantly grasp ratios and distributions at a glance.
