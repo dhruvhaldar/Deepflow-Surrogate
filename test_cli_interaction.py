@@ -4,7 +4,7 @@ Tests for the CLI interaction logic in mesh_generation.py.
 import unittest
 import os
 from io import StringIO
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import numpy as np
 import mesh_generation
 
@@ -332,18 +332,20 @@ class TestMeshStatistics(unittest.TestCase):
         self.assertNotIn("Tip: View the mesh", output)
 
     @patch('sys.stdout', new_callable=StringIO)
-    @patch('mesh_generation.gmsh')
-    def test_empty_mesh_warning(self, mock_gmsh, mock_stdout):
+    def test_empty_mesh_warning(self, mock_stdout):
         """Test that a warning is printed if mesh has 0 elements."""
-        # Mock gmsh to return 0 elements
+
+        # Create a mock gmsh module
+        mock_gmsh = MagicMock()
         mock_gmsh.option.getNumber.return_value = 0
-        # Mock getBoundingBox to return something valid (or fail gracefully)
         mock_gmsh.model.getBoundingBox.return_value = (0, 0, 0, 0, 0, 0)
 
-        # Call generate_gmsh_mesh
-        # Use dummy points
-        points = np.zeros((10, 3))
-        mesh_generation.generate_gmsh_mesh(points, None)
+        # Patch sys.modules to return our mock when 'gmsh' is imported
+        with patch.dict('sys.modules', {'gmsh': mock_gmsh}):
+            # Call generate_gmsh_mesh
+            # Use dummy points
+            points = np.zeros((10, 3))
+            mesh_generation.generate_gmsh_mesh(points, None)
 
         output = mock_stdout.getvalue()
         self.assertIn("Warning: The generated mesh has 0 elements", output)
@@ -351,14 +353,17 @@ class TestMeshStatistics(unittest.TestCase):
 class TestPreviewFlag(unittest.TestCase):
     """Tests for the --preview flag functionality."""
 
-    @patch('mesh_generation.gmsh')
     @patch('sys.stdout', new_callable=StringIO)
-    def test_preview_calls_fltk_run(self, mock_stdout, mock_gmsh):
+    def test_preview_calls_fltk_run(self, mock_stdout):
         """Test that preview=True calls gmsh.fltk.run()."""
+
+        mock_gmsh = MagicMock()
+
         # Mock environment to simulate display available
         with patch.dict(os.environ, {"DISPLAY": ":0"}), \
              patch('sys.stdout.isatty', return_value=True), \
-             patch('builtins.input', return_value='n'):
+             patch('builtins.input', return_value='n'), \
+             patch.dict('sys.modules', {'gmsh': mock_gmsh}):
 
             # Use small points to run fast
             points = mesh_generation.generate_airfoil_points(10)
@@ -369,10 +374,12 @@ class TestPreviewFlag(unittest.TestCase):
             mock_gmsh.fltk.run.assert_called_once()
             self.assertIn("Opening preview...", mock_stdout.getvalue())
 
-    @patch('mesh_generation.gmsh')
     @patch('sys.stdout', new_callable=StringIO)
-    def test_preview_skipped_no_display(self, mock_stdout, mock_gmsh):
+    def test_preview_skipped_no_display(self, mock_stdout):
         """Test that preview is skipped if no display is detected."""
+
+        mock_gmsh = MagicMock()
+
         # Mock environment to simulate NO display
         # Remove DISPLAY if present
         env = os.environ.copy()
@@ -382,7 +389,8 @@ class TestPreviewFlag(unittest.TestCase):
         with patch.dict(os.environ, env, clear=True), \
              patch('sys.platform', "linux"), \
              patch('sys.stdout.isatty', return_value=True), \
-             patch('builtins.input', return_value='n'):
+             patch('builtins.input', return_value='n'), \
+             patch.dict('sys.modules', {'gmsh': mock_gmsh}):
 
             points = mesh_generation.generate_airfoil_points(10)
 
@@ -395,55 +403,59 @@ class TestPreviewFlag(unittest.TestCase):
 class TestInteractiveSave(unittest.TestCase):
     """Tests for the interactive save prompt."""
 
-    @patch('mesh_generation.gmsh')
     @patch('os.path.getsize', return_value=1024)
     @patch('mesh_generation.check_overwrite', return_value=True)
     @patch('builtins.input', return_value='y')
     @patch('sys.stdout.isatty', return_value=True)
-    def test_interactive_save_yes(self, mock_isatty, mock_input, mock_check, mock_getsize, mock_gmsh):
+    def test_interactive_save_yes(self, mock_isatty, mock_input, mock_check, mock_getsize):
         """Test that user can save to default file interactively."""
-        # Setup mocks to avoid actual gmsh calls
+
+        mock_gmsh = MagicMock()
         mock_gmsh.option.getNumber.return_value = 0
 
-        # Use a small number of points
-        points = np.zeros((10, 3))
+        with patch.dict('sys.modules', {'gmsh': mock_gmsh}):
+            # Use a small number of points
+            points = np.zeros((10, 3))
 
-        # Call function with output_file=None
-        mesh_generation.generate_gmsh_mesh(points, output_file=None)
+            # Call function with output_file=None
+            mesh_generation.generate_gmsh_mesh(points, output_file=None)
 
-        # Verify prompt was shown
-        mock_input.assert_called_once()
-        self.assertIn("Save to 'airfoil.msh'?", mock_input.call_args[0][0])
+            # Verify prompt was shown
+            mock_input.assert_called_once()
+            self.assertIn("Save to 'airfoil.msh'?", mock_input.call_args[0][0])
 
-        # Verify check_overwrite was called
-        mock_check.assert_called_with("airfoil.msh", force=False)
+            # Verify check_overwrite was called
+            mock_check.assert_called_with("airfoil.msh", force=False)
 
-        # Verify gmsh.write was called with default file
-        mock_gmsh.write.assert_called_with("airfoil.msh")
+            # Verify gmsh.write was called with default file
+            mock_gmsh.write.assert_called_with("airfoil.msh")
 
-    @patch('mesh_generation.gmsh')
     @patch('builtins.input', return_value='n')
     @patch('sys.stdout.isatty', return_value=True)
-    def test_interactive_save_no(self, mock_isatty, mock_input, mock_gmsh):
+    def test_interactive_save_no(self, mock_isatty, mock_input):
         """Test that user can decline saving."""
+        mock_gmsh = MagicMock()
         mock_gmsh.option.getNumber.return_value = 0
-        points = np.zeros((10, 3))
 
-        mesh_generation.generate_gmsh_mesh(points, output_file=None)
+        with patch.dict('sys.modules', {'gmsh': mock_gmsh}):
+            points = np.zeros((10, 3))
 
-        mock_input.assert_called_once()
+            mesh_generation.generate_gmsh_mesh(points, output_file=None)
 
-        # Verify gmsh.write was NOT called
-        mock_gmsh.write.assert_not_called()
+            mock_input.assert_called_once()
 
-    @patch('mesh_generation.gmsh')
+            # Verify gmsh.write was NOT called
+            mock_gmsh.write.assert_not_called()
+
     @patch('sys.stdout.isatty', return_value=False)
-    def test_non_interactive_no_prompt(self, mock_isatty, mock_gmsh):
+    def test_non_interactive_no_prompt(self, mock_isatty):
         """Test that prompt is skipped in non-interactive mode."""
+        mock_gmsh = MagicMock()
         mock_gmsh.option.getNumber.return_value = 0
-        points = np.zeros((10, 3))
 
-        with patch('builtins.input') as mock_input:
+        with patch.dict('sys.modules', {'gmsh': mock_gmsh}), \
+             patch('builtins.input') as mock_input:
+            points = np.zeros((10, 3))
             mesh_generation.generate_gmsh_mesh(points, output_file=None)
             mock_input.assert_not_called()
 

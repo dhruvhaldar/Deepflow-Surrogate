@@ -10,7 +10,7 @@ import time
 import threading
 import itertools
 import numpy as np
-import gmsh
+# gmsh is imported lazily in functions to improve CLI startup time
 
 class Spinner:
     """A simple spinner for CLI feedback."""
@@ -185,6 +185,7 @@ def preview_mesh():
             flush=True
         )
         try:
+            import gmsh # pylint: disable=import-outside-toplevel
             gmsh.fltk.run()
         except Exception as e: # pylint: disable=broad-exception-caught
             print(f"{Colors.WARNING}⚠️  Preview failed: {e}{Colors.ENDC}")
@@ -203,6 +204,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         flush=True
     )
     try:
+        import gmsh # pylint: disable=import-outside-toplevel
         gmsh.initialize()
         gmsh.option.setNumber("General.Verbosity", 0)  # Silence console noise (saves I/O & locks)
         gmsh.option.setNumber("Geometry.AutoCoherence", 0) # Disable duplicate check (~6% speedup)
