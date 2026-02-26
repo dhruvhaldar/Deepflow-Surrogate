@@ -87,7 +87,7 @@ class Colors: # pylint: disable=too-few-public-methods
 if os.getenv('NO_COLOR') or not sys.stdout.isatty():
     Colors.disable()
 
-def naca0012_y(x, t=0.12, out=None):
+def naca0012_y(x, t=0.12, out=None, scratch=None):
     """
     Calculates the y-coordinate of a NACA 0012 airfoil.
     Supports in-place modification to avoid temporary allocations.
@@ -115,8 +115,13 @@ def naca0012_y(x, t=0.12, out=None):
     out += c1
     out *= x
 
-    # Add sqrt term (requires one temporary for sqrt)
-    sqrt_x = np.sqrt(x)
+    # Add sqrt term. If scratch buffer provided, use it to avoid temporary array allocation
+    if scratch is not None:
+        np.sqrt(x, out=scratch)
+        sqrt_x = scratch
+    else:
+        sqrt_x = np.sqrt(x)
+
     sqrt_x *= c0
     out += sqrt_x
 
@@ -144,7 +149,10 @@ def generate_airfoil_points(num_points):
     # Compute Y values for all x once, storing in the unused Z column (scratchpad)
     # This avoids recalculating the same values for the lower surface
     y_buffer = points[:num_points, 2]
-    naca0012_y(x, out=y_buffer)
+    # Reuse the unused Y column (points[:num_points, 1]) as a scratch buffer for sqrt(x)
+    # This eliminates the last temporary array allocation in naca0012_y
+    scratch_buffer = points[:num_points, 1]
+    naca0012_y(x, out=y_buffer, scratch=scratch_buffer)
 
     # Upper surface (reversed): x from 1 to 0
     points[:num_points, 0] = x[::-1]
