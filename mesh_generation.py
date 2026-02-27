@@ -9,8 +9,7 @@ import os
 import time
 import threading
 import itertools
-import numpy as np
-# gmsh is imported lazily in functions to improve CLI startup time
+# numpy and gmsh are imported lazily in functions to improve CLI startup time
 
 class Spinner:
     """A simple spinner for CLI feedback."""
@@ -92,6 +91,8 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
     Calculates the y-coordinate of a NACA 0012 airfoil.
     Supports in-place modification to avoid temporary allocations.
     """
+    import numpy as np # pylint: disable=import-outside-toplevel
+
     # Use Horner's method for efficiency (fewer FLOPs and temporary arrays)
     # Optimization: Fold the 5*t scaling factor into the coefficients
     scale = 5 * t
@@ -139,6 +140,8 @@ def format_size(size_bytes):
 
 def generate_airfoil_points(num_points):
     """Generates airfoil points using NumPy vectorization (efficient)."""
+    import numpy as np # pylint: disable=import-outside-toplevel
+
     x = np.linspace(0, 1, num_points)
 
     # Pre-allocate the result array to avoid intermediate allocations
@@ -198,6 +201,8 @@ def preview_mesh():
 def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
     """Generates a mesh using Gmsh based on the provided points."""
     # pylint: disable=too-many-locals
+    import numpy as np # pylint: disable=import-outside-toplevel
+
     print(
         f"\n{Colors.OKBLUE}⚙️  Generating mesh for {len(points_for_gmsh):,} "
         f"points using Gmsh...{Colors.ENDC}",
