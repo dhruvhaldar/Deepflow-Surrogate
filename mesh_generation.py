@@ -20,7 +20,7 @@ class Spinner:
 
     def spin(self):
         """Displays the spinning animation."""
-        spinner_chars = itertools.cycle(['-', '/', '|', '\\'])
+        spinner_chars = itertools.cycle(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'])
         while not self.stop_event.is_set():
             sys.stdout.write(f"\r{self.message} {next(spinner_chars)}")
             sys.stdout.flush()
