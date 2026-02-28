@@ -33,3 +33,7 @@
 ## 2026-02-28 - Visual Data Representation in CLI
 **Learning:** Purely numerical statistics (like percentages) in CLI output can be hard to scan quickly, slowing down user comprehension of data distribution.
 **Action:** Augment numerical percentages with simple ASCII visual bars (e.g., `████░░`) to allow users to instantly grasp ratios and distributions at a glance.
+
+## 2026-03-01 - Spinner Duration Context
+**Learning:** Users running tools with multiple or long-running blocking operations often lack intuition about which steps are bottlenecks when only total execution time is shown at the end.
+**Action:** Append the exact elapsed time (e.g., `(2.4s)`) alongside success/failure indicators when a CLI spinner completes, giving users immediate and granular performance context for each blocking step.
