@@ -364,12 +364,17 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 def validate_output_path(filepath):
     """
     Validates the output filepath.
+    - Expands user (~) and environment variables.
     - Adds .msh extension if missing.
     - Warns if extension is suspicious (e.g. .txt).
     Returns the (possibly modified) filepath.
     """
     if not filepath:
         return filepath
+
+    # Expand user (~) and environment variables
+    filepath = os.path.expanduser(filepath)
+    filepath = os.path.expandvars(filepath)
 
     # Check if filepath is a directory or ends with a separator
     # This prevents creating hidden files like .msh or dir/.msh

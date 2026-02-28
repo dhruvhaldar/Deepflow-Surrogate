@@ -200,6 +200,32 @@ class TestOutputPathValidation(unittest.TestCase):
         self.assertEqual(result, expected)
         self.assertIn("appears to be a directory", mock_stdout.getvalue())
 
+    def test_path_expansion(self):
+        """Test that path expansion works for ~ and env vars."""
+        # Use a path that won't exist but has ~ and env vars to test expansion
+        # We don't mock os.path.expanduser/expandvars because we want to test
+        # that they are actually called and working.
+        # But for portability in testing, we can use patch to spy on them.
+
+        with patch('os.path.expanduser') as mock_expanduser, \
+             patch('os.path.expandvars') as mock_expandvars:
+
+            # Mock behavior: just prepend 'expanded_' to verify call
+            mock_expanduser.side_effect = lambda p: f"expanded_user_{p}"
+            mock_expandvars.side_effect = lambda p: f"expanded_vars_{p}"
+
+            test_path = "~/test/$ENV/file.msh"
+            mesh_generation.validate_output_path(test_path)
+
+            mock_expanduser.assert_called_once()
+            mock_expandvars.assert_called_once()
+
+            # Verify order: expanduser then expandvars
+            # First call is expanduser with original path
+            mock_expanduser.assert_called_with(test_path)
+            # Second call is expandvars with result of expanduser
+            mock_expandvars.assert_called_with(f"expanded_user_{test_path}")
+
 class TestSpinner(unittest.TestCase):
     """Tests for the Spinner class."""
 
