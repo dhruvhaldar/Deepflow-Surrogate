@@ -28,6 +28,7 @@ class Spinner:
             self.stop_event.wait(0.1)
 
     def __enter__(self):
+        self.start_time = time.perf_counter()
         if sys.stdout.isatty() and not os.getenv('NO_COLOR'):
             sys.stdout.write("\033[?25l")  # Hide cursor
             sys.stdout.flush()
@@ -40,6 +41,9 @@ class Spinner:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        elapsed = time.perf_counter() - self.start_time
+        time_str = f" ({elapsed:.1f}s)"
+
         if self.thread:
             self.stop_event.set()
             self.thread.join()
@@ -47,16 +51,16 @@ class Spinner:
 
             # Print final status, overwriting the spinner character
             if exc_type is None:
-                sys.stdout.write(f"\r{self.message} ✅   \n")
+                sys.stdout.write(f"\r{self.message} ✅{time_str}   \n")
             else:
-                sys.stdout.write(f"\r{self.message} ❌   \n")
+                sys.stdout.write(f"\r{self.message} ❌{time_str}   \n")
             sys.stdout.flush()
         else:
             # Provide completion feedback for non-interactive environments
             if exc_type is None:
-                sys.stdout.write(" ✅\n")
+                sys.stdout.write(f" ✅{time_str}\n")
             else:
-                sys.stdout.write(" ❌\n")
+                sys.stdout.write(f" ❌{time_str}\n")
             sys.stdout.flush()
 
 class Colors: # pylint: disable=too-few-public-methods
