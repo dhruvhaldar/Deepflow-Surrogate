@@ -418,12 +418,19 @@ def check_overwrite(filepath, force):
         return True
 
     if sys.stdout.isatty():
+        try:
+            file_size = os.path.getsize(filepath)
+            readable_size = format_size(file_size)
+            size_str = f" ({readable_size})"
+        except OSError:
+            size_str = ""
+
         print(
             f"{Colors.WARNING}⚠️  File '{Colors.BOLD}{filepath}{Colors.ENDC}{Colors.WARNING}' "
-            f"already exists.{Colors.ENDC}"
+            f"already exists{size_str}.{Colors.ENDC}"
         )
         try:
-            prompt = f"{Colors.OKBLUE}Overwrite? [y/N] {Colors.ENDC}"
+            prompt = f"{Colors.FAIL}Overwrite? [y/N] {Colors.ENDC}"
             response = input(prompt).strip().lower()
         except EOFError:
             return False

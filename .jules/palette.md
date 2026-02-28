@@ -37,3 +37,7 @@
 ## 2026-03-01 - Spinner Duration Context
 **Learning:** Users running tools with multiple or long-running blocking operations often lack intuition about which steps are bottlenecks when only total execution time is shown at the end.
 **Action:** Append the exact elapsed time (e.g., `(2.4s)`) alongside success/failure indicators when a CLI spinner completes, giving users immediate and granular performance context for each blocking step.
+
+## 2026-03-02 - Destructive Action Feedback
+**Learning:** Overwrite warnings that lack context about what is being overwritten, and lack visual emphasis for the destructive action, make users more likely to blindly confirm the action.
+**Action:** Include the existing file size in the overwrite warning to provide context, and use a critical color (e.g. red/FAIL) for the confirmation prompt to force a cognitive pause.
