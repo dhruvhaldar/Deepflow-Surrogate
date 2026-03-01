@@ -333,7 +333,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 flush=True
             )
             print(
-                f"{Colors.OKBLUE}💡 Tip: View the mesh using 'gmsh {output_file}'{Colors.ENDC}",
+                f"{Colors.OKBLUE}💡 Tip: View the mesh using 'gmsh {output_file}' "
+                f"or run with --preview next time{Colors.ENDC}",
                 flush=True
             )
         else:
