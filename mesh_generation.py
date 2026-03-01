@@ -414,7 +414,22 @@ def check_overwrite(filepath, force):
         try:
             file_size = os.path.getsize(filepath)
             readable_size = format_size(file_size)
-            size_str = f" ({readable_size})"
+
+            mtime = os.path.getmtime(filepath)
+            diff = time.time() - mtime
+            if diff < 60:
+                rel_time = "just now"
+            elif diff < 3600:
+                mins = int(diff / 60)
+                rel_time = f"{mins} min{'s' if mins != 1 else ''} ago"
+            elif diff < 86400:
+                hours = int(diff / 3600)
+                rel_time = f"{hours} hour{'s' if hours != 1 else ''} ago"
+            else:
+                days = int(diff / 86400)
+                rel_time = f"{days} day{'s' if days != 1 else ''} ago"
+
+            size_str = f" ({readable_size}, modified {rel_time})"
         except OSError:
             size_str = ""
 
