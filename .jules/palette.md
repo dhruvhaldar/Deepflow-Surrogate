@@ -41,3 +41,7 @@
 ## 2026-03-02 - Destructive Action Feedback
 **Learning:** Overwrite warnings that lack context about what is being overwritten, and lack visual emphasis for the destructive action, make users more likely to blindly confirm the action.
 **Action:** Include the existing file size in the overwrite warning to provide context, and use a critical color (e.g. red/FAIL) for the confirmation prompt to force a cognitive pause.
+
+## 2026-03-03 - CLI Feature Discovery
+**Learning:** Users might miss existing CLI flags if they are only documented in the help menu, leading to suboptimal usage.
+**Action:** Incorporate suggestions for useful flags (like `--preview`) into success or tip messages to improve feature discovery and UX.

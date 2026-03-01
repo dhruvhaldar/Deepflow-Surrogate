@@ -333,7 +333,7 @@ class TestMeshStatistics(unittest.TestCase):
             self.assertIn("Triangles:", output)
             self.assertIn("Quads:", output)
             self.assertIn(
-                f"Tip: View the mesh using 'gmsh {output_file}'",
+                f"Tip: View the mesh using 'gmsh {output_file}' or run with --preview next time",
                 output
             )
 
