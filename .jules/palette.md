@@ -45,3 +45,7 @@
 ## 2026-03-03 - CLI Feature Discovery
 **Learning:** Users might miss existing CLI flags if they are only documented in the help menu, leading to suboptimal usage.
 **Action:** Incorporate suggestions for useful flags (like `--preview`) into success or tip messages to improve feature discovery and UX.
+
+## 2025-02-21 - Destructive Actions and Context
+**Learning:** When prompting users to overwrite files, providing only the file size leaves ambiguity (e.g., "Is this my latest run or an old test?"). Adding relative modification time (e.g., "modified just now" or "modified 2 hours ago") provides crucial context that helps users confidently make destructive decisions.
+**Action:** Always include relative modification time or explicit timestamps alongside file sizes in overwrite warnings or file deletion prompts to prevent accidental data loss.
