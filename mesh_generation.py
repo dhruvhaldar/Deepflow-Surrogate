@@ -531,3 +531,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n{Colors.FAIL}❌ Operation cancelled by user.{Colors.ENDC}")
         sys.exit(130)
+    except ModuleNotFoundError as err:
+        print(f"\n{Colors.FAIL}❌ Missing required dependency: '{err.name}'{Colors.ENDC}")
+        print(f"{Colors.OKBLUE}💡 Tip: Install it by running 'pip install {err.name}' "
+              f"or 'pip install -r requirements.txt'{Colors.ENDC}")
+        sys.exit(1)
