@@ -49,3 +49,7 @@
 ## 2025-02-21 - Destructive Actions and Context
 **Learning:** When prompting users to overwrite files, providing only the file size leaves ambiguity (e.g., "Is this my latest run or an old test?"). Adding relative modification time (e.g., "modified just now" or "modified 2 hours ago") provides crucial context that helps users confidently make destructive decisions.
 **Action:** Always include relative modification time or explicit timestamps alongside file sizes in overwrite warnings or file deletion prompts to prevent accidental data loss.
+
+## 2026-03-04 - Contextual Tips
+**Learning:** Hardcoded "or run with --preview next time" suggestions in CLI tools are annoying when the user *already* ran with `--preview` on the current command, making the tool seem unaware of the context.
+**Action:** Make post-execution tips conditionally aware of the command-line flags used (e.g., suggest "View the mesh again" if they used `--preview`, or "run with --preview next time" if they didn't).
