@@ -49,3 +49,7 @@
 ## 2025-02-21 - Destructive Actions and Context
 **Learning:** When prompting users to overwrite files, providing only the file size leaves ambiguity (e.g., "Is this my latest run or an old test?"). Adding relative modification time (e.g., "modified just now" or "modified 2 hours ago") provides crucial context that helps users confidently make destructive decisions.
 **Action:** Always include relative modification time or explicit timestamps alongside file sizes in overwrite warnings or file deletion prompts to prevent accidental data loss.
+
+## 2026-03-04 - Dependency Error UX
+**Learning:** Python CLI scripts often dump large, intimidating stack traces when a lazy import fails due to a missing dependency, confusing users who aren't familiar with Python environments.
+**Action:** Catch `ModuleNotFoundError` at the script's entry point (`__main__` block) to suppress the traceback and instead display a clean, color-coded error with an actionable tip (e.g., "pip install <module>").
