@@ -341,6 +341,34 @@ class TestMeshStatistics(unittest.TestCase):
             if os.path.exists(output_file):
                 os.remove(output_file)
 
+
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_output_format_with_file_and_preview(self, mock_stdout):
+        """Test that the tip omits --preview suggestion when preview=True."""
+        # Use a small number of points for speed
+        points = mesh_generation.generate_airfoil_points(20)
+        output_file = "test_stats_preview.msh"
+
+        # Mock os.path.getsize to avoid FileNotFoundError since we're mocking gmsh
+        with patch('os.path.getsize', return_value=1024):
+            mock_gmsh = MagicMock()
+            mock_gmsh.option.getNumber.return_value = 0
+            mock_gmsh.model.getBoundingBox.return_value = (0, 0, 0, 0, 0, 0)
+
+            with patch.dict('sys.modules', {'gmsh': mock_gmsh}):
+                try:
+                    # preview=True should omit "or run with --preview next time"
+                    mesh_generation.generate_gmsh_mesh(points, output_file, preview=True)
+
+                    output = mock_stdout.getvalue()
+                    self.assertIn(f"Tip: View the mesh using 'gmsh {output_file}'", output)
+                    self.assertNotIn("or run with --preview next time", output)
+
+                finally:
+                    if os.path.exists(output_file):
+                        os.remove(output_file)
+
     @patch('sys.stdout', new_callable=StringIO)
     def test_output_format_without_file(self, mock_stdout):
         """
