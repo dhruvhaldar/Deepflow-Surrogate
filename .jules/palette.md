@@ -53,3 +53,7 @@
 ## 2026-03-04 - Dependency Error UX
 **Learning:** Python CLI scripts often dump large, intimidating stack traces when a lazy import fails due to a missing dependency, confusing users who aren't familiar with Python environments.
 **Action:** Catch `ModuleNotFoundError` at the script's entry point (`__main__` block) to suppress the traceback and instead display a clean, color-coded error with an actionable tip (e.g., "pip install <module>").
+
+## 2026-03-05 - Context-Aware CLI Suggestions
+**Learning:** Suggesting next steps or flags (like `--preview`) that the user has already employed feels redundant and diminishes the perceived intelligence of the tool, causing users to ignore future tips.
+**Action:** Always make CLI "Tip" messages context-aware by checking the flags and options the user has already provided, suppressing or adapting suggestions to avoid redundancy.

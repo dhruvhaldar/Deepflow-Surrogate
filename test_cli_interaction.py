@@ -342,6 +342,42 @@ class TestMeshStatistics(unittest.TestCase):
                 os.remove(output_file)
 
     @patch('sys.stdout', new_callable=StringIO)
+    def test_output_format_with_file_and_preview(self, mock_stdout):
+        """Test that the output format gives a contextual tip when preview=True."""
+        points = mesh_generation.generate_airfoil_points(20)
+        output_file = "test_stats_preview.msh"
+
+        mock_gmsh = MagicMock()
+
+        # Mock environment to simulate NO display, so fltk.run doesn't block
+        env = os.environ.copy()
+        if "DISPLAY" in env:
+            del env["DISPLAY"]
+
+        try:
+            with patch.dict(os.environ, env, clear=True), \
+                 patch('sys.platform', "linux"), \
+                 patch('sys.stdout.isatty', return_value=True), \
+                 patch('os.path.getsize', return_value=1024), \
+                 patch.dict('sys.modules', {'gmsh': mock_gmsh}):
+
+                mesh_generation.generate_gmsh_mesh(points, output_file, preview=True)
+
+            output = mock_stdout.getvalue()
+            self.assertIn("Mesh Statistics:", output)
+            self.assertIn("Triangles:", output)
+            self.assertIn("Quads:", output)
+            self.assertIn(
+                f"Tip: View the mesh later using 'gmsh {output_file}'",
+                output
+            )
+            self.assertNotIn("or run with --preview next time", output)
+
+        finally:
+            if os.path.exists(output_file):
+                os.remove(output_file)
+
+    @patch('sys.stdout', new_callable=StringIO)
     def test_output_format_without_file(self, mock_stdout):
         """
         Test that the output format includes element breakdown but NO tip

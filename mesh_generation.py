@@ -334,11 +334,18 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 f"({readable_size}){Colors.ENDC}",
                 flush=True
             )
-            print(
-                f"{Colors.OKBLUE}💡 Tip: View the mesh using 'gmsh {output_file}' "
-                f"or run with --preview next time{Colors.ENDC}",
-                flush=True
-            )
+            if preview:
+                print(
+                    f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
+                    f"'gmsh {output_file}'{Colors.ENDC}",
+                    flush=True
+                )
+            else:
+                print(
+                    f"{Colors.OKBLUE}💡 Tip: View the mesh using 'gmsh {output_file}' "
+                    f"or run with --preview next time{Colors.ENDC}",
+                    flush=True
+                )
         else:
             # Only show warning if not interactive, to avoid nagging after a 'no' response
             if not sys.stdout.isatty():
