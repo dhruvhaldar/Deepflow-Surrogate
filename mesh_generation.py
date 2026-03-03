@@ -153,7 +153,9 @@ def generate_airfoil_points(num_points):
     # Pre-allocate the final result array
     # Total points = num_points (upper) + (num_points - 1) (lower)
     total_points = 2 * num_points - 1
-    points = np.zeros((total_points, 3))
+    # Use Fortran-contiguous memory (order='F') since we assign and extract
+    # data column-wise. This improves CPU cache locality.
+    points = np.zeros((total_points, 3), order='F')
 
     # Upper surface (reversed): x from 1 to 0
     points[:num_points, 0] = x[::-1]
