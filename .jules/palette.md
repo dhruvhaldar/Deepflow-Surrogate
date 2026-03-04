@@ -57,3 +57,7 @@
 ## 2026-03-05 - Context-Aware CLI Suggestions
 **Learning:** Suggesting next steps or flags (like `--preview`) that the user has already employed feels redundant and diminishes the perceived intelligence of the tool, causing users to ignore future tips.
 **Action:** Always make CLI "Tip" messages context-aware by checking the flags and options the user has already provided, suppressing or adapting suggestions to avoid redundancy.
+
+## 2026-03-06 - Dynamic Precision in Execution Times
+**Learning:** Displaying extremely short execution times (e.g., < 0.1s) with fixed second-precision (like `0.0s`) can look buggy and hides the actual performance metrics from the user, reducing the perceived responsiveness of the tool.
+**Action:** Implement dynamic time formatting for CLI outputs: switch to milliseconds (e.g., `45ms`) for times under 0.1s to provide accurate, non-zero feedback that feels more responsive.
