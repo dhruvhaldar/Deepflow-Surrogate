@@ -42,7 +42,7 @@ class Spinner:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         elapsed = time.perf_counter() - self.start_time
-        time_str = f" ({elapsed:.1f}s)"
+        time_str = f" ({format_time(elapsed, precision_s=1)})"
 
         if self.thread:
             self.stop_event.set()
@@ -128,6 +128,12 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
         # Avoid allocating buffers from Python; NumPy's C backend evaluates
         # the vectorized math expression more efficiently natively (~15-20% faster).
         return np.sqrt(x) * c0 + x * (c1 + x * (c2 + x * (c3 + x * c4)))
+
+def format_time(elapsed, precision_s=1):
+    """Formats elapsed time into ms (< 0.1s) or seconds (otherwise)."""
+    if elapsed < 0.1:
+        return f"{elapsed * 1000:.0f}ms"
+    return f"{elapsed:.{precision_s}f}s"
 
 def format_size(size_bytes):
     """Formats bytes into a human-readable string."""
@@ -532,7 +538,8 @@ def main():
         sys.exit(1)
 
     elapsed_time = time.time() - start_time
-    print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {elapsed_time:.4f}s{Colors.ENDC}")
+    formatted_time = format_time(elapsed_time, precision_s=4)
+    print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {formatted_time}{Colors.ENDC}")
 
 if __name__ == "__main__":
     try:
