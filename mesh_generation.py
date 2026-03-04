@@ -488,25 +488,25 @@ def main():
                f"--num-points 200 --output airfoil.msh{Colors.ENDC}"
     )
     parser.add_argument(
-        "--num-points",
+        "-n", "--num-points",
         type=int,
         default=100,
         help="Number of points along the airfoil surface (must be > 0)"
     )
     parser.add_argument(
-        "--output",
+        "-o", "--output",
         type=str,
         default=None,
         help="Path to save the generated mesh (e.g., 'mesh.msh'). "
              "If omitted, mesh is generated but not saved."
     )
     parser.add_argument(
-        "--force",
+        "-f", "--force",
         action="store_true",
         help="Overwrite output file without confirmation if it exists."
     )
     parser.add_argument(
-        "--preview",
+        "-p", "--preview",
         action="store_true",
         help="Open the generated mesh in Gmsh GUI immediately."
     )
