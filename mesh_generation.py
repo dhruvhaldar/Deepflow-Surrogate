@@ -305,7 +305,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             # bbox is (minX, minY, minZ, maxX, maxY, maxZ)
             width = bbox[3] - bbox[0]
             height = bbox[4] - bbox[1]
-            print(f"{Colors.OKCYAN}📏 Bounding Box:{Colors.ENDC}", flush=True)
+            print(f"\n{Colors.OKCYAN}📏 Bounding Box:{Colors.ENDC}", flush=True)
             print(
                 f"   • X Range:    [{bbox[0]:.4f}, {bbox[3]:.4f}] (Width: {width:.4f})",
                 flush=True
@@ -320,14 +320,14 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 
         if num_elements == 0:
             print(
-                f"{Colors.WARNING}⚠️  Warning: The generated mesh has 0 elements. "
+                f"\n{Colors.WARNING}⚠️  Warning: The generated mesh has 0 elements. "
                 f"Try increasing --num-points or adjusting geometry settings.{Colors.ENDC}",
                 flush=True
             )
 
         # Suggest saving if running interactively and no output specified
         if not output_file and sys.stdout.isatty():
-            print(f"{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
+            print(f"\n{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
             try:
                 prompt = f"{Colors.OKBLUE}Save to 'airfoil.msh'? [y/N] {Colors.ENDC}"
                 if input(prompt).strip().lower() in ('y', 'yes'):
@@ -341,7 +341,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             file_size = os.path.getsize(output_file)
             readable_size = format_size(file_size)
             print(
-                f"{Colors.OKGREEN}💾 Mesh written to {output_file} "
+                f"\n{Colors.OKGREEN}💾 Mesh written to {output_file} "
                 f"({readable_size}){Colors.ENDC}",
                 flush=True
             )
@@ -361,16 +361,18 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             # Only show warning if not interactive, to avoid nagging after a 'no' response
             if not sys.stdout.isatty():
                 print(
-                    f"{Colors.WARNING}⚠️  No output file specified. Mesh generated in memory only. "
-                    f"Use --output to save.{Colors.ENDC}",
+                    f"\n{Colors.WARNING}⚠️  No output file specified. "
+                    f"Mesh generated in memory only. Use --output to save.{Colors.ENDC}",
                     flush=True
                 )
 
         # Handle preview if requested
         if preview:
+            if output_file or not sys.stdout.isatty():
+                print() # Add visual spacing before preview
             preview_mesh()
 
-        print(f"{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
+        print(f"\n{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
 
         gmsh.finalize()
         return True
