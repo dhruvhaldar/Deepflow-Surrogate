@@ -13,3 +13,7 @@
 ## 2026-03-04 - NumPy Non-Contiguous Array to List Conversion
 **Learning:** Extracting a column from a 2D Fortran-ordered array (e.g., `points[:, 0]`) into a Python list using `.tolist()` is surprisingly slow because iterating over a non-contiguous memory stride (stride > 1) to build Python objects is unoptimized. Calling `.copy()` first to force a contiguous 1D array before calling `.tolist()` is approximately 5x faster (e.g., dropping from ~0.25s to ~0.05s for 200k points) despite the extra memory allocation overhead.
 **Action:** When converting non-contiguous NumPy slices (or columns from Fortran arrays) to Python lists, always insert `.copy()` before `.tolist()` to ensure the conversion operates on contiguous memory layout.
+
+## 2026-03-05 - NumPy Vectorized Math Hybrid Approach
+**Learning:** While single-line vectorized math (`np.sqrt(x) * c0 + x * ...`) is typically faster than fully manual in-place loops (due to NumPy's C-backend efficiency), a hybrid partially in-place approach is even faster (~15-20%). Specifically, extracting the expensive `np.sqrt(x)` operation and executing it in-place first (`res = np.sqrt(x); res *= c0`) and then appending the rest of the expression (`res += x * ...`) hits a sweet spot. It optimizes intermediate array allocations while breaking apart the most expensive operations.
+**Action:** When working with expensive math functions (like `np.sqrt`) combined with simpler polynomial evaluations in NumPy, extract the expensive operation into its own buffer and modify it in-place before accumulating the simpler parts.
