@@ -127,10 +127,21 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
     else:
         # Hybrid approach: evaluating the expensive `np.sqrt` separately and in-place
         # is ~15-20% faster than a single monolithic expression because it optimizes
-        # memory allocations inside NumPy's C backend.
+        # memory allocations inside NumPy's C backend. We also evaluate the polynomial
+        # portion iteratively in-place to avoid multiple temporary array allocations.
         res = np.sqrt(x)
         res *= c0
-        res += x * (c1 + x * (c2 + x * (c3 + x * c4)))
+
+        # Evaluate polynomial using Horner's method in-place
+        poly = x * c4
+        poly += c3
+        poly *= x
+        poly += c2
+        poly *= x
+        poly += c1
+        poly *= x
+
+        res += poly
         return res
 
 def format_time(elapsed, precision_s=1):
