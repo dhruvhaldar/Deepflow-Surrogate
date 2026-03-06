@@ -300,12 +300,12 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 return '█' * fill + '░' * (length - fill)
 
             print(
-                f"     - Triangles: {num_triangles:,} ({pct_tri:.1f}%) "
+                f"     - Triangles: {num_triangles:<8,} ({pct_tri:>5.1f}%) "
                 f"{Colors.OKBLUE}{draw_bar(pct_tri)}{Colors.ENDC}",
                 flush=True
             )
             print(
-                f"     - Quads:     {num_quadrangles:,} ({pct_quad:.1f}%) "
+                f"     - Quads:     {num_quadrangles:<8,} ({pct_quad:>5.1f}%) "
                 f"{Colors.OKBLUE}{draw_bar(pct_quad)}{Colors.ENDC}",
                 flush=True
             )
