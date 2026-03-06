@@ -340,10 +340,25 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         if not output_file and sys.stdout.isatty():
             print(f"\n{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
             try:
-                prompt = f"{Colors.OKBLUE}Save to 'airfoil.msh'? [y/N] {Colors.ENDC}"
-                if input(prompt).strip().lower() in ('y', 'yes'):
-                    if check_overwrite("airfoil.msh", force=False):
-                        output_file = "airfoil.msh"
+                prompt = (
+                    f"{Colors.OKBLUE}Save to 'airfoil.msh'? "
+                    f"[y/N] or type filename: {Colors.ENDC}"
+                )
+                response = input(prompt).strip()
+                response_lower = response.lower()
+
+                if response_lower in ('y', 'yes'):
+                    proposed_file = "airfoil.msh"
+                elif response_lower in ('n', 'no', ''):
+                    proposed_file = None
+                else:
+                    proposed_file = response
+
+                if proposed_file:
+                    proposed_file = validate_output_path(proposed_file)
+                    if check_overwrite(proposed_file, force=False):
+                        ensure_directory_exists(proposed_file)
+                        output_file = proposed_file
             except EOFError:
                 pass
 
