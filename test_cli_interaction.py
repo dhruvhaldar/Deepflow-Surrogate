@@ -509,6 +509,31 @@ class TestInteractiveSave(unittest.TestCase):
             # Verify gmsh.write was NOT called
             mock_gmsh.write.assert_not_called()
 
+    @patch('os.path.getsize', return_value=1024)
+    @patch('mesh_generation.check_overwrite', return_value=True)
+    @patch('builtins.input', return_value='custom_mesh.msh')
+    @patch('sys.stdout.isatty', return_value=True)
+    @patch('mesh_generation.ensure_directory_exists')
+    def test_interactive_save_custom(self, mock_ensure, mock_isatty, mock_in, mock_chk, mock_sz):
+        """Test that user can save to a custom file interactively."""
+        # pylint: disable=unused-argument
+
+        mock_gmsh = MagicMock()
+        mock_gmsh.option.getNumber.return_value = 0
+
+        with patch.dict('sys.modules', {'gmsh': mock_gmsh}):
+            points = np.zeros((10, 3))
+
+            mesh_generation.generate_gmsh_mesh(points, output_file=None)
+
+            mock_in.assert_called_once()
+            self.assertIn("or type filename:", mock_in.call_args[0][0])
+
+            mock_chk.assert_called_with("custom_mesh.msh", force=False)
+            mock_ensure.assert_called_with("custom_mesh.msh")
+
+            mock_gmsh.write.assert_called_with("custom_mesh.msh")
+
     @patch('sys.stdout.isatty', return_value=False)
     def test_non_interactive_no_prompt(self, mock_isatty):
         """Test that prompt is skipped in non-interactive mode."""

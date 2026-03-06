@@ -65,3 +65,7 @@
 ## 2026-03-07 - CLI Visual Progress Bar Alignment
 **Learning:** When adding visual elements like ASCII progress bars to CLI output, inconsistent widths in the preceding dynamic text (like counts or percentages) cause the bars to start at different horizontal positions, breaking the user's ability to easily compare them visually.
 **Action:** Always use fixed-width formatters (e.g., `{count:<8,}` and `{percent:>5.1f}%`) for text preceding visual bars to ensure consistent alignment and immediate scannability.
+
+## 2026-03-08 - Interactive Save Prompts Custom Input
+**Learning:** Binary yes/no CLI prompts for saving files (e.g., "Save to 'default.msh'? [y/N]") force users to re-run the entire command if they want a different filename, increasing friction and time-to-value.
+**Action:** Enhance interactive save prompts to accept custom strings directly (e.g., "[y/N] or type filename:"), automatically parsing non-binary responses as custom output paths.
