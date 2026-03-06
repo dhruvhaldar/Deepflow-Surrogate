@@ -61,3 +61,7 @@
 ## 2026-03-06 - Dynamic Precision in Execution Times
 **Learning:** Displaying extremely short execution times (e.g., < 0.1s) with fixed second-precision (like `0.0s`) can look buggy and hides the actual performance metrics from the user, reducing the perceived responsiveness of the tool.
 **Action:** Implement dynamic time formatting for CLI outputs: switch to milliseconds (e.g., `45ms`) for times under 0.1s to provide accurate, non-zero feedback that feels more responsive.
+
+## 2026-03-07 - CLI Visual Progress Bar Alignment
+**Learning:** When adding visual elements like ASCII progress bars to CLI output, inconsistent widths in the preceding dynamic text (like counts or percentages) cause the bars to start at different horizontal positions, breaking the user's ability to easily compare them visually.
+**Action:** Always use fixed-width formatters (e.g., `{count:<8,}` and `{percent:>5.1f}%`) for text preceding visual bars to ensure consistent alignment and immediate scannability.
