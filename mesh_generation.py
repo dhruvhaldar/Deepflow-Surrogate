@@ -221,25 +221,27 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         ys = points_to_add[:, 1].copy().tolist()
         # z is always 0.0 for 2D airfoil
 
-        add_point = gmsh.model.geo.addPoint
-        point_tags = [
-            add_point(x, y, 0.0, lc)
-            for x, y in zip(xs, ys)
-        ]
+        with Spinner(f"{Colors.OKBLUE}   Building geometry...{Colors.ENDC}"):
+            add_point = gmsh.model.geo.addPoint
+            point_tags = [
+                add_point(x, y, 0.0, lc)
+                for x, y in zip(xs, ys)
+            ]
 
-        # Connect points with a single polyline
-        # Append the first point tag to the end to close the loop
-        if point_tags:
-            point_tags.append(point_tags[0])
-            # Returns a single curve tag
-            polyline = gmsh.model.geo.addPolyline(point_tags)
-            curve_loop = gmsh.model.geo.addCurveLoop([polyline])
-        else:
-            # Fallback for empty points (shouldn't happen with valid input)
-            curve_loop = gmsh.model.geo.addCurveLoop([])
-        gmsh.model.geo.addPlaneSurface([curve_loop])
+            # Connect points with a single polyline
+            # Append the first point tag to the end to close the loop
+            if point_tags:
+                point_tags.append(point_tags[0])
+                # Returns a single curve tag
+                polyline = gmsh.model.geo.addPolyline(point_tags)
+                curve_loop = gmsh.model.geo.addCurveLoop([polyline])
+            else:
+                # Fallback for empty points (shouldn't happen with valid input)
+                curve_loop = gmsh.model.geo.addCurveLoop([])
+            gmsh.model.geo.addPlaneSurface([curve_loop])
 
-        gmsh.model.geo.synchronize()
+            gmsh.model.geo.synchronize()
+
         with Spinner(f"{Colors.OKBLUE}   Meshing...{Colors.ENDC}"):
             gmsh.model.mesh.generate(2)
 

@@ -69,3 +69,7 @@
 ## 2026-03-08 - Interactive Save Prompts Custom Input
 **Learning:** Binary yes/no CLI prompts for saving files (e.g., "Save to 'default.msh'? [y/N]") force users to re-run the entire command if they want a different filename, increasing friction and time-to-value.
 **Action:** Enhance interactive save prompts to accept custom strings directly (e.g., "[y/N] or type filename:"), automatically parsing non-binary responses as custom output paths.
+
+## 2026-03-09 - Long-Running CLI Phase Feedback
+**Learning:** During large mesh generations, the geometric construction and synchronization phases can take several seconds (or over 10 seconds for millions of points). Without an active spinner during this specific phase, the CLI appears to freeze, causing users to potentially interrupt the process prematurely.
+**Action:** Always wrap long-running geometric construction loops (like `gmsh.model.geo.addPoint`) and `synchronize()` calls in an active `Spinner` to provide continuous visual feedback and reassure the user that the program is still working.
