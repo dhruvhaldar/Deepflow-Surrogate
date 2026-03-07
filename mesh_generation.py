@@ -114,7 +114,10 @@ def naca0012_y(x, t=0.12):
 def format_time(elapsed, precision_s=1):
     """Formats elapsed time into ms (< 0.1s) or seconds (otherwise)."""
     if elapsed < 0.1:
-        return f"{elapsed * 1000:.0f}ms"
+        ms = elapsed * 1000
+        if round(ms) == 0:
+            return "<1ms"
+        return f"{ms:.0f}ms"
     return f"{elapsed:.{precision_s}f}s"
 
 def format_size(size_bytes):
@@ -318,7 +321,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             print(f"\n{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
             try:
                 prompt = (
-                    f"{Colors.OKBLUE}Save to 'airfoil.msh'? "
+                    f"{Colors.OKBLUE}💾 Save to 'airfoil.msh'? "
                     f"[y/N] or type filename: {Colors.ENDC}"
                 )
                 response = input(prompt).strip()
@@ -530,7 +533,7 @@ def main():
     args = parser.parse_args()
 
     if args.num_points <= 0:
-        print(f"{Colors.FAIL}Error: --num-points must be a positive integer.{Colors.ENDC}")
+        print(f"{Colors.FAIL}❌ Error: --num-points must be a positive integer.{Colors.ENDC}")
         sys.exit(1)
 
     args.output = validate_output_path(args.output)

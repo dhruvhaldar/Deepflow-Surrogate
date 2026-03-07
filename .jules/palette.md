@@ -73,3 +73,7 @@
 ## 2026-03-09 - Long-Running CLI Phase Feedback
 **Learning:** During large mesh generations, the geometric construction and synchronization phases can take several seconds (or over 10 seconds for millions of points). Without an active spinner during this specific phase, the CLI appears to freeze, causing users to potentially interrupt the process prematurely.
 **Action:** Always wrap long-running geometric construction loops (like `gmsh.model.geo.addPoint`) and `synchronize()` calls in an active `Spinner` to provide continuous visual feedback and reassure the user that the program is still working.
+
+## 2026-03-10 - Zero-Value Time Feedback
+**Learning:** Displaying `0ms` for extremely fast operations feels buggy or broken to users, as it implies the operation didn't happen or timing failed.
+**Action:** When formatting execution times rounding down to zero, display `<1ms` instead of `0ms` to provide non-zero, responsive feedback that accurately reflects a fast operation.
