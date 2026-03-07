@@ -133,26 +133,34 @@ def generate_airfoil_points(num_points):
 
     x = np.linspace(0, 1, num_points)
 
-    # Compute Y values for all x once, avoiding recalculation for the lower surface.
-    # We do not allocate `y_buffer` or `scratch_buffer` manually because evaluating
-    # the mathematical formulation using basic operators is natively ~20% faster.
-    y_buffer = naca0012_y(x)
-
     # Pre-allocate the final result array
     # Total points = num_points (upper) + (num_points - 1) (lower)
     total_points = 2 * num_points - 1
+
+    # Use np.empty instead of np.zeros to avoid zero-filling the array
+    # before we overwrite it. Then manually zero only the Z column.
     # Use Fortran-contiguous memory (order='F') since we assign and extract
     # data column-wise. This improves CPU cache locality.
-    points = np.zeros((total_points, 3), order='F')
+    points = np.empty((total_points, 3), order='F')
+    points[:, 2] = 0.0
 
     # Upper surface (reversed): x from 1 to 0
-    points[:num_points, 0] = x[::-1]
-    points[:num_points, 1] = y_buffer[::-1]
+    x_rev = x[::-1]
+    points[:num_points, 0] = x_rev
+
+    # Optimization: Write the NACA 0012 calculation directly into the points array.
+    # We evaluate the mathematical formulation on the reversed x array
+    # directly into the y_upper slice, saving a separate y_buffer array allocation.
+    y_upper = points[:num_points, 1]
+    y_upper[:] = naca0012_y(x_rev)
 
     # Lower surface (skip leading edge point): x from 0 to 1
     points[num_points:, 0] = x[1:]
-    # Negate the pre-calculated Y values for the lower surface
-    np.negative(y_buffer[1:], out=points[num_points:, 1])
+
+    # The lower surface is the negative of the upper surface.
+    # y_upper[-2::-1] takes the reversed y_upper array starting from the second element
+    # (skipping the leading edge at x=0), which maps exactly to x[1:].
+    np.negative(y_upper[-2::-1], out=points[num_points:, 1])
 
     return points
 
