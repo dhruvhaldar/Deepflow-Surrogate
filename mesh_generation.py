@@ -140,12 +140,11 @@ def generate_airfoil_points(num_points):
     # Total points = num_points (upper) + (num_points - 1) (lower)
     total_points = 2 * num_points - 1
 
-    # Use np.empty instead of np.zeros to avoid zero-filling the array
-    # before we overwrite it. Then manually zero only the Z column.
+    # Use np.zeros to allocate the array since NumPy uses calloc under the hood,
+    # which is lazy and faster than np.empty + manual zeroing.
     # Use Fortran-contiguous memory (order='F') since we assign and extract
     # data column-wise. This improves CPU cache locality.
-    points = np.empty((total_points, 3), order='F')
-    points[:, 2] = 0.0
+    points = np.zeros((total_points, 3), order='F')
 
     # Upper surface (reversed): x from 1 to 0
     x_rev = x[::-1]
