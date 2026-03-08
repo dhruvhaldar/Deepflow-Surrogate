@@ -17,3 +17,7 @@
 ## 2026-03-05 - NumPy Vectorized Math Hybrid Approach (SUPERSEDED)
 **Learning:** We previously believed that a hybrid approach combining `np.sqrt(x)` and manual in-place evaluations was optimal. However, further testing revealed that a completely pure vectorized Horner expression (`np.sqrt(x) * c0 + x * (c1 + x * (c2 + x * (c3 + x * c4)))`) outperforms even the hybrid in-place logic by about ~25%.
 **Action:** Trust NumPy's backend to optimize pure vectorized operations and avoid manual loop-unrolling and in-place buffer management for polynomials where possible.
+
+## 2026-03-08 - np.zeros vs np.empty + Explicit Zeroing
+**Learning:** We previously thought that using `np.empty()` and only zeroing the necessary slices (e.g., `points[:, 2] = 0.0`) was faster than `np.zeros()` to avoid unnecessary zero-filling. However, testing shows that `np.zeros()` is actually faster. This is because modern OS and NumPy use lazy zeroed memory pages (like `mmap` with `MAP_ANONYMOUS`), so allocating zeroed memory is nearly instant, while manually writing `0.0` triggers page faults and CPU cache traffic.
+**Action:** Always prefer `np.zeros` over `np.empty` + manual zeroing for array initializations, even if only part of the array needs to be zero, as OS-level optimizations make `np.zeros` faster.
