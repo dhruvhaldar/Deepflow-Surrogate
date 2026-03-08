@@ -42,7 +42,7 @@ class Spinner:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         elapsed = time.perf_counter() - self.start_time
-        time_str = f" ({format_time(elapsed, precision_s=1)})"
+        time_str = f" {Colors.DIM}({format_time(elapsed, precision_s=1)}){Colors.ENDC}"
 
         if self.thread:
             self.stop_event.set()

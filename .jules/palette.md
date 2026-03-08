@@ -81,3 +81,7 @@
 ## 2026-03-11 - Progress Bar Contrast
 **Learning:** ASCII progress bars that use a single color for both filled ('█') and empty ('░') segments lack strong visual contrast, making it slightly harder to perceive the actual fill ratio at a quick glance in terminal environments.
 **Action:** Use distinct color styles (like applying a 'dim' or subtle secondary color state) to the empty portions of progress bars to enhance contrast and improve immediate scannability.
+
+## 2026-03-12 - Secondary Context Styling
+**Learning:** CLI elements that provide secondary context, such as step durations or background metadata, can cause visual clutter if rendered with the same visual weight as primary status indicators. When success/failure indicators (`✅`/`❌`) share visual prominence with purely informational text, the user's eye has to work harder to extract the primary outcome.
+**Action:** Apply distinct, subtle styling (like `\033[2m` or `Colors.DIM`) to secondary informational text (e.g., execution times in spinners) to establish a clear visual hierarchy, ensuring the primary success/failure state remains the immediate focal point while secondary data stays readable but recedes into the background.
