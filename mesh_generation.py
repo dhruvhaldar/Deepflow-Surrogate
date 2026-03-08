@@ -73,6 +73,7 @@ class Colors: # pylint: disable=too-few-public-methods
     FAIL = '\033[91m'
     ENDC = '\033[0m'
     BOLD = '\033[1m'
+    DIM = '\033[2m'
 
     @classmethod
     def disable(cls):
@@ -85,6 +86,7 @@ class Colors: # pylint: disable=too-few-public-methods
         cls.FAIL = ''
         cls.ENDC = ''
         cls.BOLD = ''
+        cls.DIM = ''
 
 # Disable colors if NO_COLOR env var is set or output is not a TTY
 if os.getenv('NO_COLOR') or not sys.stdout.isatty():
@@ -276,16 +278,18 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 if not Colors.OKBLUE:
                     return ""
                 fill = int(p / 100 * length)
-                return '█' * fill + '░' * (length - fill)
+                empty = length - fill
+                return (f"{Colors.OKBLUE}{'█' * fill}{Colors.ENDC}"
+                        f"{Colors.DIM}{'░' * empty}{Colors.ENDC}")
 
             print(
                 f"     - Triangles: {num_triangles:<8,} ({pct_tri:>5.1f}%) "
-                f"{Colors.OKBLUE}{draw_bar(pct_tri)}{Colors.ENDC}",
+                f"{draw_bar(pct_tri)}",
                 flush=True
             )
             print(
                 f"     - Quads:     {num_quadrangles:<8,} ({pct_quad:>5.1f}%) "
-                f"{Colors.OKBLUE}{draw_bar(pct_quad)}{Colors.ENDC}",
+                f"{draw_bar(pct_quad)}",
                 flush=True
             )
 

@@ -77,3 +77,7 @@
 ## 2026-03-10 - Zero-Value Time Feedback
 **Learning:** Displaying `0ms` for extremely fast operations feels buggy or broken to users, as it implies the operation didn't happen or timing failed.
 **Action:** When formatting execution times rounding down to zero, display `<1ms` instead of `0ms` to provide non-zero, responsive feedback that accurately reflects a fast operation.
+
+## 2026-03-11 - Progress Bar Contrast
+**Learning:** ASCII progress bars that use a single color for both filled ('█') and empty ('░') segments lack strong visual contrast, making it slightly harder to perceive the actual fill ratio at a quick glance in terminal environments.
+**Action:** Use distinct color styles (like applying a 'dim' or subtle secondary color state) to the empty portions of progress bars to enhance contrast and improve immediate scannability.
