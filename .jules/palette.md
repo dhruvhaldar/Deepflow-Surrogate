@@ -85,3 +85,11 @@
 ## 2026-03-12 - Secondary Context Styling
 **Learning:** CLI elements that provide secondary context, such as step durations or background metadata, can cause visual clutter if rendered with the same visual weight as primary status indicators. When success/failure indicators (`✅`/`❌`) share visual prominence with purely informational text, the user's eye has to work harder to extract the primary outcome.
 **Action:** Apply distinct, subtle styling (like `\033[2m` or `Colors.DIM`) to secondary informational text (e.g., execution times in spinners) to establish a clear visual hierarchy, ensuring the primary success/failure state remains the immediate focal point while secondary data stays readable but recedes into the background.
+
+## 2026-03-13 - Data Value Alignment
+**Learning:** Dense technical output like multi-dimensional bounding boxes is difficult to read when numerical values have varying string lengths (e.g. `[0.0000, 1.0000]` vs `[-0.0600, 0.0600]`). The unaligned text prevents visual scanning of columns.
+**Action:** Use right-aligned, fixed-width string formatting (e.g. `{value:>7.4f}`) for structured numerical outputs to ensure decimal points and brackets align perfectly across lines.
+
+## 2026-03-13 - Command Distinctions in Text
+**Learning:** Command line suggestions and arguments embedded within larger text blocks (e.g. "Tip: View the mesh using 'gmsh file.msh'") can blend in, causing users to miss the exact actionable copy.
+**Action:** Always format actionable CLI inputs, commands, and flags with bold styling (`Colors.BOLD`) to lift them out of the surrounding narrative text and make copy-pasting easier.
