@@ -301,11 +301,11 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             height = bbox[4] - bbox[1]
             print(f"\n{Colors.OKCYAN}📏 Bounding Box:{Colors.ENDC}", flush=True)
             print(
-                f"   • X Range:    [{bbox[0]:.4f}, {bbox[3]:.4f}] (Width: {width:.4f})",
+                f"   • X Range:    [{bbox[0]:>7.4f}, {bbox[3]:>7.4f}] (Width: {width:>7.4f})",
                 flush=True
             )
             print(
-                f"   • Y Range:    [{bbox[1]:.4f}, {bbox[4]:.4f}] (Height: {height:.4f})",
+                f"   • Y Range:    [{bbox[1]:>7.4f}, {bbox[4]:>7.4f}] (Height: {height:>7.4f})",
                 flush=True
             )
         except Exception: # pylint: disable=broad-exception-caught
@@ -357,13 +357,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             if preview:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
-                    f"'gmsh {output_file}'{Colors.ENDC}",
+                    f"'{Colors.BOLD}gmsh {output_file}{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}",
                     flush=True
                 )
             else:
                 print(
-                    f"{Colors.OKBLUE}💡 Tip: View the mesh using 'gmsh {output_file}' "
-                    f"or run with --preview next time{Colors.ENDC}",
+                    f"{Colors.OKBLUE}💡 Tip: View the mesh using '{Colors.BOLD}gmsh {output_file}{Colors.ENDC}{Colors.OKBLUE}' "
+                    f"or run with {Colors.BOLD}--preview{Colors.ENDC}{Colors.OKBLUE} next time{Colors.ENDC}",
                     flush=True
                 )
         else:
@@ -565,6 +565,6 @@ if __name__ == "__main__":
         sys.exit(130)
     except ModuleNotFoundError as err:
         print(f"\n{Colors.FAIL}❌ Missing required dependency: '{err.name}'{Colors.ENDC}")
-        print(f"{Colors.OKBLUE}💡 Tip: Install it by running 'pip install {err.name}' "
-              f"or 'pip install -r requirements.txt'{Colors.ENDC}")
+        print(f"{Colors.OKBLUE}💡 Tip: Install it by running '{Colors.BOLD}pip install {err.name}{Colors.ENDC}{Colors.OKBLUE}' "
+              f"or '{Colors.BOLD}pip install -r requirements.txt{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}")
         sys.exit(1)
