@@ -159,9 +159,10 @@ def generate_airfoil_points(num_points):
     x_rev = x[::-1]
     points[:num_points, 0] = x_rev
 
-    # Optimization: Write the NACA 0012 calculation directly into the points array.
-    y_upper = points[:num_points, 1]
-    naca0012_y(x_rev, out=y_upper)
+    # Optimization: Monolithic calculation is significantly faster than
+    # slice-based in-place assignment due to underlying C backend execution.
+    y_upper = naca0012_y(x_rev)
+    points[:num_points, 1] = y_upper
 
     # Lower surface (skip leading edge point): x from 0 to 1
     points[num_points:, 0] = x[1:]
@@ -169,7 +170,7 @@ def generate_airfoil_points(num_points):
     # The lower surface is the negative of the upper surface.
     # y_upper[-2::-1] takes the reversed y_upper array starting from the second element
     # (skipping the leading edge at x=0), which maps exactly to x[1:].
-    np.negative(y_upper[-2::-1], out=points[num_points:, 1])
+    points[num_points:, 1] = -y_upper[-2::-1]
 
     return points
 
