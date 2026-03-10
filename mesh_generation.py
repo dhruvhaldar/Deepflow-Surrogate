@@ -325,7 +325,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         if num_elements == 0:
             print(
                 f"\n{Colors.WARNING}⚠️  Warning: The generated mesh has 0 elements. "
-                f"Try increasing --num-points or adjusting geometry settings.{Colors.ENDC}",
+                f"Try increasing {Colors.BOLD}--num-points{Colors.ENDC}"
+                f"{Colors.WARNING} or adjusting geometry settings.{Colors.ENDC}",
                 flush=True
             )
 
@@ -334,7 +335,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             print(f"\n{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
             try:
                 prompt = (
-                    f"{Colors.OKBLUE}💾 Save to 'airfoil.msh'? "
+                    f"{Colors.OKBLUE}💾 Save to '{Colors.BOLD}airfoil.msh{Colors.ENDC}"
+                    f"{Colors.OKBLUE}'? "
                     f"[y/N] or type filename: {Colors.ENDC}"
                 )
                 response = input(prompt).strip()
@@ -360,20 +362,23 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             file_size = os.path.getsize(output_file)
             readable_size = format_size(file_size)
             print(
-                f"\n{Colors.OKGREEN}💾 Mesh written to {output_file} "
+                f"\n{Colors.OKGREEN}💾 Mesh written to "
+                f"{Colors.BOLD}{output_file}{Colors.ENDC}{Colors.OKGREEN} "
                 f"({readable_size}){Colors.ENDC}",
                 flush=True
             )
             if preview:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
-                    f"'{Colors.BOLD}gmsh {output_file}{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}",
+                    f"'{Colors.BOLD}gmsh {output_file}{Colors.ENDC}'{Colors.ENDC}",
                     flush=True
                 )
             else:
                 print(
-                    f"{Colors.OKBLUE}💡 Tip: View the mesh using '{Colors.BOLD}gmsh {output_file}{Colors.ENDC}{Colors.OKBLUE}' "
-                    f"or run with {Colors.BOLD}--preview{Colors.ENDC}{Colors.OKBLUE} next time{Colors.ENDC}",
+                    f"{Colors.OKBLUE}💡 Tip: View the mesh using "
+                    f"'{Colors.BOLD}gmsh {output_file}{Colors.ENDC}{Colors.OKBLUE}' "
+                    f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
+                    f"{Colors.OKBLUE} next time{Colors.ENDC}",
                     flush=True
                 )
         else:
@@ -381,7 +386,9 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             if not sys.stdout.isatty():
                 print(
                     f"\n{Colors.WARNING}⚠️  No output file specified. "
-                    f"Mesh generated in memory only. Use --output to save.{Colors.ENDC}",
+                    f"Mesh generated in memory only. "
+                    f"Use {Colors.BOLD}--output{Colors.ENDC}"
+                    f"{Colors.WARNING} to save.{Colors.ENDC}",
                     flush=True
                 )
 
@@ -423,8 +430,9 @@ def validate_output_path(filepath):
     if os.path.isdir(filepath) or is_dir_path:
         new_filepath = os.path.join(filepath, "airfoil.msh")
         print(
-            f"{Colors.OKCYAN}ℹ️  Output path '{filepath}' appears to be a directory. "
-            f"Using '{new_filepath}'.{Colors.ENDC}"
+            f"{Colors.OKCYAN}ℹ️  Output path '{Colors.BOLD}{filepath}{Colors.ENDC}"
+            f"{Colors.OKCYAN}' appears to be a directory. "
+            f"Using '{Colors.BOLD}{new_filepath}{Colors.ENDC}{Colors.OKCYAN}'.{Colors.ENDC}"
         )
         return new_filepath
 
@@ -433,14 +441,16 @@ def validate_output_path(filepath):
     if not ext:
         new_filepath = f"{filepath}.msh"
         print(
-            f"{Colors.OKCYAN}ℹ️  Output filename '{filepath}' has no extension. "
-            f"Defaulting to '{new_filepath}'.{Colors.ENDC}"
+            f"{Colors.OKCYAN}ℹ️  Output filename '{Colors.BOLD}{filepath}{Colors.ENDC}"
+            f"{Colors.OKCYAN}' has no extension. "
+            f"Defaulting to '{Colors.BOLD}{new_filepath}{Colors.ENDC}{Colors.OKCYAN}'.{Colors.ENDC}"
         )
         return new_filepath
 
     if ext.lower() in ['.txt', '.md', '.json', '.yaml', '.yml', '.py', '.sh']:
         print(
-            f"{Colors.WARNING}⚠️  Warning: The extension '{ext}' is likely not supported by Gmsh. "
+            f"{Colors.WARNING}⚠️  Warning: The extension '{Colors.BOLD}{ext}{Colors.ENDC}"
+            f"{Colors.WARNING}' is likely not supported by Gmsh. "
             f"The generation might fail.{Colors.ENDC}"
         )
 
@@ -492,7 +502,8 @@ def check_overwrite(filepath, force):
 
     # Non-interactive mode, just warn
     print(
-        f"{Colors.WARNING}⚠️  Overwriting existing file '{filepath}' "
+        f"{Colors.WARNING}⚠️  Overwriting existing file "
+        f"'{Colors.BOLD}{filepath}{Colors.ENDC}{Colors.WARNING}' "
         f"(non-interactive).{Colors.ENDC}"
     )
     return True
@@ -506,9 +517,11 @@ def ensure_directory_exists(filepath):
     if directory and not os.path.exists(directory):
         try:
             os.makedirs(directory, exist_ok=True)
-            print(f"{Colors.OKBLUE}📂 Created directory '{directory}'{Colors.ENDC}")
+            print(f"{Colors.OKBLUE}📂 Created directory "
+                  f"'{Colors.BOLD}{directory}{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}")
         except OSError as e:
-            print(f"{Colors.FAIL}❌ Error creating directory '{directory}': {e}{Colors.ENDC}")
+            print(f"{Colors.FAIL}❌ Error creating directory "
+                  f"'{Colors.BOLD}{directory}{Colors.ENDC}{Colors.FAIL}': {e}{Colors.ENDC}")
             sys.exit(1)
 
 def main():
@@ -546,7 +559,8 @@ def main():
     args = parser.parse_args()
 
     if args.num_points <= 0:
-        print(f"{Colors.FAIL}❌ Error: --num-points must be a positive integer.{Colors.ENDC}")
+        print(f"{Colors.FAIL}❌ Error: {Colors.BOLD}--num-points{Colors.ENDC}"
+              f"{Colors.FAIL} must be a positive integer.{Colors.ENDC}")
         sys.exit(1)
 
     args.output = validate_output_path(args.output)
@@ -575,6 +589,8 @@ if __name__ == "__main__":
         sys.exit(130)
     except ModuleNotFoundError as err:
         print(f"\n{Colors.FAIL}❌ Missing required dependency: '{err.name}'{Colors.ENDC}")
-        print(f"{Colors.OKBLUE}💡 Tip: Install it by running '{Colors.BOLD}pip install {err.name}{Colors.ENDC}{Colors.OKBLUE}' "
-              f"or '{Colors.BOLD}pip install -r requirements.txt{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}")
+        print(f"{Colors.OKBLUE}💡 Tip: Install it by running "
+              f"'{Colors.BOLD}pip install {err.name}{Colors.ENDC}{Colors.OKBLUE}' "
+              f"or '{Colors.BOLD}pip install -r requirements.txt{Colors.ENDC}"
+              f"{Colors.OKBLUE}'{Colors.ENDC}")
         sys.exit(1)
