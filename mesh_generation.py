@@ -273,8 +273,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         num_elements = num_triangles + num_quadrangles
 
         print(f"\n{Colors.OKCYAN}📊 Mesh Statistics:{Colors.ENDC}", flush=True)
-        print(f"   • Nodes:      {num_nodes:,}", flush=True)
-        print(f"   • Elements:   {num_elements:,}", flush=True)
+        print(f"   • Nodes:      {Colors.BOLD}{num_nodes:,}{Colors.ENDC}", flush=True)
+        print(f"   • Elements:   {Colors.BOLD}{num_elements:,}{Colors.ENDC}", flush=True)
 
         if num_elements > 0:
             pct_tri = (num_triangles / num_elements) * 100
@@ -289,13 +289,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         f"{Colors.DIM}{'░' * empty}{Colors.ENDC}")
 
             print(
-                f"     - Triangles: {num_triangles:<8,} ({pct_tri:>5.1f}%) "
-                f"{draw_bar(pct_tri)}",
+                f"     - Triangles: {Colors.BOLD}{num_triangles:<8,}{Colors.ENDC} "
+                f"({Colors.BOLD}{pct_tri:>5.1f}%{Colors.ENDC}) {draw_bar(pct_tri)}",
                 flush=True
             )
             print(
-                f"     - Quads:     {num_quadrangles:<8,} ({pct_quad:>5.1f}%) "
-                f"{draw_bar(pct_quad)}",
+                f"     - Quads:     {Colors.BOLD}{num_quadrangles:<8,}{Colors.ENDC} "
+                f"({Colors.BOLD}{pct_quad:>5.1f}%{Colors.ENDC}) {draw_bar(pct_quad)}",
                 flush=True
             )
 
@@ -307,11 +307,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             height = bbox[4] - bbox[1]
             print(f"\n{Colors.OKCYAN}📏 Bounding Box:{Colors.ENDC}", flush=True)
             print(
-                f"   • X Range:    [{bbox[0]:>7.4f}, {bbox[3]:>7.4f}] (Width: {width:>7.4f})",
+                f"   • X Range:    [{Colors.BOLD}{bbox[0]:>7.4f}{Colors.ENDC}, "
+                f"{Colors.BOLD}{bbox[3]:>7.4f}{Colors.ENDC}] "
+                f"(Width: {Colors.BOLD}{width:>7.4f}{Colors.ENDC})",
                 flush=True
             )
             print(
-                f"   • Y Range:    [{bbox[1]:>7.4f}, {bbox[4]:>7.4f}] (Height: {height:>7.4f})",
+                f"   • Y Range:    [{Colors.BOLD}{bbox[1]:>7.4f}{Colors.ENDC}, "
+                f"{Colors.BOLD}{bbox[4]:>7.4f}{Colors.ENDC}] "
+                f"(Height: {Colors.BOLD}{height:>7.4f}{Colors.ENDC})",
                 flush=True
             )
         except Exception: # pylint: disable=broad-exception-caught
