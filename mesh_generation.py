@@ -113,11 +113,9 @@ def naca0012_y(x, t=0.12, out=None):
         # creating unnecessary intermediate arrays or adding Python interpreter loop overhead.
         return np.sqrt(x) * c0 + x * (c1 + x * (c2 + x * (c3 + x * c4)))
 
-    # In-place evaluation avoids allocating temporary arrays during computation,
-    # resulting in a ~10-15% speedup when an output buffer is provided.
-    np.sqrt(x, out=out)
-    out *= c0
-    out += x * (c1 + x * (c2 + x * (c3 + x * c4)))
+    # Evaluate the monolithic expression and assign it directly to the output buffer
+    # to avoid creating a final temporary array while preserving backend evaluation speed.
+    out[:] = np.sqrt(x) * c0 + x * (c1 + x * (c2 + x * (c3 + x * c4)))
     return out
 
 def format_time(elapsed, precision_s=1):
@@ -159,20 +157,20 @@ def generate_airfoil_points(num_points):
     x_rev = x[::-1]
     points[:num_points, 0] = x_rev
 
-    # Optimization: Monolithic calculation is significantly faster than
-    # slice-based in-place assignment due to underlying C backend execution.
-    y_upper = naca0012_y(x_rev)
-    points[:num_points, 1] = y_upper
+    # Optimization: Evaluating the equation monolithically and writing the
+    # final result directly to the target slice via the `out` parameter prevents
+    # a full-array temporary allocation while retaining C backend execution speed.
+    naca0012_y(x_rev, out=points[:num_points, 1])
 
     # Lower surface (skip leading edge point): x from 0 to 1
     points[num_points:, 0] = x[1:]
 
     # The lower surface is the negative of the upper surface.
-    # y_upper[-2::-1] takes the reversed y_upper array starting from the second element
-    # (skipping the leading edge at x=0), which maps exactly to x[1:].
+    # points[:num_points, 1][-2::-1] takes the reversed upper surface array
+    # starting from the second element (skipping the leading edge at x=0).
     # Optimization: Using np.negative with the `out` parameter avoids allocating
     # an intermediate array for the negated values, providing a ~4x speedup for this step.
-    np.negative(y_upper[-2::-1], out=points[num_points:, 1])
+    np.negative(points[:num_points, 1][-2::-1], out=points[num_points:, 1])
 
     return points
 
