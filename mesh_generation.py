@@ -482,7 +482,8 @@ def check_overwrite(filepath, force):
                 days = int(diff / 86400)
                 rel_time = f"{days} day{'s' if days != 1 else ''} ago"
 
-            size_str = f" ({readable_size}, modified {rel_time})"
+            size_str = (f" {Colors.DIM}({readable_size}, "
+                        f"modified {rel_time}){Colors.ENDC}{Colors.WARNING}")
         except OSError:
             size_str = ""
 
