@@ -93,3 +93,7 @@
 ## 2026-03-13 - Command Distinctions in Text
 **Learning:** Command line suggestions and arguments embedded within larger text blocks (e.g. "Tip: View the mesh using 'gmsh file.msh'") can blend in, causing users to miss the exact actionable copy.
 **Action:** Always format actionable CLI inputs, commands, and flags with bold styling (`Colors.BOLD`) to lift them out of the surrounding narrative text and make copy-pasting easier.
+
+## 2024-05-22 - Visual Hierarchy in CLI output
+**Learning:** In CLI outputs, applying dimmed styling (e.g., `Colors.DIM`) to secondary context metadata (like file sizes, bounding box dimensions, and percentage values) significantly improves the visual hierarchy. It ensures that this supplementary information does not visually compete with the primary success/failure indicators or core data, making the output cleaner and easier to scan.
+**Action:** Always use dimmed ANSI styling for secondary context metadata in CLI interfaces to establish a clear visual hierarchy and prevent visual clutter.

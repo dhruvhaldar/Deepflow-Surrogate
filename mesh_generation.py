@@ -292,12 +292,14 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 
             print(
                 f"     - Triangles: {Colors.BOLD}{num_triangles:<8,}{Colors.ENDC} "
-                f"({Colors.BOLD}{pct_tri:>5.1f}%{Colors.ENDC}) {draw_bar(pct_tri)}",
+                f"{Colors.DIM}({Colors.ENDC}{Colors.BOLD}{pct_tri:>5.1f}%{Colors.ENDC}"
+                f"{Colors.DIM}){Colors.ENDC} {draw_bar(pct_tri)}",
                 flush=True
             )
             print(
                 f"     - Quads:     {Colors.BOLD}{num_quadrangles:<8,}{Colors.ENDC} "
-                f"({Colors.BOLD}{pct_quad:>5.1f}%{Colors.ENDC}) {draw_bar(pct_quad)}",
+                f"{Colors.DIM}({Colors.ENDC}{Colors.BOLD}{pct_quad:>5.1f}%{Colors.ENDC}"
+                f"{Colors.DIM}){Colors.ENDC} {draw_bar(pct_quad)}",
                 flush=True
             )
 
@@ -311,13 +313,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             print(
                 f"   • X Range:    [{Colors.BOLD}{bbox[0]:>7.4f}{Colors.ENDC}, "
                 f"{Colors.BOLD}{bbox[3]:>7.4f}{Colors.ENDC}] "
-                f"(Width: {Colors.BOLD}{width:>7.4f}{Colors.ENDC})",
+                f"{Colors.DIM}(Width: {Colors.ENDC}{Colors.BOLD}{width:>7.4f}"
+                f"{Colors.ENDC}{Colors.DIM}){Colors.ENDC}",
                 flush=True
             )
             print(
                 f"   • Y Range:    [{Colors.BOLD}{bbox[1]:>7.4f}{Colors.ENDC}, "
                 f"{Colors.BOLD}{bbox[4]:>7.4f}{Colors.ENDC}] "
-                f"(Height: {Colors.BOLD}{height:>7.4f}{Colors.ENDC})",
+                f"{Colors.DIM}(Height: {Colors.ENDC}{Colors.BOLD}{height:>7.4f}"
+                f"{Colors.ENDC}{Colors.DIM}){Colors.ENDC}",
                 flush=True
             )
         except Exception: # pylint: disable=broad-exception-caught
@@ -365,8 +369,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             readable_size = format_size(file_size)
             print(
                 f"\n{Colors.OKGREEN}💾 Mesh written to "
-                f"{Colors.BOLD}{output_file}{Colors.ENDC}{Colors.OKGREEN} "
-                f"({readable_size}){Colors.ENDC}",
+                f"{Colors.BOLD}{output_file}{Colors.ENDC} "
+                f"{Colors.DIM}({readable_size}){Colors.ENDC}",
                 flush=True
             )
             if preview:
