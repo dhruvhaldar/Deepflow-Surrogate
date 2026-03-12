@@ -97,3 +97,7 @@
 ## 2024-05-22 - Visual Hierarchy in CLI output
 **Learning:** In CLI outputs, applying dimmed styling (e.g., `Colors.DIM`) to secondary context metadata (like file sizes, bounding box dimensions, and percentage values) significantly improves the visual hierarchy. It ensures that this supplementary information does not visually compete with the primary success/failure indicators or core data, making the output cleaner and easier to scan.
 **Action:** Always use dimmed ANSI styling for secondary context metadata in CLI interfaces to establish a clear visual hierarchy and prevent visual clutter.
+
+## 2026-03-14 - Copy-Paste Friction in CLI Tips
+**Learning:** Surrounding CLI command suggestions (like tips) with literal single or double quotes creates friction because users who double-click to select or drag-select the command often accidentally include the quotes. Pasting this into a shell causes `command not found` errors.
+**Action:** Never surround suggested commands in CLI output with literal string quotes. Instead, visually differentiate the command using bold ANSI styling (`Colors.BOLD`), and use `shlex.quote()` on file paths within the command to ensure they are safe for the shell if copy-pasted.
