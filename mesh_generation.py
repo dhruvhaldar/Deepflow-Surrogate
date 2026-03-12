@@ -9,6 +9,7 @@ import os
 import time
 import threading
 import itertools
+import shlex
 # numpy and gmsh are imported lazily in functions to improve CLI startup time
 
 class Spinner:
@@ -376,13 +377,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             if preview:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
-                    f"'{Colors.BOLD}gmsh {output_file}{Colors.ENDC}'{Colors.ENDC}",
+                    f"{Colors.BOLD}gmsh {shlex.quote(output_file)}{Colors.ENDC}",
                     flush=True
                 )
             else:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh using "
-                    f"'{Colors.BOLD}gmsh {output_file}{Colors.ENDC}{Colors.OKBLUE}' "
+                    f"{Colors.BOLD}gmsh {shlex.quote(output_file)}{Colors.ENDC}{Colors.OKBLUE} "
                     f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
                     f"{Colors.OKBLUE} next time{Colors.ENDC}",
                     flush=True
@@ -599,7 +600,6 @@ if __name__ == "__main__":
     except ModuleNotFoundError as err:
         print(f"\n{Colors.FAIL}❌ Missing required dependency: '{err.name}'{Colors.ENDC}")
         print(f"{Colors.OKBLUE}💡 Tip: Install it by running "
-              f"'{Colors.BOLD}pip install {err.name}{Colors.ENDC}{Colors.OKBLUE}' "
-              f"or '{Colors.BOLD}pip install -r requirements.txt{Colors.ENDC}"
-              f"{Colors.OKBLUE}'{Colors.ENDC}")
+              f"{Colors.BOLD}pip install {err.name}{Colors.ENDC}{Colors.OKBLUE} "
+              f"or {Colors.BOLD}pip install -r requirements.txt{Colors.ENDC}")
         sys.exit(1)
