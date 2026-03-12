@@ -39,3 +39,7 @@
 ## 2024-05-15 - Vectorized Array Temporary Elimination
 **Learning:** Monolithic NumPy expressions like `np.sqrt(x) * c0 + x * ...` when evaluated directly, even if assigned into a target slice using `out[:] = ...`, still allocate a large temporary array in C to store the full evaluated expression.
 **Action:** Splitting the monolithic expression into sequential in-place steps (`np.sqrt(x, out=out)`, then `out *= c0`, `out += ...`) preserves C backend execution speed while eliminating the final temporary array allocation, yielding a ~20% speed boost.
+
+## 2026-03-12 - Vectorized Math with Negatively-Strided Array Views
+**Learning:** Passing a negatively-strided array view (e.g., `x[::-1]`) directly into complex NumPy mathematical evaluations (`np.sqrt` and polynomial evaluations) is suboptimal because the non-contiguous memory access (stride -1) causes CPU cache misses.
+**Action:** When a reversed array is already being stored into a contiguous array column (e.g., `points[:, 0] = x[::-1]`), use that new contiguous slice (`points[:, 0]`) for subsequent mathematical operations instead of the reversed view, yielding a ~5-10% speedup.

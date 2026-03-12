@@ -159,10 +159,12 @@ def generate_airfoil_points(num_points):
     x_rev = x[::-1]
     points[:num_points, 0] = x_rev
 
-    # Optimization: Evaluating the equation monolithically and writing the
-    # final result directly to the target slice via the `out` parameter prevents
-    # a full-array temporary allocation while retaining C backend execution speed.
-    naca0012_y(x_rev, out=points[:num_points, 1])
+    # Optimization: Evaluating the equation using the newly assigned, Fortran-contiguous
+    # array slice `points[:num_points, 0]` is faster than using `x_rev` directly because
+    # `x_rev` is a non-contiguous view (stride -1) that causes CPU cache misses.
+    # Additionally, writing the final result directly to the target slice via the `out`
+    # parameter prevents a full-array temporary allocation.
+    naca0012_y(points[:num_points, 0], out=points[:num_points, 1])
 
     # Lower surface (skip leading edge point): x from 0 to 1
     points[num_points:, 0] = x[1:]
