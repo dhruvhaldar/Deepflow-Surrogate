@@ -361,7 +361,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         ensure_directory_exists(proposed_file)
                         output_file = proposed_file
             except EOFError:
-                pass
+                print() # Add newline to prevent mangled terminal output
 
         if output_file:
             gmsh.write(output_file)
@@ -499,6 +499,8 @@ def check_overwrite(filepath, force):
             prompt = f"{Colors.FAIL}Overwrite? [y/N] {Colors.ENDC}"
             response = input(prompt).strip().lower()
         except EOFError:
+            print() # Add newline to prevent mangled terminal prompt
+            print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
             return False
 
         if response in ('y', 'yes'):
