@@ -547,12 +547,14 @@ def main():
     parser.add_argument(
         "-n", "--num-points",
         type=int,
+        metavar="N",
         default=100,
         help="Number of points along the airfoil surface (must be > 0)"
     )
     parser.add_argument(
         "-o", "--output",
         type=str,
+        metavar="FILE",
         default=None,
         help="Path to save the generated mesh (e.g., 'mesh.msh'). "
              "If omitted, mesh is generated but not saved."
