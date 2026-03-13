@@ -111,13 +111,13 @@ def naca0012_y(x, t=0.12, out=None):
     if out is None:
         return np.sqrt(x) * c0 + x * (c1 + x * (c2 + x * (c3 + x * c4)))
 
-    # Optimization: Utilizing the out parameter with sequential in-place
-    # operations avoids creating a large intermediate array for the entire
-    # right-hand side evaluation, yielding a ~20% speedup for large arrays
-    # while preserving C backend execution speed.
-    np.sqrt(x, out=out)
-    out *= c0
-    out += x * (c1 + x * (c2 + x * (c3 + x * c4)))
+    # Optimization: When computing complex mathematical expressions to be stored in a
+    # non-contiguous array slice, evaluating the expression monolithically is faster
+    # than using the slice for in-place intermediate evaluations due to strided memory
+    # access penalties. Passing the target slice as an `out` parameter and assigning
+    # the monolithic result directly to it (`out[:] = ...`) prevents a final temporary
+    # array allocation while preserving NumPy's C backend evaluation speed.
+    out[:] = np.sqrt(x) * c0 + x * (c1 + x * (c2 + x * (c3 + x * c4)))
 
     return out
 

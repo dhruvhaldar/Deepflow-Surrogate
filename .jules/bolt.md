@@ -43,3 +43,7 @@
 ## 2026-03-12 - Vectorized Math with Negatively-Strided Array Views
 **Learning:** Passing a negatively-strided array view (e.g., `x[::-1]`) directly into complex NumPy mathematical evaluations (`np.sqrt` and polynomial evaluations) is suboptimal because the non-contiguous memory access (stride -1) causes CPU cache misses.
 **Action:** When a reversed array is already being stored into a contiguous array column (e.g., `points[:, 0] = x[::-1]`), use that new contiguous slice (`points[:, 0]`) for subsequent mathematical operations instead of the reversed view, yielding a ~5-10% speedup.
+
+## 2024-05-24 - NumPy Array Assignment Optimization
+**Learning:** In NumPy, evaluating complex mathematical expressions using sequential in-place intermediate evaluations (`np.sqrt(x, out=out)`, `out += ...`) is slow when assigning to a non-contiguous array slice due to strided memory access penalties. While monolithic expressions avoid loop overhead, standard assignment creates a temporary intermediate array, which is also bad for memory allocations.
+**Action:** The optimal approach to prevent final temporary array allocations while preserving C backend evaluation speed for non-contiguous arrays is to pass the target slice as an `out` parameter and assign the monolithic result directly to it (`out[:] = monolithic_expression`).
