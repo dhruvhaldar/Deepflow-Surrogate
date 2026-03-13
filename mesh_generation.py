@@ -190,7 +190,7 @@ def preview_mesh():
     if sys.stdout.isatty() and not is_headless:
         print(
             f"{Colors.OKBLUE}👀 Opening preview... "
-            f"(Close window to finish){Colors.ENDC}",
+            f"{Colors.DIM}(Close window to finish){Colors.ENDC}",
             flush=True
         )
         try:
