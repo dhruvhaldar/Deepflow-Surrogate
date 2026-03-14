@@ -546,5 +546,20 @@ class TestInteractiveSave(unittest.TestCase):
             mesh_generation.generate_gmsh_mesh(points, output_file=None)
             mock_input.assert_not_called()
 
+class TestArgparseError(unittest.TestCase):
+    """Tests for the custom argparse error formatting."""
+    @patch('sys.stderr', new_callable=StringIO)
+    def test_argparse_error_output(self, mock_stderr):
+        """Test that argparse errors are formatted with red color and emoji."""
+        import sys
+        try:
+            with patch.object(sys, 'argv', ['mesh_generation.py', '--unknown-flag']):
+                mesh_generation.main()
+        except SystemExit:
+            pass
+        output = mock_stderr.getvalue()
+        self.assertIn("❌ Error:", output)
+        self.assertIn("unrecognized arguments", output)
+
 if __name__ == '__main__':
     unittest.main()

@@ -544,9 +544,16 @@ def ensure_directory_exists(filepath):
                   f"'{Colors.BOLD}{directory}{Colors.ENDC}{Colors.FAIL}': {e}{Colors.ENDC}")
             sys.exit(1)
 
+class CustomArgumentParser(argparse.ArgumentParser):
+    """Custom argument parser to format error messages consistently with the CLI."""
+    def error(self, message):
+        self.print_usage(sys.stderr)
+        sys.stderr.write(f"{Colors.FAIL}❌ Error: {message}{Colors.ENDC}\n")
+        self.exit(2)
+
 def main():
     """Main execution function."""
-    parser = argparse.ArgumentParser(
+    parser = CustomArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
         epilog=f"Example: {Colors.OKCYAN}python mesh_generation.py "

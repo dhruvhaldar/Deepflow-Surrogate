@@ -101,3 +101,6 @@
 ## 2026-03-14 - Copy-Paste Friction in CLI Tips
 **Learning:** Surrounding CLI command suggestions (like tips) with literal single or double quotes creates friction because users who double-click to select or drag-select the command often accidentally include the quotes. Pasting this into a shell causes `command not found` errors.
 **Action:** Never surround suggested commands in CLI output with literal string quotes. Instead, visually differentiate the command using bold ANSI styling (`Colors.BOLD`), and use `shlex.quote()` on file paths within the command to ensure they are safe for the shell if copy-pasted.
+## 2025-02-28 - Customizing Argparse Error Formatting
+**Learning:** Standard argparse errors in Python CLIs lack visual integration with custom styled application outputs, appearing jarring to users when other errors are styled cleanly.
+**Action:** Subclass `argparse.ArgumentParser` and override the `error` method to apply standard project styling (e.g., ANSI colors, emojis) ensuring a cohesive Developer Experience.
