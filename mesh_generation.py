@@ -296,10 +296,25 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             def draw_bar(p, length=20):
                 if not Colors.OKBLUE:
                     return ""
-                fill = int(p / 100 * length)
-                empty = length - fill
-                return (f"{Colors.OKBLUE}{'█' * fill}{Colors.ENDC}"
-                        f"{Colors.DIM}{'░' * empty}{Colors.ENDC}")
+                exact_fill = (p / 100) * length
+                full_blocks = int(exact_fill)
+
+                # 8 fractional block characters: 1/8 to 7/8
+                fractions = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉']
+                fraction_idx = int(round((exact_fill - full_blocks) * 8))
+
+                if fraction_idx == 8:
+                    full_blocks += 1
+                    fraction_idx = 0
+
+                fraction_char = fractions[fraction_idx]
+                empty_blocks = length - full_blocks - (1 if fraction_idx > 0 else 0)
+
+                filled_str = '█' * full_blocks + fraction_char
+                empty_str = '░' * empty_blocks
+
+                return (f"{Colors.OKBLUE}{filled_str}{Colors.ENDC}"
+                        f"{Colors.DIM}{empty_str}{Colors.ENDC}")
 
             print(
                 f"     - Triangles: {Colors.BOLD}{num_triangles:<8,}{Colors.ENDC} "

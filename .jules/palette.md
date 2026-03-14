@@ -104,3 +104,6 @@
 ## 2025-02-28 - Customizing Argparse Error Formatting
 **Learning:** Standard argparse errors in Python CLIs lack visual integration with custom styled application outputs, appearing jarring to users when other errors are styled cleanly.
 **Action:** Subclass `argparse.ArgumentParser` and override the `error` method to apply standard project styling (e.g., ANSI colors, emojis) ensuring a cohesive Developer Experience.
+## 2023-11-20 - Smooth CLI Progress Bars
+**Learning:** Smooth Unicode progress bars with fractional block characters (▏, ▎, ▍, ▌, ▋, ▊, ▉) provide significantly better visual granularity than integer-based blocks, improving UI polish and precision in CLI outputs.
+**Action:** When implementing or updating CLI progress bars, utilize fractional block rendering instead of simple integer arithmetic to enhance the quality of the visual feedback.
