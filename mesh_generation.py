@@ -93,7 +93,7 @@ class Colors: # pylint: disable=too-few-public-methods
 if os.getenv('NO_COLOR') or not sys.stdout.isatty():
     Colors.disable()
 
-def naca0012_y(x, t=0.12, out=None):
+def naca0012_y(x, t=0.12, out=None, scratch=None):
     """
     Calculates the y-coordinate of a NACA 0012 airfoil using a fully vectorized approach.
     """
@@ -125,7 +125,14 @@ def naca0012_y(x, t=0.12, out=None):
     np.add(out, c1, out=out)
     np.multiply(out, x, out=out)
 
-    np.add(out, np.sqrt(x) * c0, out=out)
+    if scratch is None:
+        np.add(out, np.sqrt(x) * c0, out=out)
+    else:
+        # Optimization: Use a pre-allocated scratch buffer for the `np.sqrt(x) * c0`
+        # term to prevent the final large temporary array allocation.
+        np.sqrt(x, out=scratch)
+        np.multiply(scratch, c0, out=scratch)
+        np.add(out, scratch, out=out)
 
     return out
 
@@ -168,15 +175,17 @@ def generate_airfoil_points(num_points):
     x_rev = x[::-1]
     points[:num_points, 0] = x_rev
 
+    # Lower surface (skip leading edge point): x from 0 to 1
+    points[num_points:, 0] = x[1:]
+
     # Optimization: Evaluating the equation using the newly assigned, Fortran-contiguous
     # array slice `points[:num_points, 0]` is faster than using `x_rev` directly because
     # `x_rev` is a non-contiguous view (stride -1) that causes CPU cache misses.
     # Additionally, writing the final result directly to the target slice via the `out`
     # parameter prevents a full-array temporary allocation.
-    naca0012_y(points[:num_points, 0], out=points[:num_points, 1])
-
-    # Lower surface (skip leading edge point): x from 0 to 1
-    points[num_points:, 0] = x[1:]
+    # Further, the original `x` array is no longer needed after being copied to `points`,
+    # so we reuse it perfectly as a zero-allocation scratch buffer for `naca0012_y`.
+    naca0012_y(points[:num_points, 0], out=points[:num_points, 1], scratch=x)
 
     # The lower surface is the negative of the upper surface.
     # points[:num_points, 1][-2::-1] takes the reversed upper surface array
