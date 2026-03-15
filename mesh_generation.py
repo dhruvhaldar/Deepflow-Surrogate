@@ -623,7 +623,7 @@ def main():
 
     elapsed_time = time.time() - start_time
     formatted_time = format_time(elapsed_time, precision_s=4)
-    print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {formatted_time}{Colors.ENDC}")
+    print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {Colors.DIM}{formatted_time}{Colors.ENDC}")
 
 if __name__ == "__main__":
     try:
