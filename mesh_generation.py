@@ -388,6 +388,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         output_file = proposed_file
             except EOFError:
                 print() # Add newline to prevent mangled terminal output
+                print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
+                return False
 
         if output_file:
             gmsh.write(output_file)
