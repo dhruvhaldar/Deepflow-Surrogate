@@ -633,7 +633,7 @@ def main():
         sys.exit(1)
 
     elapsed_time = time.time() - start_time
-    formatted_time = format_time(elapsed_time, precision_s=4)
+    formatted_time = format_time(elapsed_time, precision_s=2)
     print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {Colors.DIM}{formatted_time}{Colors.ENDC}")
 
 if __name__ == "__main__":

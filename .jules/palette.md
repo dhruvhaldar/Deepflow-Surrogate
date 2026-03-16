@@ -107,3 +107,11 @@
 ## 2023-11-20 - Smooth CLI Progress Bars
 **Learning:** Smooth Unicode progress bars with fractional block characters (▏, ▎, ▍, ▌, ▋, ▊, ▉) provide significantly better visual granularity than integer-based blocks, improving UI polish and precision in CLI outputs.
 **Action:** When implementing or updating CLI progress bars, utilize fractional block rendering instead of simple integer arithmetic to enhance the quality of the visual feedback.
+
+## 2024-05-20 - Enhance CLI visual scannability for commands
+**Learning:** `shlex.quote()` conditionally drops quotes for safe strings, breaking the visual consistency when providing file paths in instruction tips.
+**Action:** When suggesting commands in CLI output, wrap file paths in literal single quotes (`'{file_path}'`) instead of `shlex.quote()` to ensure consistent visual parsing of the instruction.
+
+## 2024-05-20 - Execution Time Visual Noise
+**Learning:** Displaying high-precision execution times (e.g., 4 decimal places like `12.4171s`) in user-facing CLI tools creates unnecessary visual noise and reduces scannability, as sub-millisecond precision is irrelevant outside of dedicated benchmarking contexts.
+**Action:** Round overall CLI execution times to 1 or 2 decimal places (e.g., `12.42s`) to improve readability and visual polish.
