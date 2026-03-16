@@ -640,6 +640,9 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+        # Ensure cursor is explicitly unhidden if interrupted during a spinner phase
+        sys.stdout.write("\033[?25h")
+        sys.stdout.flush()
         print(f"\n{Colors.FAIL}❌ Operation cancelled by user.{Colors.ENDC}")
         sys.exit(130)
     except ModuleNotFoundError as err:
