@@ -5,3 +5,7 @@
 ## 2025-03-12 - Prevent Mangled Terminal on EOF
 **Learning:** When using `input()` for CLI prompts, users pressing `Ctrl+D` (EOF) immediately abort the input without printing a newline. If the script subsequently prints messages or exits, those messages or the user's terminal shell prompt will be printed on the same line as the aborted prompt, resulting in a mangled, visually confusing UX.
 **Action:** Always wrap `input()` in a `try...except EOFError` block and explicitly `print()` an empty newline to gracefully reset the cursor before proceeding or exiting.
+
+## 2025-03-17 - Add Multi-Step Sequence Indicators to Progress Spinners
+**Learning:** When a CLI tool has a multi-step process utilizing separate loading spinners, adding explicit step indicators (e.g., `[1/2]`, `[2/2]`) to the spinner messages significantly improves the user's mental model by establishing clear expectations about the total duration and remaining phases of the operation.
+**Action:** Always prepend step indicators to progressive loading spinners when the operation involves multiple distinct phases.

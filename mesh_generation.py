@@ -265,7 +265,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         ys = points_to_add[:, 1].copy().tolist()
         # z is always 0.0 for 2D airfoil
 
-        with Spinner(f"{Colors.OKBLUE}   Building geometry...{Colors.ENDC}"):
+        with Spinner(f"{Colors.OKBLUE}   [1/2] Building geometry...{Colors.ENDC}"):
             add_point = gmsh.model.geo.addPoint
             point_tags = [
                 add_point(x, y, 0.0, lc)
@@ -286,7 +286,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 
             gmsh.model.geo.synchronize()
 
-        with Spinner(f"{Colors.OKBLUE}   Meshing...{Colors.ENDC}"):
+        with Spinner(f"{Colors.OKBLUE}   [2/2] Meshing...{Colors.ENDC}"):
             gmsh.model.mesh.generate(2)
 
         # Get mesh statistics
