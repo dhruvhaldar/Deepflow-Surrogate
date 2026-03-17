@@ -579,6 +579,10 @@ class CustomArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         self.print_usage(sys.stderr)
         sys.stderr.write(f"{Colors.FAIL}❌ Error: {message}{Colors.ENDC}\n")
+        sys.stderr.write(
+            f"{Colors.OKBLUE}💡 Tip: Run with {Colors.BOLD}--help{Colors.ENDC}"
+            f"{Colors.OKBLUE} for a list of available options.{Colors.ENDC}\n"
+        )
         self.exit(2)
 
 def main():

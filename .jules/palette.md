@@ -115,3 +115,7 @@
 ## 2024-05-20 - Execution Time Visual Noise
 **Learning:** Displaying high-precision execution times (e.g., 4 decimal places like `12.4171s`) in user-facing CLI tools creates unnecessary visual noise and reduces scannability, as sub-millisecond precision is irrelevant outside of dedicated benchmarking contexts.
 **Action:** Round overall CLI execution times to 1 or 2 decimal places (e.g., `12.42s`) to improve readability and visual polish.
+
+## 2026-03-15 - Actionable Tips in Argument Parsing Errors
+**Learning:** Standard argparse error messages merely print the usage text without an actionable tip, leaving users at a dead end and increasing friction for feature discovery or help menu access.
+**Action:** Always append an actionable tip (e.g., 'Run with --help') to custom CLI error handlers to guide users directly back to the command documentation.
