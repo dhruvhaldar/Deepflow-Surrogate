@@ -23,7 +23,7 @@ class Spinner:
         """Displays the spinning animation."""
         spinner_chars = itertools.cycle(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'])
         while not self.stop_event.is_set():
-            sys.stdout.write(f"\r{self.message} {next(spinner_chars)}")
+            sys.stdout.write(f"\r{self.message} {Colors.OKCYAN}{next(spinner_chars)}{Colors.ENDC}")
             sys.stdout.flush()
             # use wait instead of sleep to be responsive to stop signals
             self.stop_event.wait(0.1)
