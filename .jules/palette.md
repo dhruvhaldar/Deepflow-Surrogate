@@ -119,3 +119,6 @@
 ## 2026-03-15 - Actionable Tips in Argument Parsing Errors
 **Learning:** Standard argparse error messages merely print the usage text without an actionable tip, leaving users at a dead end and increasing friction for feature discovery or help menu access.
 **Action:** Always append an actionable tip (e.g., 'Run with --help') to custom CLI error handlers to guide users directly back to the command documentation.
+## 2024-05-27 - CLI Parameter Validation UX
+**Learning:** For Python CLI tools using `argparse`, manually printing validation errors and calling `sys.exit(1)` bypasses the standard error handling, missing out on automatic usage instructions and standard `stderr` routing.
+**Action:** Always use `parser.error("message")` for argument validation failures after `parse_args()` to ensure consistent CLI UX, automatic usage hints, and correct exit codes.

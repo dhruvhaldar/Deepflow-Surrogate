@@ -623,9 +623,10 @@ def main():
     args = parser.parse_args()
 
     if args.num_points <= 0:
-        print(f"{Colors.FAIL}❌ Error: {Colors.BOLD}--num-points{Colors.ENDC}"
-              f"{Colors.FAIL} must be a positive integer.{Colors.ENDC}")
-        sys.exit(1)
+        parser.error(
+            f"{Colors.BOLD}--num-points{Colors.ENDC} must be a positive integer "
+            f"(got {args.num_points})."
+        )
 
     args.output = validate_output_path(args.output)
 
