@@ -308,8 +308,6 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             pct_quad = (num_quadrangles / num_elements) * 100
 
             def draw_bar(p, length=20):
-                if not Colors.OKBLUE:
-                    return ""
                 exact_fill = (p / 100) * length
                 full_blocks = int(exact_fill)
 
