@@ -444,7 +444,14 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 print() # Add visual spacing before preview
             preview_mesh()
 
-        print(f"\n{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
+        if num_elements == 0:
+            print(
+                f"\n{Colors.WARNING}⚠️  Mesh generation finished, "
+                f"but resulted in an empty mesh.{Colors.ENDC}",
+                flush=True
+            )
+        else:
+            print(f"\n{Colors.OKGREEN}✅ Mesh generation successful.{Colors.ENDC}", flush=True)
 
         gmsh.finalize()
         return True
@@ -584,7 +591,7 @@ class CustomArgumentParser(argparse.ArgumentParser):
         )
         self.exit(2)
 
-def main():
+def main(args=None):
     """Main execution function."""
     parser = CustomArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -618,7 +625,7 @@ def main():
         help="Open the generated mesh in Gmsh GUI immediately."
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     if args.num_points <= 0:
         parser.error(
