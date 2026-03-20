@@ -122,3 +122,7 @@
 ## 2024-05-27 - CLI Parameter Validation UX
 **Learning:** For Python CLI tools using `argparse`, manually printing validation errors and calling `sys.exit(1)` bypasses the standard error handling, missing out on automatic usage instructions and standard `stderr` routing.
 **Action:** Always use `parser.error("message")` for argument validation failures after `parse_args()` to ensure consistent CLI UX, automatic usage hints, and correct exit codes.
+
+## 2026-03-16 - Context-Aware Empty State Success
+**Learning:** When an operation technically succeeds but yields an empty or useless result (like a 0-element mesh), displaying a generic '✅ Success' message confuses users. The final status indicator should reflect the qualitative outcome, not just the technical exit code.
+**Action:** Always conditionally format final success messages to reflect empty or partial states (e.g., using a warning state `⚠️ Finished with 0 elements`) instead of a blanket success.

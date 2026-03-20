@@ -551,10 +551,8 @@ class TestArgparseError(unittest.TestCase):
     @patch('sys.stderr', new_callable=StringIO)
     def test_argparse_error_output(self, mock_stderr):
         """Test that argparse errors are formatted with red color and emoji."""
-        import sys # pylint: disable=import-outside-toplevel
         try:
-            with patch.object(sys, 'argv', ['mesh_generation.py', '--unknown-flag']):
-                mesh_generation.main()
+            mesh_generation.main(['--unknown-flag'])
         except SystemExit:
             pass
         output = mock_stderr.getvalue()
