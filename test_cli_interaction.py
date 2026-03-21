@@ -300,7 +300,7 @@ class TestSpinner(unittest.TestCase):
     @patch('threading.Thread')
     @patch.dict(os.environ, {"NO_COLOR": "1"})
     def test_spinner_no_color(self, mock_thread):
-        """Test that NO_COLOR suppresses spinner animation even in TTY."""
+        """Test that NO_COLOR still runs spinner animation in TTY (graceful degradation)."""
         # pylint: disable=unused-argument
         with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
             mock_stdout.isatty = lambda: True
@@ -309,9 +309,10 @@ class TestSpinner(unittest.TestCase):
                 pass
 
             output = mock_stdout.getvalue()
-            # Should behave like non-TTY mode (no cursor hiding)
-            self.assertNotIn("\033[?25l", output, "Should NOT hide cursor if NO_COLOR is set")
+            # Should behave like TTY mode and hide cursor/run spinner
+            self.assertIn("\033[?25l", output, "Should hide cursor even if NO_COLOR is set")
             self.assertIn("Testing...", output, "Should print message")
+            mock_thread.assert_called_once()
 
 class TestMeshStatistics(unittest.TestCase):
     """Tests for the mesh statistics output."""
