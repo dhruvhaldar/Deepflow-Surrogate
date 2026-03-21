@@ -126,3 +126,6 @@
 ## 2026-03-16 - Context-Aware Empty State Success
 **Learning:** When an operation technically succeeds but yields an empty or useless result (like a 0-element mesh), displaying a generic '✅ Success' message confuses users. The final status indicator should reflect the qualitative outcome, not just the technical exit code.
 **Action:** Always conditionally format final success messages to reflect empty or partial states (e.g., using a warning state `⚠️ Finished with 0 elements`) instead of a blanket success.
+## 2026-03-17 - Graceful Degradation of Text-Based UI
+**Learning:** Completely hiding text-based visual indicators (like spinners) just because ANSI colors are disabled (e.g., `NO_COLOR=1`) removes valuable feedback for users in non-colored but interactive environments.
+**Action:** Ensure CLI UI elements degrade gracefully when colors are disabled by continuing to rely on standard Unicode characters to convey information without color wrappers.
