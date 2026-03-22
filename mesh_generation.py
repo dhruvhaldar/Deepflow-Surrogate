@@ -435,7 +435,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             link_end = "\033]8;;\033\\"
             print(
                 f"\n{Colors.OKGREEN}💾 Mesh written to "
-                f"{Colors.BOLD}{output_file}{Colors.ENDC} "
+                f"{Colors.BOLD}{link_start}{output_file}{link_end}{Colors.ENDC} "
                 f"{Colors.DIM}({readable_size}){Colors.ENDC}",
                 flush=True
             )
@@ -571,7 +571,7 @@ def check_overwrite(filepath, force):
             f"already exists{size_str}.{Colors.ENDC}"
         )
         try:
-            prompt = f"{Colors.FAIL}Overwrite? [y/N] {Colors.ENDC}"
+            prompt = f"{Colors.FAIL}⚠️  Overwrite? [y/N] {Colors.ENDC}"
             with interactive_timer:
                 response = input(prompt).strip().lower()
         except EOFError:
