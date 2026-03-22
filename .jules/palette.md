@@ -129,3 +129,7 @@
 ## 2026-03-17 - Graceful Degradation of Text-Based UI
 **Learning:** Completely hiding text-based visual indicators (like spinners) just because ANSI colors are disabled (e.g., `NO_COLOR=1`) removes valuable feedback for users in non-colored but interactive environments.
 **Action:** Ensure CLI UI elements degrade gracefully when colors are disabled by continuing to rely on standard Unicode characters to convey information without color wrappers.
+
+## 2026-03-18 - Execution Time Includes User Idle Time
+**Learning:** Including the time a user spends idling on interactive prompts (like `input()`) or GUI viewers (like `gmsh.fltk.run()`) inside the CLI "Total execution time" makes the metric wildly inaccurate and useless for judging actual program performance, confusing users about the tool's speed.
+**Action:** Use a context manager to track the duration of all blocking interactive calls (`input`, GUI viewers) and explicitly subtract this `idle_time` from the final execution elapsed time so the metric strictly reflects program execution speed.
