@@ -424,9 +424,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 return False
 
         if output_file:
+            import pathlib # pylint: disable=import-outside-toplevel
             gmsh.write(output_file)
             file_size = os.path.getsize(output_file)
             readable_size = format_size(file_size)
+            # Create absolute file:// URI
+            file_uri = pathlib.Path(output_file).resolve().as_uri()
+            # OSC 8 hyperlink format uses ] not [
+            link_start = f"\033]8;;{file_uri}\033\\"
+            link_end = "\033]8;;\033\\"
             print(
                 f"\n{Colors.OKGREEN}💾 Mesh written to "
                 f"{Colors.BOLD}{output_file}{Colors.ENDC} "
@@ -436,13 +442,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             if preview:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
-                    f"{Colors.BOLD}gmsh {shlex.quote(output_file)}{Colors.ENDC}",
+                    f"{Colors.BOLD}gmsh {link_start}{shlex.quote(output_file)}"
+                    f"{link_end}{Colors.ENDC}",
                     flush=True
                 )
             else:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh using "
-                    f"{Colors.BOLD}gmsh {shlex.quote(output_file)}{Colors.ENDC}{Colors.OKBLUE} "
+                    f"{Colors.BOLD}gmsh {link_start}{shlex.quote(output_file)}"
+                    f"{link_end}{Colors.ENDC}{Colors.OKBLUE} "
                     f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
                     f"{Colors.OKBLUE} next time{Colors.ENDC}",
                     flush=True

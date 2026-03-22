@@ -333,10 +333,13 @@ class TestMeshStatistics(unittest.TestCase):
             self.assertIn("Mesh Statistics:", output)
             self.assertIn("Triangles:", output)
             self.assertIn("Quads:", output)
+            import pathlib
+            file_uri = pathlib.Path(output_file).resolve().as_uri()
             self.assertIn(
-                f"Tip: View the mesh using gmsh {output_file} or run with --preview next time",
+                f"Tip: View the mesh using gmsh \033]8;;{file_uri}\033\\{output_file}\033]8;;\033\\",
                 output
             )
+            self.assertIn("or run with --preview next time", output)
 
         finally:
             if os.path.exists(output_file):
@@ -368,10 +371,13 @@ class TestMeshStatistics(unittest.TestCase):
             self.assertIn("Mesh Statistics:", output)
             self.assertIn("Triangles:", output)
             self.assertIn("Quads:", output)
-            self.assertIn(
-                f"Tip: View the mesh later using gmsh {output_file}",
-                output
-            )
+            # Verify the output contains the base tip structure and the filename
+            self.assertIn("Tip: View the mesh later using gmsh", output)
+            self.assertIn(output_file, output)
+            # Verify that OSC 8 hyperlinks are present
+            import pathlib
+            file_uri = pathlib.Path(output_file).resolve().as_uri()
+            self.assertIn(f"\033]8;;{file_uri}\033\\", output)
             self.assertNotIn("or run with --preview next time", output)
 
         finally:
