@@ -133,3 +133,7 @@
 ## 2026-03-18 - Execution Time Includes User Idle Time
 **Learning:** Including the time a user spends idling on interactive prompts (like `input()`) or GUI viewers (like `gmsh.fltk.run()`) inside the CLI "Total execution time" makes the metric wildly inaccurate and useless for judging actual program performance, confusing users about the tool's speed.
 **Action:** Use a context manager to track the duration of all blocking interactive calls (`input`, GUI viewers) and explicitly subtract this `idle_time` from the final execution elapsed time so the metric strictly reflects program execution speed.
+
+## 2026-03-20 - Clickable File Paths in CLI
+**Learning:** Modern terminal emulators support OSC 8 escape sequences to create clickable hyperlinks, which significantly reduces copy-paste friction for users who want to view generated files.
+**Action:** Use OSC 8 (`\033]8;;{URI}\033\\`) combined with `pathlib.Path(file).resolve().as_uri()` to make file paths clickable in CLI success or tip messages.
