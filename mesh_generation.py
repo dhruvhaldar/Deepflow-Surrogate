@@ -93,6 +93,24 @@ class Colors: # pylint: disable=too-few-public-methods
 if os.getenv('NO_COLOR') or not sys.stdout.isatty():
     Colors.disable()
 
+class InteractiveTimer:
+    """Context manager to track time spent waiting for user input or GUI interaction."""
+    def __init__(self):
+        self.idle_time = 0.0
+
+    def __enter__(self):
+        self.start_time = time.perf_counter()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.idle_time += time.perf_counter() - self.start_time
+
+    def reset(self):
+        self.idle_time = 0.0
+
+# Global instance to track interactive idle time across the execution
+interactive_timer = InteractiveTimer()
+
 def naca0012_y(x, t=0.12, out=None, scratch=None):
     """
     Calculates the y-coordinate of a NACA 0012 airfoil using a fully vectorized approach.
@@ -216,7 +234,8 @@ def preview_mesh():
         )
         try:
             import gmsh # pylint: disable=import-outside-toplevel
-            gmsh.fltk.run()
+            with interactive_timer:
+                gmsh.fltk.run()
         except Exception as e: # pylint: disable=broad-exception-caught
             print(f"{Colors.WARNING}⚠️  Preview failed: {e}{Colors.ENDC}")
     else:
@@ -383,7 +402,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                     f"{Colors.OKBLUE}'? "
                     f"[y/N] or type filename: {Colors.ENDC}"
                 )
-                response = input(prompt).strip()
+                with interactive_timer:
+                    response = input(prompt).strip()
                 response_lower = response.lower()
 
                 if response_lower in ('y', 'yes'):
@@ -544,7 +564,8 @@ def check_overwrite(filepath, force):
         )
         try:
             prompt = f"{Colors.FAIL}Overwrite? [y/N] {Colors.ENDC}"
-            response = input(prompt).strip().lower()
+            with interactive_timer:
+                response = input(prompt).strip().lower()
         except EOFError:
             print() # Add newline to prevent mangled terminal prompt
             print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
@@ -593,6 +614,7 @@ class CustomArgumentParser(argparse.ArgumentParser):
 
 def main(args=None):
     """Main execution function."""
+    interactive_timer.reset()
     parser = CustomArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
@@ -640,14 +662,14 @@ def main(args=None):
 
     ensure_directory_exists(args.output)
 
-    start_time = time.time()
+    start_time = time.perf_counter()
     airfoil_points = generate_airfoil_points(args.num_points)
     success = generate_gmsh_mesh(airfoil_points, args.output, args.preview)
 
     if not success:
         sys.exit(1)
 
-    elapsed_time = time.time() - start_time
+    elapsed_time = max(0.0, time.perf_counter() - start_time - interactive_timer.idle_time)
     formatted_time = format_time(elapsed_time, precision_s=2)
     print(f"\n{Colors.OKBLUE}⏱️  Total execution time: {Colors.DIM}{formatted_time}{Colors.ENDC}")
 
