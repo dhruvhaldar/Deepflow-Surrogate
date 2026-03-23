@@ -137,3 +137,7 @@
 ## 2026-03-20 - Clickable File Paths in CLI
 **Learning:** Modern terminal emulators support OSC 8 escape sequences to create clickable hyperlinks, which significantly reduces copy-paste friction for users who want to view generated files.
 **Action:** Use OSC 8 (`\033]8;;{URI}\033\\`) combined with `pathlib.Path(file).resolve().as_uri()` to make file paths clickable in CLI success or tip messages.
+
+## 2026-03-23 - Reactive Flag Discovery
+**Learning:** Users often miss automation flags (like `--output` or `--force`) in help menus. Prompting them interactively without highlighting the relevant CLI flags forces them to repeatedly use the slower, manual fallback without learning the faster method.
+**Action:** When a user completes a manual interactive flow (like typing a filename or confirming an overwrite), append a context-aware tip suggesting the exact flag they could use next time to skip that prompt entirely.
