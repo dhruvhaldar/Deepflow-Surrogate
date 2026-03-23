@@ -394,6 +394,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             )
 
         # Suggest saving if running interactively and no output specified
+        interactive_save_used = False
         if not output_file and sys.stdout.isatty():
             print(f"\n{Colors.WARNING}⚠️  No output file specified.{Colors.ENDC}", flush=True)
             try:
@@ -418,6 +419,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                     if check_overwrite(proposed_file, force=False):
                         ensure_directory_exists(proposed_file)
                         output_file = proposed_file
+                        interactive_save_used = True
             except EOFError:
                 print() # Add newline to prevent mangled terminal output
                 print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
@@ -453,6 +455,14 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                     f"{link_end}{Colors.ENDC}{Colors.OKBLUE} "
                     f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
                     f"{Colors.OKBLUE} next time{Colors.ENDC}",
+                    flush=True
+                )
+
+            if interactive_save_used:
+                print(
+                    f"{Colors.OKBLUE}💡 Tip: Use {Colors.BOLD}--output "
+                    f"{shlex.quote(output_file)}{Colors.ENDC}{Colors.OKBLUE} "
+                    f"to save automatically without prompting.{Colors.ENDC}",
                     flush=True
                 )
         else:
@@ -580,6 +590,10 @@ def check_overwrite(filepath, force):
             return False
 
         if response in ('y', 'yes'):
+            print(
+                f"{Colors.OKBLUE}💡 Tip: Use {Colors.BOLD}--force{Colors.ENDC}"
+                f"{Colors.OKBLUE} to skip this confirmation next time.{Colors.ENDC}"
+            )
             return True
 
         print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
