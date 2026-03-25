@@ -139,6 +139,15 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
     # on the `out` array directly maps to NumPy's in-place C ufuncs but sidesteps the
     # overhead of explicit Python function calls (e.g., `np.multiply(..., out=out)`),
     # yielding an additional ~15-20% speedup for this dense arithmetic block.
+    if scratch is None:
+        scratch = np.sqrt(x) * c0
+    else:
+        # Optimization: Use a pre-allocated scratch buffer for the `np.sqrt(x) * c0`
+        # term to prevent the final large temporary array allocation.
+        # Computing this first leverages CPU cache since `x` is C-contiguous.
+        np.sqrt(x, out=scratch)
+        scratch *= c0
+
     np.multiply(x, c4, out=out)
     out += c3
     out *= x
@@ -147,14 +156,7 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
     out += c1
     out *= x
 
-    if scratch is None:
-        out += np.sqrt(x) * c0
-    else:
-        # Optimization: Use a pre-allocated scratch buffer for the `np.sqrt(x) * c0`
-        # term to prevent the final large temporary array allocation.
-        np.sqrt(x, out=scratch)
-        scratch *= c0
-        out += scratch
+    out += scratch
 
     return out
 
