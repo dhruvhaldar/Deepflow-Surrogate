@@ -145,3 +145,7 @@
 ## 2026-03-24 - Dim Zero-Value Statistics
 **Learning:** When displaying structured tabular data (like Mesh Statistics) in the CLI, rows containing a zero value (e.g., 0 Quads) can create visual noise that competes with the actual data points present.
 **Action:** Apply dim ANSI styling (`Colors.DIM`) to the entire row of zero-value metrics to visually deprioritize them, allowing the non-zero data to stand out more clearly.
+
+## 2026-03-25 - Robust Input Interrupts
+**Learning:** Python's `input()` will raise a `KeyboardInterrupt` if the user hits Ctrl+C, but typical simple `try...except EOFError` blocks (for Ctrl+D) miss this, leading to unexpected stack traces dumped into the user's terminal on an aborted prompt.
+**Action:** When wrapping `input()` calls in CLI applications, explicitly catch both `EOFError` and `KeyboardInterrupt` as a single tuple `except (EOFError, KeyboardInterrupt):` to ensure all standard terminal interrupt signals result in a clean exit message.

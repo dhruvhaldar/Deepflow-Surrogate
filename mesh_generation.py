@@ -424,7 +424,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         ensure_directory_exists(proposed_file)
                         output_file = proposed_file
                         interactive_save_used = True
-            except EOFError:
+            except (EOFError, KeyboardInterrupt):
                 print() # Add newline to prevent mangled terminal output
                 print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
                 return False
@@ -588,7 +588,7 @@ def check_overwrite(filepath, force):
             prompt = f"{Colors.FAIL}⚠️  Overwrite? [y/N] {Colors.ENDC}"
             with interactive_timer:
                 response = input(prompt).strip().lower()
-        except EOFError:
+        except (EOFError, KeyboardInterrupt):
             print() # Add newline to prevent mangled terminal prompt
             print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
             return False
