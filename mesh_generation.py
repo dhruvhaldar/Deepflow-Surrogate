@@ -253,7 +253,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 
     print(
         f"\n{Colors.OKBLUE}⚙️  Generating mesh for {len(points_for_gmsh):,} "
-        f"points using Gmsh...{Colors.ENDC}",
+        f"point{'s' if len(points_for_gmsh) != 1 else ''} using Gmsh...{Colors.ENDC}",
         flush=True
     )
     try:
@@ -349,16 +349,19 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 return (f"{Colors.OKBLUE}{filled_str}{Colors.ENDC}"
                         f"{Colors.DIM}{empty_str}{Colors.ENDC}")
 
-            print(
-                f"     - Triangles: {Colors.BOLD}{num_triangles:<8,}{Colors.ENDC} "
-                f"{Colors.DIM}({pct_tri:>5.1f}%){Colors.ENDC} {draw_bar(pct_tri)}",
-                flush=True
-            )
-            print(
-                f"     - Quads:     {Colors.BOLD}{num_quadrangles:<8,}{Colors.ENDC} "
-                f"{Colors.DIM}({pct_quad:>5.1f}%){Colors.ENDC} {draw_bar(pct_quad)}",
-                flush=True
-            )
+            def format_stat_line(name, count, pct):
+                label = f"- {name}:"
+                prefix_color = Colors.DIM if count == 0 else ""
+                val_color = Colors.DIM if count == 0 else Colors.BOLD
+                # Pad label to 13 chars to match "- Triangles: " vs "- Quads:     "
+                return (
+                    f"     {prefix_color}{label:<13}{Colors.ENDC}"
+                    f"{val_color}{count:<8,}{Colors.ENDC} "
+                    f"{Colors.DIM}({pct:>5.1f}%){Colors.ENDC} {draw_bar(pct)}"
+                )
+
+            print(format_stat_line("Triangles", num_triangles, pct_tri), flush=True)
+            print(format_stat_line("Quads", num_quadrangles, pct_quad), flush=True)
 
         # Retrieve and display bounding box
         try:

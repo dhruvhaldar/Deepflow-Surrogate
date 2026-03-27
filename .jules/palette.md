@@ -141,3 +141,7 @@
 ## 2026-03-23 - Reactive Flag Discovery
 **Learning:** Users often miss automation flags (like `--output` or `--force`) in help menus. Prompting them interactively without highlighting the relevant CLI flags forces them to repeatedly use the slower, manual fallback without learning the faster method.
 **Action:** When a user completes a manual interactive flow (like typing a filename or confirming an overwrite), append a context-aware tip suggesting the exact flag they could use next time to skip that prompt entirely.
+
+## 2026-03-24 - Dim Zero-Value Statistics
+**Learning:** When displaying structured tabular data (like Mesh Statistics) in the CLI, rows containing a zero value (e.g., 0 Quads) can create visual noise that competes with the actual data points present.
+**Action:** Apply dim ANSI styling (`Colors.DIM`) to the entire row of zero-value metrics to visually deprioritize them, allowing the non-zero data to stand out more clearly.
