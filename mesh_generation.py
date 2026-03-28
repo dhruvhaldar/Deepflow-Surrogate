@@ -10,6 +10,7 @@ import time
 import threading
 import itertools
 import shlex
+import pathlib
 # numpy and gmsh are imported lazily in functions to improve CLI startup time
 
 class Spinner:
@@ -171,6 +172,13 @@ def format_time(elapsed, precision_s=1):
             return "<1ms"
         return f"{ms:.0f}ms"
     return f"{elapsed:.{precision_s}f}s"
+
+def format_file_hyperlink(filepath):
+    """Formats a filepath as an OSC 8 terminal hyperlink string."""
+    file_uri = pathlib.Path(filepath).resolve().as_uri()
+    link_start = f"\033]8;;{file_uri}\033\\"
+    link_end = "\033]8;;\033\\"
+    return f"{link_start}{filepath}{link_end}"
 
 def format_size(size_bytes):
     """Formats bytes into a human-readable string."""
@@ -437,33 +445,33 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 return False
 
         if output_file:
-            import pathlib # pylint: disable=import-outside-toplevel
             gmsh.write(output_file)
             file_size = os.path.getsize(output_file)
             readable_size = format_size(file_size)
             # Create absolute file:// URI
-            file_uri = pathlib.Path(output_file).resolve().as_uri()
-            # OSC 8 hyperlink format uses ] not [
-            link_start = f"\033]8;;{file_uri}\033\\"
-            link_end = "\033]8;;\033\\"
+            linked_output_file = format_file_hyperlink(output_file)
+            # Use raw string for shlex quote to avoid issues with escape sequences
+            quoted_file = shlex.quote(output_file)
+            linked_quoted_file = format_file_hyperlink(quoted_file)
+
             print(
                 f"\n{Colors.OKGREEN}💾 Mesh written to "
-                f"{Colors.BOLD}{link_start}{output_file}{link_end}{Colors.ENDC} "
+                f"{Colors.BOLD}{linked_output_file}{Colors.ENDC} "
                 f"{Colors.DIM}({readable_size}){Colors.ENDC}",
                 flush=True
             )
             if preview:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
-                    f"{Colors.BOLD}gmsh {link_start}{shlex.quote(output_file)}"
-                    f"{link_end}{Colors.ENDC}",
+                    f"{Colors.BOLD}gmsh {linked_quoted_file}"
+                    f"{Colors.ENDC}",
                     flush=True
                 )
             else:
                 print(
                     f"{Colors.OKBLUE}💡 Tip: View the mesh using "
-                    f"{Colors.BOLD}gmsh {link_start}{shlex.quote(output_file)}"
-                    f"{link_end}{Colors.ENDC}{Colors.OKBLUE} "
+                    f"{Colors.BOLD}gmsh {linked_quoted_file}"
+                    f"{Colors.ENDC}{Colors.OKBLUE} "
                     f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
                     f"{Colors.OKBLUE} next time{Colors.ENDC}",
                     flush=True
@@ -560,6 +568,7 @@ def validate_output_path(filepath):
 
 def check_overwrite(filepath, force):
     """Checks if output file exists and prompts user if needed."""
+    # pylint: disable=too-many-locals
     if not filepath or not os.path.exists(filepath) or force:
         return True
 
@@ -587,9 +596,10 @@ def check_overwrite(filepath, force):
         except OSError:
             size_str = ""
 
+        linked_filepath = format_file_hyperlink(filepath)
         print(
-            f"{Colors.WARNING}⚠️  File '{Colors.BOLD}{filepath}{Colors.ENDC}{Colors.WARNING}' "
-            f"already exists{size_str}.{Colors.ENDC}"
+            f"{Colors.WARNING}⚠️  File '{Colors.BOLD}{linked_filepath}"
+            f"{Colors.ENDC}{Colors.WARNING}' already exists{size_str}.{Colors.ENDC}"
         )
         try:
             prompt = f"{Colors.FAIL}⚠️  Overwrite? [y/N] {Colors.ENDC}"
@@ -611,9 +621,10 @@ def check_overwrite(filepath, force):
         return False
 
     # Non-interactive mode, just warn
+    linked_filepath = format_file_hyperlink(filepath)
     print(
         f"{Colors.WARNING}⚠️  Overwriting existing file "
-        f"'{Colors.BOLD}{filepath}{Colors.ENDC}{Colors.WARNING}' "
+        f"'{Colors.BOLD}{linked_filepath}{Colors.ENDC}{Colors.WARNING}' "
         f"(non-interactive).{Colors.ENDC}"
     )
     return True
