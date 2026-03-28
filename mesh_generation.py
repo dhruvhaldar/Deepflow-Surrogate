@@ -358,12 +358,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             def format_stat_line(singular, count, pct):
                 name = singular if count == 1 else f"{singular}s"
                 label = f"- {name}:"
-                prefix_color = Colors.DIM if count == 0 else ""
-                val_color = Colors.DIM if count == 0 else Colors.BOLD
                 # Pad label to 13 chars to match "- Triangles: " vs "- Quads:     "
+                if count == 0:
+                    return (
+                        f"{Colors.DIM}     {label:<13}{count:<8,} "
+                        f"({pct:>5.1f}%) {draw_bar(pct)}{Colors.ENDC}"
+                    )
                 return (
-                    f"     {prefix_color}{label:<13}{Colors.ENDC}"
-                    f"{val_color}{count:<8,}{Colors.ENDC} "
+                    f"     {label:<13}"
+                    f"{Colors.BOLD}{count:<8,}{Colors.ENDC} "
                     f"{Colors.DIM}({pct:>5.1f}%){Colors.ENDC} {draw_bar(pct)}"
                 )
 
