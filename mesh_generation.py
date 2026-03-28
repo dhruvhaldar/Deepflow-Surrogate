@@ -323,9 +323,12 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         num_quadrangles = int(gmsh.option.getNumber("Mesh.NbQuadrangles"))
         num_elements = num_triangles + num_quadrangles
 
+        node_label = "Node:" if num_nodes == 1 else "Nodes:"
+        elem_label = "Element:" if num_elements == 1 else "Elements:"
+
         print(f"\n{Colors.OKCYAN}📊 Mesh Statistics:{Colors.ENDC}", flush=True)
-        print(f"   • Nodes:      {Colors.BOLD}{num_nodes:,}{Colors.ENDC}", flush=True)
-        print(f"   • Elements:   {Colors.BOLD}{num_elements:,}{Colors.ENDC}", flush=True)
+        print(f"   • {node_label:<11} {Colors.BOLD}{num_nodes:,}{Colors.ENDC}", flush=True)
+        print(f"   • {elem_label:<11} {Colors.BOLD}{num_elements:,}{Colors.ENDC}", flush=True)
 
         if num_elements > 0:
             pct_tri = (num_triangles / num_elements) * 100
@@ -352,7 +355,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 return (f"{Colors.OKBLUE}{filled_str}{Colors.ENDC}"
                         f"{Colors.DIM}{empty_str}{Colors.ENDC}")
 
-            def format_stat_line(name, count, pct):
+            def format_stat_line(singular, count, pct):
+                name = singular if count == 1 else f"{singular}s"
                 label = f"- {name}:"
                 prefix_color = Colors.DIM if count == 0 else ""
                 val_color = Colors.DIM if count == 0 else Colors.BOLD
@@ -363,8 +367,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                     f"{Colors.DIM}({pct:>5.1f}%){Colors.ENDC} {draw_bar(pct)}"
                 )
 
-            print(format_stat_line("Triangles", num_triangles, pct_tri), flush=True)
-            print(format_stat_line("Quads", num_quadrangles, pct_quad), flush=True)
+            print(format_stat_line("Triangle", num_triangles, pct_tri), flush=True)
+            print(format_stat_line("Quad", num_quadrangles, pct_quad), flush=True)
 
         # Retrieve and display bounding box
         try:
