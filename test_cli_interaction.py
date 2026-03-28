@@ -331,8 +331,8 @@ class TestMeshStatistics(unittest.TestCase):
 
             output = mock_stdout.getvalue()
             self.assertIn("Mesh Statistics:", output)
-            self.assertIn("Triangles:", output)
-            self.assertIn("Quads:", output)
+            self.assertRegex(output, r"Triangle(s)?:")
+            self.assertRegex(output, r"Quad(s)?:")
             import pathlib
             file_uri = pathlib.Path(output_file).resolve().as_uri()
             self.assertIn(
@@ -369,8 +369,8 @@ class TestMeshStatistics(unittest.TestCase):
 
             output = mock_stdout.getvalue()
             self.assertIn("Mesh Statistics:", output)
-            self.assertIn("Triangles:", output)
-            self.assertIn("Quads:", output)
+            self.assertRegex(output, r"Triangle(s)?:")
+            self.assertRegex(output, r"Quad(s)?:")
             # Verify the output contains the base tip structure and the filename
             self.assertIn("Tip: View the mesh later using gmsh", output)
             self.assertIn(output_file, output)
@@ -396,8 +396,8 @@ class TestMeshStatistics(unittest.TestCase):
 
         output = mock_stdout.getvalue()
         self.assertIn("Mesh Statistics:", output)
-        self.assertIn("Triangles:", output)
-        self.assertIn("Quads:", output)
+        self.assertRegex(output, r"Triangle(s)?:")
+        self.assertRegex(output, r"Quad(s)?:")
         self.assertNotIn("Tip: View the mesh", output)
 
     @patch('sys.stdout', new_callable=StringIO)

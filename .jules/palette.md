@@ -149,3 +149,6 @@
 ## 2026-03-25 - Robust Input Interrupts
 **Learning:** Python's `input()` will raise a `KeyboardInterrupt` if the user hits Ctrl+C, but typical simple `try...except EOFError` blocks (for Ctrl+D) miss this, leading to unexpected stack traces dumped into the user's terminal on an aborted prompt.
 **Action:** When wrapping `input()` calls in CLI applications, explicitly catch both `EOFError` and `KeyboardInterrupt` as a single tuple `except (EOFError, KeyboardInterrupt):` to ensure all standard terminal interrupt signals result in a clean exit message.
+## 2024-05-19 - Dynamic Noun Pluralization in CLI Outputs
+**Learning:** Hardcoded plural nouns in CLI statistics (e.g., "Nodes: 1") look unpolished and grammatically incorrect when the count is exactly one.
+**Action:** Dynamically pluralize nouns based on their count variables (e.g., "Node: 1" vs "Nodes: 2") while maintaining fixed-width string formatting to preserve exact vertical alignment of the accompanying numerical data.
