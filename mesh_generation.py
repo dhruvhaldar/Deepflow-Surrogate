@@ -173,12 +173,14 @@ def format_time(elapsed, precision_s=1):
         return f"{ms:.0f}ms"
     return f"{elapsed:.{precision_s}f}s"
 
-def format_file_hyperlink(filepath):
+def format_file_hyperlink(filepath, display_text=None):
     """Formats a filepath as an OSC 8 terminal hyperlink string."""
+    if display_text is None:
+        display_text = filepath
     file_uri = pathlib.Path(filepath).resolve().as_uri()
     link_start = f"\033]8;;{file_uri}\033\\"
     link_end = "\033]8;;\033\\"
-    return f"{link_start}{filepath}{link_end}"
+    return f"{link_start}{display_text}{link_end}"
 
 def format_size(size_bytes):
     """Formats bytes into a human-readable string."""
@@ -452,7 +454,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             linked_output_file = format_file_hyperlink(output_file)
             # Use raw string for shlex quote to avoid issues with escape sequences
             quoted_file = shlex.quote(output_file)
-            linked_quoted_file = format_file_hyperlink(quoted_file)
+            linked_quoted_file = format_file_hyperlink(output_file, display_text=quoted_file)
 
             print(
                 f"\n{Colors.OKGREEN}💾 Mesh written to "
