@@ -337,8 +337,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         elem_label = "Element:" if num_elements == 1 else "Elements:"
 
         print(f"\n{Colors.OKCYAN}📊 Mesh Statistics:{Colors.ENDC}", flush=True)
-        print(f"   • {node_label:<12} {Colors.BOLD}{num_nodes:,}{Colors.ENDC}", flush=True)
-        print(f"   • {elem_label:<12} {Colors.BOLD}{num_elements:,}{Colors.ENDC}", flush=True)
+        print(f"   • {node_label:<12} {Colors.BOLD}{num_nodes:>8,}{Colors.ENDC}", flush=True)
+        print(f"   • {elem_label:<12} {Colors.BOLD}{num_elements:>8,}{Colors.ENDC}", flush=True)
 
         if num_elements > 0:
             pct_tri = (num_triangles / num_elements) * 100
@@ -371,12 +371,12 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 # Pad label to 13 chars to match "- Triangles: " vs "- Quads:     "
                 if count == 0:
                     return (
-                        f"{Colors.DIM}     {label:<13}{count:<8,} "
+                        f"{Colors.DIM}     {label:<13}{count:>8,} "
                         f"({pct:>5.1f}%) {draw_bar(pct)}{Colors.ENDC}"
                     )
                 return (
                     f"     {label:<13}"
-                    f"{Colors.BOLD}{count:<8,}{Colors.ENDC} "
+                    f"{Colors.BOLD}{count:>8,}{Colors.ENDC} "
                     f"{Colors.DIM}({pct:>5.1f}%){Colors.ENDC} {draw_bar(pct)}"
                 )
 
