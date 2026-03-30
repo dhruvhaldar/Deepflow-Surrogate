@@ -156,3 +156,6 @@
 ## 2024-06-25 - Clickable File Paths in Destructive Prompts
 **Learning:** Providing an explicit file path in a warning (e.g., "Overwriting existing file 'abc.msh'") is helpful, but if the user wants to quickly check the file before confirming, they have to manually find it. Adding an OSC 8 terminal hyperlink directly into the prompt drastically reduces friction, allowing them to instantly view the target file.
 **Action:** Apply OSC 8 terminal hyperlinks (`\033]8;;{URI}\033\\`) to file paths within destructive or warning CLI prompts (like overwrite confirmations) to improve the Developer Experience.
+## 2026-03-26 - Graceful External Write Error Handling
+**Learning:** External libraries (like Gmsh) often silently suppress standard file I/O exceptions or throw generic library exceptions when failing to write to a path (e.g., due to permissions or an invalid directory). If unhandled, this causes subsequent `os.path.getsize()` calls to crash with a confusing `FileNotFoundError` stack trace.
+**Action:** Always wrap external library file write operations in `try...except Exception` blocks, specifically checking for file existence afterward, and reraise as a standard `OSError` to allow the CLI to render a consistent, styled error message about permissions.

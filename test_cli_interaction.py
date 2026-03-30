@@ -363,6 +363,7 @@ class TestMeshStatistics(unittest.TestCase):
                  patch('sys.platform', "linux"), \
                  patch('sys.stdout.isatty', return_value=True), \
                  patch('os.path.getsize', return_value=1024), \
+                 patch('os.path.exists', return_value=True), \
                  patch.dict('sys.modules', {'gmsh': mock_gmsh}):
 
                 mesh_generation.generate_gmsh_mesh(points, output_file, preview=True)
