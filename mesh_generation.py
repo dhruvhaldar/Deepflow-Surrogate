@@ -337,8 +337,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         elem_label = "Element:" if num_elements == 1 else "Elements:"
 
         print(f"\n{Colors.OKCYAN}📊 Mesh Statistics:{Colors.ENDC}", flush=True)
-        print(f"   • {node_label:<11} {Colors.BOLD}{num_nodes:,}{Colors.ENDC}", flush=True)
-        print(f"   • {elem_label:<11} {Colors.BOLD}{num_elements:,}{Colors.ENDC}", flush=True)
+        print(f"   • {node_label:<12} {Colors.BOLD}{num_nodes:,}{Colors.ENDC}", flush=True)
+        print(f"   • {elem_label:<12} {Colors.BOLD}{num_elements:,}{Colors.ENDC}", flush=True)
 
         if num_elements > 0:
             pct_tri = (num_triangles / num_elements) * 100
