@@ -447,45 +447,62 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 return False
 
         if output_file:
-            gmsh.write(output_file)
-            file_size = os.path.getsize(output_file)
-            readable_size = format_size(file_size)
-            # Create absolute file:// URI
-            linked_output_file = format_file_hyperlink(output_file)
-            # Use raw string for shlex quote to avoid issues with escape sequences
-            quoted_file = shlex.quote(output_file)
-            linked_quoted_file = format_file_hyperlink(output_file, display_text=quoted_file)
+            try:
+                # Capture standard output/error if gmsh throws a generic exception
+                # or silently fails but we want to catch it. Actually gmsh throws an Exception
+                # on write failure: "Unable to open file '/root/airfoil.msh'". We want to catch it
+                # properly to show the helpful UI.
+                try:
+                    gmsh.write(output_file)
+                except Exception as e:
+                    # Reraise as OSError to handle it gracefully in the UI block
+                    raise OSError(str(e)) from e
 
-            print(
-                f"\n{Colors.OKGREEN}💾 Mesh written to "
-                f"{Colors.BOLD}{linked_output_file}{Colors.ENDC} "
-                f"{Colors.DIM}({readable_size}){Colors.ENDC}",
-                flush=True
-            )
-            if preview:
-                print(
-                    f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
-                    f"{Colors.BOLD}gmsh {linked_quoted_file}"
-                    f"{Colors.ENDC}",
-                    flush=True
-                )
-            else:
-                print(
-                    f"{Colors.OKBLUE}💡 Tip: View the mesh using "
-                    f"{Colors.BOLD}gmsh {linked_quoted_file}"
-                    f"{Colors.ENDC}{Colors.OKBLUE} "
-                    f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
-                    f"{Colors.OKBLUE} next time{Colors.ENDC}",
-                    flush=True
-                )
+                if not os.path.exists(output_file):
+                    raise OSError(f"Gmsh silently failed to write '{output_file}'")
+                file_size = os.path.getsize(output_file)
+                readable_size = format_size(file_size)
+                # Create absolute file:// URI
+                linked_output_file = format_file_hyperlink(output_file)
+                # Use raw string for shlex quote to avoid issues with escape sequences
+                quoted_file = shlex.quote(output_file)
+                linked_quoted_file = format_file_hyperlink(output_file, display_text=quoted_file)
 
-            if interactive_save_used:
                 print(
-                    f"{Colors.OKBLUE}💡 Tip: Use {Colors.BOLD}--output "
-                    f"{shlex.quote(output_file)}{Colors.ENDC}{Colors.OKBLUE} "
-                    f"to save automatically without prompting.{Colors.ENDC}",
+                    f"\n{Colors.OKGREEN}💾 Mesh written to "
+                    f"{Colors.BOLD}{linked_output_file}{Colors.ENDC} "
+                    f"{Colors.DIM}({readable_size}){Colors.ENDC}",
                     flush=True
                 )
+                if preview:
+                    print(
+                        f"{Colors.OKBLUE}💡 Tip: View the mesh later using "
+                        f"{Colors.BOLD}gmsh {linked_quoted_file}"
+                        f"{Colors.ENDC}",
+                        flush=True
+                    )
+                else:
+                    print(
+                        f"{Colors.OKBLUE}💡 Tip: View the mesh using "
+                        f"{Colors.BOLD}gmsh {linked_quoted_file}"
+                        f"{Colors.ENDC}{Colors.OKBLUE} "
+                        f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
+                        f"{Colors.OKBLUE} next time{Colors.ENDC}",
+                        flush=True
+                    )
+
+                if interactive_save_used:
+                    print(
+                        f"{Colors.OKBLUE}💡 Tip: Use {Colors.BOLD}--output "
+                        f"{shlex.quote(output_file)}{Colors.ENDC}{Colors.OKBLUE} "
+                        f"to save automatically without prompting.{Colors.ENDC}",
+                        flush=True
+                    )
+            except OSError:
+                print(f"\n{Colors.FAIL}❌ Error: Unable to write to file "
+                      f"'{Colors.BOLD}{output_file}{Colors.ENDC}{Colors.FAIL}'. "
+                      f"Please check your permissions and path.{Colors.ENDC}")
+                return False
         else:
             # Only show warning if not interactive, to avoid nagging after a 'no' response
             if not sys.stdout.isatty():
