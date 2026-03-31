@@ -67,3 +67,7 @@
 ## 2025-05-27 - Vectorized Math Reordering for Cache Hits
 **Learning:** In complex mathematical expressions over NumPy arrays using pre-allocated `out` and `scratch` buffers, evaluating operations on the C-contiguous buffer (`scratch`) *before* operations on the F-contiguous slice (`out`) leads to better CPU cache utilization and reduces strided access overhead.
 **Action:** Order vectorized math expressions to perform computationally heavy operations (like `np.sqrt`) on contiguous memory first before assigning to non-contiguous slices. This simple reordering yields ~11-15% performance improvement in the hot path.
+
+## 2024-05-27 - Vectorized Math Reordering for Cache Hits
+**Learning:** In complex mathematical expressions over NumPy arrays using pre-allocated `out` and `scratch` buffers, evaluating operations on the C-contiguous buffer (`scratch`) *before* operations on the F-contiguous slice (`out`) leads to better CPU cache utilization and reduces strided access overhead.
+**Action:** Order vectorized math expressions to perform computationally heavy operations (like `np.sqrt`) on contiguous memory first before assigning to non-contiguous slices. This simple reordering yields ~11-15% performance improvement in the hot path.
