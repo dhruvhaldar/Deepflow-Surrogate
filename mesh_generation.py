@@ -144,14 +144,6 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
     # computationally heavy operations (`np.sqrt`) on the C-contiguous `scratch`
     # buffer yields better CPU cache utilization and reduces strided access overhead,
     # giving a ~11-15% performance improvement.
-    np.multiply(x, c4, out=out)
-    out += c3
-    out *= x
-    out += c2
-    out *= x
-    out += c1
-    out *= x
-
     if scratch is None:
         scratch = np.sqrt(x) * c0
     else:
@@ -159,6 +151,14 @@ def naca0012_y(x, t=0.12, out=None, scratch=None):
         # term to prevent the final large temporary array allocation.
         np.sqrt(x, out=scratch)
         scratch *= c0
+
+    np.multiply(x, c4, out=out)
+    out += c3
+    out *= x
+    out += c2
+    out *= x
+    out += c1
+    out *= x
 
     out += scratch
 
