@@ -441,9 +441,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         ensure_directory_exists(proposed_file)
                         output_file = proposed_file
                         interactive_save_used = True
+                    else:
+                        gmsh.finalize()
+                        return False
             except (EOFError, KeyboardInterrupt):
                 print() # Add newline to prevent mangled terminal output
                 print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
+                gmsh.finalize()
                 return False
 
         if output_file:
