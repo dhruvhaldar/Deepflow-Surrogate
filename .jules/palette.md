@@ -159,3 +159,7 @@
 ## 2026-03-26 - Graceful External Write Error Handling
 **Learning:** External libraries (like Gmsh) often silently suppress standard file I/O exceptions or throw generic library exceptions when failing to write to a path (e.g., due to permissions or an invalid directory). If unhandled, this causes subsequent `os.path.getsize()` calls to crash with a confusing `FileNotFoundError` stack trace.
 **Action:** Always wrap external library file write operations in `try...except Exception` blocks, specifically checking for file existence afterward, and reraise as a standard `OSError` to allow the CLI to render a consistent, styled error message about permissions.
+
+## 2026-03-27 - Cancel Operation Friction
+**Learning:** Users who trigger interactive prompts (like save destinations or overwrite confirmations) often experience friction or anxiety if they decide to cancel, because it's not clear whether standard shell interrupt combinations (like `Ctrl+C`) are caught safely or will crash the application.
+**Action:** Always append an explicit cancellation hint (e.g., `(Ctrl+C to cancel)`) formatted with dim styling (`Colors.DIM`) to the end of blocking interactive prompts to reassure users and improve overall CLI UX.

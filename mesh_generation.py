@@ -422,7 +422,8 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                 prompt = (
                     f"{Colors.OKBLUE}💾 Save to '{Colors.BOLD}airfoil.msh{Colors.ENDC}"
                     f"{Colors.OKBLUE}'? "
-                    f"[y/N] or type filename: {Colors.ENDC}"
+                    f"[y/N] or type filename {Colors.DIM}(Ctrl+C to cancel){Colors.ENDC}"
+                    f"{Colors.OKBLUE}: {Colors.ENDC}"
                 )
                 with interactive_timer:
                     response = input(prompt).strip()
@@ -625,7 +626,8 @@ def check_overwrite(filepath, force):
             f"{Colors.ENDC}{Colors.WARNING}' already exists{size_str}.{Colors.ENDC}"
         )
         try:
-            prompt = f"{Colors.FAIL}⚠️  Overwrite? [y/N] {Colors.ENDC}"
+            prompt = (f"{Colors.FAIL}⚠️  Overwrite? [y/N] "
+                      f"{Colors.DIM}(Ctrl+C to cancel){Colors.ENDC}{Colors.FAIL} {Colors.ENDC}")
             with interactive_timer:
                 response = input(prompt).strip().lower()
         except (EOFError, KeyboardInterrupt):

@@ -336,7 +336,8 @@ class TestMeshStatistics(unittest.TestCase):
             import pathlib
             file_uri = pathlib.Path(output_file).resolve().as_uri()
             self.assertIn(
-                f"Tip: View the mesh using gmsh \033]8;;{file_uri}\033\\{output_file}\033]8;;\033\\",
+                (f"Tip: View the mesh using gmsh \033]8;;{file_uri}\033\\"
+                 f"{output_file}\033]8;;\033\\"),
                 output
             )
             self.assertIn("or run with --preview next time", output)
@@ -535,7 +536,8 @@ class TestInteractiveSave(unittest.TestCase):
             mesh_generation.generate_gmsh_mesh(points, output_file=None)
 
             mock_in.assert_called_once()
-            self.assertIn("or type filename:", mock_in.call_args[0][0])
+            self.assertIn("or type filename", mock_in.call_args[0][0])
+            self.assertIn("(Ctrl+C to cancel)", mock_in.call_args[0][0])
 
             mock_chk.assert_called_with("custom_mesh.msh", force=False)
             mock_ensure.assert_called_with("custom_mesh.msh")
