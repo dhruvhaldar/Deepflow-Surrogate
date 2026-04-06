@@ -393,7 +393,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
             print(
                 f"   • X Range:    [{Colors.BOLD}{bbox[0]:>7.4f}{Colors.ENDC}, "
                 f"{Colors.BOLD}{bbox[3]:>7.4f}{Colors.ENDC}] "
-                f"{Colors.DIM}(Width: {width:>7.4f}){Colors.ENDC}",
+                f"{Colors.DIM}(Width:  {width:>7.4f}){Colors.ENDC}",
                 flush=True
             )
             print(
