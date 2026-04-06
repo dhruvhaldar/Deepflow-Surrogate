@@ -9,3 +9,7 @@
 ## 2025-03-17 - Add Multi-Step Sequence Indicators to Progress Spinners
 **Learning:** When a CLI tool has a multi-step process utilizing separate loading spinners, adding explicit step indicators (e.g., `[1/2]`, `[2/2]`) to the spinner messages significantly improves the user's mental model by establishing clear expectations about the total duration and remaining phases of the operation.
 **Action:** Always prepend step indicators to progressive loading spinners when the operation involves multiple distinct phases.
+
+## 2025-03-24 - Align Inline Dimensions in CLI Outputs
+**Learning:** When displaying grouped secondary context inline (like Width and Height next to coordinate ranges), using exact character spacing to vertically align the labels (e.g., `Width:  ` vs `Height: `) significantly enhances visual harmony and scannability, turning chaotic terminal output into structured tabular data.
+**Action:** Always pad inline descriptive labels within the same visual block to match the width of the longest label, ensuring the subsequent dynamic data aligns perfectly on the vertical axis.
