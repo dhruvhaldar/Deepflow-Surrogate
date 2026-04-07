@@ -163,3 +163,7 @@
 ## 2026-03-27 - Cancel Operation Friction
 **Learning:** Users who trigger interactive prompts (like save destinations or overwrite confirmations) often experience friction or anxiety if they decide to cancel, because it's not clear whether standard shell interrupt combinations (like `Ctrl+C`) are caught safely or will crash the application.
 **Action:** Always append an explicit cancellation hint (e.g., `(Ctrl+C to cancel)`) formatted with dim styling (`Colors.DIM`) to the end of blocking interactive prompts to reassure users and improve overall CLI UX.
+
+## 2026-03-28 - Command Formatting in Help Menus
+**Learning:** Command examples inside help menus (like the argparse epilog) often use colored styling instead of bold styling, which breaks visual consistency with the in-app actionable CLI command tips.
+**Action:** Ensure all command examples, even within standard help or usage text, utilize `Colors.BOLD` formatting to maintain a unified visual hierarchy for actionable shell strings.

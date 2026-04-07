@@ -687,7 +687,7 @@ def main(args=None):
     parser = CustomArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Generate a 2D unstructured mesh around a NACA 0012 airfoil using Gmsh.",
-        epilog=f"Example: {Colors.OKCYAN}python mesh_generation.py "
+        epilog=f"Example: {Colors.BOLD}python mesh_generation.py "
                f"--num-points 200 --output airfoil.msh{Colors.ENDC}"
     )
     parser.add_argument(
