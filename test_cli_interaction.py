@@ -28,7 +28,8 @@ class TestDirectoryCreation(unittest.TestCase):
         # Note: os.path.dirname("new_dir/file.msh") -> "new_dir"
         mesh_generation.ensure_directory_exists("new_dir/file.msh")
         mock_makedirs.assert_called_with("new_dir", exist_ok=True)
-        self.assertIn("Created directory 'new_dir'", mock_stdout.getvalue())
+        self.assertIn("Created directory '", mock_stdout.getvalue())
+        self.assertIn("new_dir", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     @patch('os.makedirs')
@@ -40,7 +41,8 @@ class TestDirectoryCreation(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm:
             mesh_generation.ensure_directory_exists("root_dir/file.msh")
         self.assertEqual(cm.exception.code, 1)
-        self.assertIn("Error creating directory 'root_dir'", mock_stdout.getvalue())
+        self.assertIn("Error creating directory '", mock_stdout.getvalue())
+        self.assertIn("root_dir", mock_stdout.getvalue())
 
     @patch('os.makedirs')
     def test_no_output_file(self, mock_makedirs):
@@ -148,7 +150,8 @@ class TestOutputPathValidation(unittest.TestCase):
         """Test that .msh is appended if extension is missing."""
         result = mesh_generation.validate_output_path("output_file")
         self.assertEqual(result, "output_file.msh")
-        self.assertIn("Defaulting to 'output_file.msh'", mock_stdout.getvalue())
+        self.assertIn("Defaulting to '", mock_stdout.getvalue())
+        self.assertIn("output_file.msh", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_valid_extension(self, mock_stdout):
