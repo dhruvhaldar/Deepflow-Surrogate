@@ -505,8 +505,9 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         flush=True
                     )
             except OSError:
+                linked_output_file = format_file_hyperlink(output_file)
                 print(f"\n{Colors.FAIL}❌ Error: Unable to write to file "
-                      f"'{Colors.BOLD}{output_file}{Colors.ENDC}{Colors.FAIL}'. "
+                      f"'{Colors.BOLD}{linked_output_file}{Colors.ENDC}{Colors.FAIL}'. "
                       f"Please check your permissions and path.{Colors.ENDC}")
                 return False
         else:
@@ -564,10 +565,12 @@ def validate_output_path(filepath):
 
     if os.path.isdir(filepath) or is_dir_path:
         new_filepath = os.path.join(filepath, "airfoil.msh")
+        linked_filepath = format_file_hyperlink(filepath)
+        linked_new_filepath = format_file_hyperlink(new_filepath)
         print(
-            f"{Colors.OKCYAN}ℹ️  Output path '{Colors.BOLD}{filepath}{Colors.ENDC}"
+            f"{Colors.OKCYAN}ℹ️  Output path '{Colors.BOLD}{linked_filepath}{Colors.ENDC}"
             f"{Colors.OKCYAN}' appears to be a directory. "
-            f"Using '{Colors.BOLD}{new_filepath}{Colors.ENDC}{Colors.OKCYAN}'.{Colors.ENDC}"
+            f"Using '{Colors.BOLD}{linked_new_filepath}{Colors.ENDC}{Colors.OKCYAN}'.{Colors.ENDC}"
         )
         return new_filepath
 
@@ -575,10 +578,13 @@ def validate_output_path(filepath):
 
     if not ext:
         new_filepath = f"{filepath}.msh"
+        linked_filepath = format_file_hyperlink(filepath)
+        linked_new_filepath = format_file_hyperlink(new_filepath)
         print(
-            f"{Colors.OKCYAN}ℹ️  Output filename '{Colors.BOLD}{filepath}{Colors.ENDC}"
+            f"{Colors.OKCYAN}ℹ️  Output filename '{Colors.BOLD}{linked_filepath}{Colors.ENDC}"
             f"{Colors.OKCYAN}' has no extension. "
-            f"Defaulting to '{Colors.BOLD}{new_filepath}{Colors.ENDC}{Colors.OKCYAN}'.{Colors.ENDC}"
+            f"Defaulting to '{Colors.BOLD}{linked_new_filepath}{Colors.ENDC}"
+            f"{Colors.OKCYAN}'.{Colors.ENDC}"
         )
         return new_filepath
 
@@ -664,11 +670,13 @@ def ensure_directory_exists(filepath):
     if directory and not os.path.exists(directory):
         try:
             os.makedirs(directory, exist_ok=True)
+            linked_directory = format_file_hyperlink(directory)
             print(f"{Colors.OKBLUE}📂 Created directory "
-                  f"'{Colors.BOLD}{directory}{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}")
+                  f"'{Colors.BOLD}{linked_directory}{Colors.ENDC}{Colors.OKBLUE}'{Colors.ENDC}")
         except OSError as e:
+            linked_directory = format_file_hyperlink(directory)
             print(f"{Colors.FAIL}❌ Error creating directory "
-                  f"'{Colors.BOLD}{directory}{Colors.ENDC}{Colors.FAIL}': {e}{Colors.ENDC}")
+                  f"'{Colors.BOLD}{linked_directory}{Colors.ENDC}{Colors.FAIL}': {e}{Colors.ENDC}")
             sys.exit(1)
 
 class CustomArgumentParser(argparse.ArgumentParser):
