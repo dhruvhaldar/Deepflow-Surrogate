@@ -427,7 +427,7 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                     f"{Colors.OKBLUE}: {Colors.ENDC}"
                 )
                 with interactive_timer:
-                    response = input(prompt).strip()
+                    response = input(prompt).strip().strip('\'"')
                 response_lower = response.lower()
 
                 if response_lower in ('y', 'yes'):
@@ -636,7 +636,7 @@ def check_overwrite(filepath, force):
             prompt = (f"{Colors.FAIL}⚠️  Overwrite? [y/N] "
                       f"{Colors.DIM}(Ctrl+C to cancel){Colors.ENDC}{Colors.FAIL} {Colors.ENDC}")
             with interactive_timer:
-                response = input(prompt).strip().lower()
+                response = input(prompt).strip().strip('\'"').lower()
         except (EOFError, KeyboardInterrupt):
             print() # Add newline to prevent mangled terminal prompt
             print(f"{Colors.FAIL}❌ Operation cancelled.{Colors.ENDC}")
