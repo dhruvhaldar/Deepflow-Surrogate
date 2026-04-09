@@ -167,3 +167,7 @@
 ## 2026-03-28 - Command Formatting in Help Menus
 **Learning:** Command examples inside help menus (like the argparse epilog) often use colored styling instead of bold styling, which breaks visual consistency with the in-app actionable CLI command tips.
 **Action:** Ensure all command examples, even within standard help or usage text, utilize `Colors.BOLD` formatting to maintain a unified visual hierarchy for actionable shell strings.
+
+## 2026-03-29 - Drag and Drop Terminal Inputs
+**Learning:** Users commonly drag-and-drop file or folder paths into terminal prompts instead of typing them manually. However, many terminal emulators (like macOS Terminal or standard Linux terminals) automatically wrap dragged paths in literal single or double quotes, leading to malformed file names when processed by Python's `input()` if not explicitly handled.
+**Action:** Always append `.strip('\'"')` to the result of interactive CLI inputs intended for file paths to smoothly handle drag-and-drop terminal actions without throwing an error or creating corrupted filenames.
