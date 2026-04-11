@@ -171,3 +171,7 @@
 ## 2026-03-29 - Drag and Drop Terminal Inputs
 **Learning:** Users commonly drag-and-drop file or folder paths into terminal prompts instead of typing them manually. However, many terminal emulators (like macOS Terminal or standard Linux terminals) automatically wrap dragged paths in literal single or double quotes, leading to malformed file names when processed by Python's `input()` if not explicitly handled.
 **Action:** Always append `.strip('\'"')` to the result of interactive CLI inputs intended for file paths to smoothly handle drag-and-drop terminal actions without throwing an error or creating corrupted filenames.
+
+## 2026-04-10 - Live Elapsed Time in Spinners
+**Learning:** During long-running operations, users appreciate active feedback about how long they have been waiting, as it helps them manage expectations better than only seeing the total duration after the operation completes.
+**Action:** Enhance animated CLI spinners to display a live, updating elapsed time alongside the spinner character to provide continuous performance context.
