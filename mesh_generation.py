@@ -19,12 +19,17 @@ class Spinner:
         self.message = message
         self.stop_event = threading.Event()
         self.thread = None
+        self.start_time = time.perf_counter()
 
     def spin(self):
-        """Displays the spinning animation."""
+        """Displays the spinning animation with a live timer."""
         spinner_chars = itertools.cycle(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'])
         while not self.stop_event.is_set():
-            sys.stdout.write(f"\r{self.message} {Colors.OKCYAN}{next(spinner_chars)}{Colors.ENDC}")
+            elapsed = time.perf_counter() - self.start_time
+            time_str = f" {Colors.DIM}({format_time(elapsed, precision_s=1)}){Colors.ENDC}"
+            sys.stdout.write(
+                f"\r{self.message} {Colors.OKCYAN}{next(spinner_chars)}{Colors.ENDC}{time_str}"
+            )
             sys.stdout.flush()
             # use wait instead of sleep to be responsive to stop signals
             self.stop_event.wait(0.1)

@@ -245,6 +245,7 @@ class TestSpinner(unittest.TestCase):
             output = mock_stdout.getvalue()
             self.assertIn("\033[?25l", output, "Should hide cursor in TTY mode")
             self.assertIn("\033[?25h", output, "Should show cursor after spinner")
+            self.assertRegex(output, r"\([0-9.]+m?s\)", "Should show elapsed time")
 
     def test_spinner_non_tty(self):
         """Test spinner behavior in non-TTY mode."""
