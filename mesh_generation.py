@@ -238,15 +238,17 @@ def generate_airfoil_points(num_points):
 
     return points
 
-def preview_mesh():
-    """Opens the generated mesh in Gmsh GUI."""
+def is_headless_env():
+    """Checks if the environment is headless (lacks display capability)."""
     # Check for display environment (Linux/Unix requires DISPLAY)
     # macOS and Windows usually handle GUI without explicit env var
-    is_headless = os.getenv("DISPLAY") is None and \
-                  sys.platform != "darwin" and \
-                  os.name != "nt"
+    return os.getenv("DISPLAY") is None and \
+           sys.platform != "darwin" and \
+           os.name != "nt"
 
-    if sys.stdout.isatty() and not is_headless:
+def preview_mesh():
+    """Opens the generated mesh in Gmsh GUI."""
+    if sys.stdout.isatty() and not is_headless_env():
         print(
             f"{Colors.OKBLUE}👀 Opening preview... "
             f"{Colors.DIM}(Close window to finish){Colors.ENDC}",
@@ -259,7 +261,7 @@ def preview_mesh():
         except Exception as e: # pylint: disable=broad-exception-caught
             print(f"{Colors.WARNING}⚠️  Preview failed: {e}{Colors.ENDC}")
     else:
-        reason = "No display detected" if is_headless else "Non-interactive session"
+        reason = "No display detected" if is_headless_env() else "Non-interactive session"
         print(
             f"{Colors.WARNING}⚠️  Preview skipped: {reason}.{Colors.ENDC}"
         )
@@ -493,14 +495,22 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
                         flush=True
                     )
                 else:
-                    print(
-                        f"{Colors.OKBLUE}💡 Tip: View the mesh using "
-                        f"{Colors.BOLD}gmsh {linked_quoted_file}"
-                        f"{Colors.ENDC}{Colors.OKBLUE} "
-                        f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
-                        f"{Colors.OKBLUE} next time{Colors.ENDC}",
-                        flush=True
-                    )
+                    if is_headless_env():
+                        print(
+                            f"{Colors.OKBLUE}💡 Tip: View the mesh using "
+                            f"{Colors.BOLD}gmsh {linked_quoted_file}"
+                            f"{Colors.ENDC}",
+                            flush=True
+                        )
+                    else:
+                        print(
+                            f"{Colors.OKBLUE}💡 Tip: View the mesh using "
+                            f"{Colors.BOLD}gmsh {linked_quoted_file}"
+                            f"{Colors.ENDC}{Colors.OKBLUE} "
+                            f"or run with {Colors.BOLD}--preview{Colors.ENDC}"
+                            f"{Colors.OKBLUE} next time{Colors.ENDC}",
+                            flush=True
+                        )
 
                 if interactive_save_used:
                     print(

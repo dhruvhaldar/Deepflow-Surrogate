@@ -322,8 +322,10 @@ class TestMeshStatistics(unittest.TestCase):
     """Tests for the mesh statistics output."""
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_output_format_with_file(self, mock_stdout):
+    @patch('mesh_generation.is_headless_env', return_value=False)
+    def test_output_format_with_file(self, mock_is_headless, mock_stdout):
         """Test that the output format includes element breakdown and tip when file is saved."""
+        # pylint: disable=unused-argument
         # Use a small number of points for speed
         points = mesh_generation.generate_airfoil_points(20)
         output_file = "test_stats.msh"
@@ -345,6 +347,31 @@ class TestMeshStatistics(unittest.TestCase):
                 output
             )
             self.assertIn("or run with --preview next time", output)
+
+        finally:
+            if os.path.exists(output_file):
+                os.remove(output_file)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('mesh_generation.is_headless_env', return_value=True)
+    def test_output_format_with_file_headless(self, mock_is_headless, mock_stdout):
+        """Test that the --preview tip is suppressed in headless environments."""
+        # pylint: disable=unused-argument
+        points = mesh_generation.generate_airfoil_points(20)
+        output_file = "test_stats_headless.msh"
+
+        try:
+            mesh_generation.generate_gmsh_mesh(points, output_file)
+
+            output = mock_stdout.getvalue()
+            import pathlib
+            file_uri = pathlib.Path(output_file).resolve().as_uri()
+            self.assertIn(
+                f"\033]8;;{file_uri}\033\\",
+                output
+            )
+            self.assertIn("Tip: View the mesh using", output)
+            self.assertNotIn("or run with --preview next time", output)
 
         finally:
             if os.path.exists(output_file):
