@@ -175,3 +175,7 @@
 ## 2026-04-10 - Live Elapsed Time in Spinners
 **Learning:** During long-running operations, users appreciate active feedback about how long they have been waiting, as it helps them manage expectations better than only seeing the total duration after the operation completes.
 **Action:** Enhance animated CLI spinners to display a live, updating elapsed time alongside the spinner character to provide continuous performance context.
+
+## 2026-04-15 - Context-Aware Environment Tips
+**Learning:** Suggesting CLI flags that require a specific environment (like `--preview` which requires a GUI/Display) creates a poor UX when the user is running the tool in a headless environment (like SSH, CI/CD, or WSL without X11 server). The user copies the command only to be met with an immediate environment error.
+**Action:** Always make UI suggestions context-aware regarding the current execution environment. Only suggest GUI-dependent flags if a display environment is actively detected, ensuring tips are always actionable and successful.
