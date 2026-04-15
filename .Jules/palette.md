@@ -13,3 +13,7 @@
 ## 2025-03-24 - Align Inline Dimensions in CLI Outputs
 **Learning:** When displaying grouped secondary context inline (like Width and Height next to coordinate ranges), using exact character spacing to vertically align the labels (e.g., `Width:  ` vs `Height: `) significantly enhances visual harmony and scannability, turning chaotic terminal output into structured tabular data.
 **Action:** Always pad inline descriptive labels within the same visual block to match the width of the longest label, ensuring the subsequent dynamic data aligns perfectly on the vertical axis.
+
+## 2024-05-25 - Provide Actionable Tips for CLI Warnings
+**Learning:** When displaying a warning about an unsupported user action or input (like an invalid file extension), providing a concrete, actionable tip (e.g., suggesting the preferred `.msh` extension) significantly reduces user friction and helps them self-correct without needing to consult documentation.
+**Action:** Always follow up CLI warnings with a `Colors.OKBLUE` tip explicitly stating the recommended fix or preferred value.
