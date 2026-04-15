@@ -609,6 +609,10 @@ def validate_output_path(filepath):
             f"{Colors.WARNING}' is likely not supported by Gmsh. "
             f"The generation might fail.{Colors.ENDC}"
         )
+        print(
+            f"{Colors.OKBLUE}💡 Tip: Use the {Colors.BOLD}.msh{Colors.ENDC}"
+            f"{Colors.OKBLUE} extension for native Gmsh format.{Colors.ENDC}"
+        )
 
     return filepath
 
