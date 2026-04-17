@@ -75,3 +75,6 @@
 ## 2025-05-28 - Gmsh Meshing Algorithm Performance
 **Learning:** For 2D surface meshes (like our unstructured airfoil), Gmsh's Frontal-Delaunay algorithm (Algorithm 6) is consistently ~30-40% faster than the standard Delaunay algorithm (Algorithm 5) while generating the exact same triangular meshes, particularly as the node count grows large. (Algorithm 8 generates quadrilaterals, which changes the output entirely).
 **Action:** Default to `gmsh.option.setNumber("Mesh.Algorithm", 6)` when using Gmsh to generate 2D surface meshes, instead of Algorithm 5.
+## 2026-04-17 - Map Outperforms List Comprehension for C API Calls
+**Learning:** When repeatedly calling a C API function (like `gmsh.model.geo.addPoint`) thousands of times with multiple arguments from parallel lists in Python, using `list(map(add_point, xs, ys, [0.0]*len(xs), [lc]*len(xs)))` is measurably faster than a list comprehension `[add_point(x, y, 0.0, lc) for x, y in zip(xs, ys)]`. This is because `map` pushes the iteration entirely down to C level, avoiding the overhead of evaluating Python bytecode for the loop and `zip` generator on every single iteration.
+**Action:** When a bottleneck involves mapping parallel list data to a simple function or C extension call without internal Python logic, prefer `map()` over list comprehensions or explicit `for` loops.
