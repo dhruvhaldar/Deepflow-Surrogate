@@ -312,10 +312,15 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 
         with Spinner(f"{Colors.OKBLUE}   [1/2] Building geometry...{Colors.ENDC}"):
             add_point = gmsh.model.geo.addPoint
-            point_tags = [
-                add_point(x, y, 0.0, lc)
-                for x, y in zip(xs, ys)
-            ]
+
+            # Optimization: When repeatedly calling a C API function (like addPoint) thousands
+            # of times, using a list comprehension with zip() introduces Python loop overhead.
+            # Pre-allocating parallel lists for constant arguments and using `list(map(...))`
+            # pushes the iteration entirely to the C level, yielding significant speedups.
+            num_pts = len(xs)
+            zs = [0.0] * num_pts
+            lcs = [lc] * num_pts
+            point_tags = list(map(add_point, xs, ys, zs, lcs))
 
             # Connect points with a single polyline
             # Append the first point tag to the end to close the loop
