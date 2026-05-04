@@ -315,12 +315,19 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
 
             # Optimization: When repeatedly calling a C API function (like addPoint) thousands
             # of times, using a list comprehension with zip() introduces Python loop overhead.
-            # Pre-allocating parallel lists for constant arguments and using `list(map(...))`
-            # pushes the iteration entirely to the C level, yielding significant speedups.
-            num_pts = len(xs)
-            zs = [0.0] * num_pts
-            lcs = [lc] * num_pts
-            point_tags = list(map(add_point, xs, ys, zs, lcs))
+            # While pre-allocating parallel lists for constant arguments and using `list(map)`
+            # pushes the iteration to the C level, allocating lists of identical constants
+            # (e.g. `[0.0] * 500_000`) consumes unnecessary memory (~33% of the argument size).
+            # Optimization: Use `itertools.repeat(constant)` to stream the constant values lazily
+            # into the C-level map. This preserves the speed of `map` while eliminating the memory
+            # allocation entirely for the constant arrays.
+            point_tags = list(map(
+                add_point,
+                xs,
+                ys,
+                itertools.repeat(0.0),
+                itertools.repeat(lc)
+            ))
 
             # Connect points with a single polyline
             # Append the first point tag to the end to close the loop
