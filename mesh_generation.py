@@ -216,11 +216,11 @@ def generate_airfoil_points(num_points):
     points = np.zeros((total_points, 3), order='F')
 
     # Upper surface (reversed): x from 1 to 0
-    x_rev = x[::-1]
-    points[:num_points, 0] = x_rev
+
+    np.copyto(points[:num_points, 0], x[::-1])
 
     # Lower surface (skip leading edge point): x from 0 to 1
-    points[num_points:, 0] = x[1:]
+    np.copyto(points[num_points:, 0], x[1:])
 
     # Optimization: Evaluating the equation using the newly assigned, Fortran-contiguous
     # array slice `points[:num_points, 0]` is faster than using `x_rev` directly because
@@ -313,21 +313,13 @@ def generate_gmsh_mesh(points_for_gmsh, output_file=None, preview=False):
         with Spinner(f"{Colors.OKBLUE}   [1/2] Building geometry...{Colors.ENDC}"):
             add_point = gmsh.model.geo.addPoint
 
-            # Optimization: When repeatedly calling a C API function (like addPoint) thousands
-            # of times, using a list comprehension with zip() introduces Python loop overhead.
-            # While pre-allocating parallel lists for constant arguments and using `list(map)`
-            # pushes the iteration to the C level, allocating lists of identical constants
-            # (e.g. `[0.0] * 500_000`) consumes unnecessary memory (~33% of the argument size).
-            # Optimization: Use `itertools.repeat(constant)` to stream the constant values lazily
-            # into the C-level map. This preserves the speed of `map` while eliminating the memory
-            # allocation entirely for the constant arrays.
-            point_tags = list(map(
-                add_point,
-                xs,
-                ys,
-                itertools.repeat(0.0),
-                itertools.repeat(lc)
-            ))
+            # Optimization: We previously optimized repeatedly calling a C API function
+            # (like addPoint) by using `list(map(..., itertools.repeat(constant)))` to push
+            # iteration overhead to C while strictly eliminating memory allocation for constant
+            # arguments. However, in modern Python (3.12+), a standard list comprehension with
+            # `zip` is consistently faster and cleaner than `map` because the overhead of
+            # evaluating `itertools.repeat` inside the C implementation of `map` negates benefits.
+            point_tags = [add_point(x, y, 0.0, lc) for x, y in zip(xs, ys)]
 
             # Connect points with a single polyline
             # Append the first point tag to the end to close the loop

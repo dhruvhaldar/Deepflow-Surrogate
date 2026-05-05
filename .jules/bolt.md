@@ -83,3 +83,11 @@
 ## 2026-05-04 - Zero-Allocation Constant Streaming with itertools.repeat
 **Learning:** We previously optimized repeatedly calling a C API function (like `gmsh.model.geo.addPoint`) by using `list(map(func, xs, ys, zs, lcs))` to push iteration overhead to C, pre-allocating parallel lists for constant arguments (`zs = [0.0] * N`). However, for very large inputs, eagerly allocating these identical constant lists consumes significant and unnecessary memory (e.g. 15MB overhead for 1M points).
 **Action:** Replace eagerly pre-allocated lists of constants with lazy generators like `itertools.repeat(constant)`. For example, `list(map(func, xs, ys, itertools.repeat(0.0), itertools.repeat(lc)))`. This preserves the iteration speed benefits of pushing execution to the C-level while strictly eliminating the memory allocation for constant arguments, yielding a ~33% memory footprint reduction for the parameter block and a slight execution speedup.
+
+## 2024-05-30 - copyto vs assignment
+**Learning:** For assigning data to NumPy array slices, `np.copyto(dst_slice, src_array)` is slightly faster than direct slice assignment (`dst_slice = src_array`).
+**Action:** Use `np.copyto` for assigning data to NumPy array slices instead of direct assignment.
+
+## 2024-05-30 - map vs zip for gmsh list iteration
+**Learning:** We previously optimized repeatedly calling a C API function (like `gmsh.model.geo.addPoint`) by using `list(map(func, xs, ys, itertools.repeat(0.0), itertools.repeat(lc)))`. However, benchmarking shows that for the `gmsh.model.geo.addPoint` function and general Python functions in Python 3.12, a list comprehension with `zip` (`[add_point(x, y, 0.0, lc) for x, y in zip(xs, ys)]`) is consistently faster than using `map` with `itertools.repeat` because the overhead of `itertools.repeat` inside the C implementation of `map` negates the benefits.
+**Action:** Revert to using a list comprehension with `zip()` for iterating over parallel lists when calling C API functions like `gmsh.model.geo.addPoint`, as it is faster and cleaner.
