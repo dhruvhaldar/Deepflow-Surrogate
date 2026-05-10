@@ -11,6 +11,13 @@ import threading
 import itertools
 import shlex
 import pathlib
+
+try:
+    # Enhances input() with arrow keys, home/end, and history on Unix terminals
+    import readline  # pylint: disable=unused-import
+except ImportError:
+    pass
+
 # numpy and gmsh are imported lazily in functions to improve CLI startup time
 
 class Spinner:

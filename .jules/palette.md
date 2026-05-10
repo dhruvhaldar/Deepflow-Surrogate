@@ -179,3 +179,7 @@
 ## 2026-04-15 - Context-Aware Environment Tips
 **Learning:** Suggesting CLI flags that require a specific environment (like `--preview` which requires a GUI/Display) creates a poor UX when the user is running the tool in a headless environment (like SSH, CI/CD, or WSL without X11 server). The user copies the command only to be met with an immediate environment error.
 **Action:** Always make UI suggestions context-aware regarding the current execution environment. Only suggest GUI-dependent flags if a display environment is actively detected, ensuring tips are always actionable and successful.
+
+## 2024-05-10 - Rich CLI Input Navigation
+**Learning:** Python's built-in `input()` function does not automatically support rich line editing (arrow keys, home/end, backspace/delete, or history) on Unix terminals. Users who make a typo in a file path and attempt to use an arrow key to correct it will see raw escape sequences like `^[[D` instead of cursor movement, creating a highly frustrating UX.
+**Action:** Always import the standard library `readline` module (wrapped in `try...except ImportError` since it's Unix-only) in CLI scripts that prompt for user text input. This implicitly enables native shell-like text navigation for all `input()` calls.
