@@ -1,0 +1,10 @@
+{
+  "name": "deepflow-surrogate-root",
+  "private": true,
+  "scripts": {
+    "build": "npm run build --prefix frontend"
+  },
+  "dependencies": {
+    "next": "14.2.33"
+  }
+}
