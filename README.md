@@ -261,3 +261,21 @@ When contributing, please keep changes scoped and well-documented.
 Add your chosen license here (for example MIT, Apache-2.0, or BSD-3-Clause) and include a `LICENSE` file in the repository root.
 
 If a license already exists, this section should match that file.
+
+## Frontend Showcase (Vercel-ready)
+
+A Next.js frontend is available in `frontend/` to present the project's capabilities.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+For production verification:
+
+```bash
+npm run build
+```
+
+Deploy directly on Vercel by importing the repository and setting `frontend` as the root directory for the project.
