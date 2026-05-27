@@ -33,7 +33,16 @@ export default function HomePage() {
         </p>
         <div className="heroActions">
           <a className="button primary" href="#demos">Explore demos</a>
-          <a className="button ghost" href={REPO_URL} target="_blank" rel="noreferrer">View on GitHub</a>
+          <a
+            className="button ghost"
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View on GitHub (opens in a new tab)"
+            style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
+          >
+            View on GitHub <span aria-hidden="true">↗</span>
+          </a>
         </div>
       </section>
 
