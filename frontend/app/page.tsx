@@ -1,62 +1,70 @@
 const REPO_URL = 'https://github.com/<your-username>/Deepflow-Surrogate';
-const LICENSE_URL = 'https://github.com/<your-username>/Deepflow-Surrogate#license';
 
-const capabilities = [
+const demos = [
   {
-    title: 'Deterministic Mesh Generation',
-    description:
-      'Generate repeatable surrogate 2D meshes from simple geometric definitions for fast simulation pre-processing.',
+    name: 'Deterministic Mesh Generation',
+    tag: 'Core Demo',
+    command: 'python mesh_generation.py --shape rectangle --width 8 --height 4 --seed 42',
+    summary: 'Generate the same mesh topology every run for reproducible simulation pre-processing.',
   },
   {
-    title: 'Test-Driven Workflows',
-    description:
-      'Validate mesh behavior with dedicated test modules covering core logic and CLI-like interaction pathways.',
+    name: 'Test-Driven Validation',
+    tag: 'Quality Demo',
+    command: 'pytest -q',
+    summary: 'Run focused tests that verify geometry behaviors and guard against regressions.',
   },
   {
-    title: 'Performance Benchmarking',
-    description:
-      'Run lightweight benchmark scripts to profile generation speed and compare optimization changes over time.',
+    name: 'Performance Benchmarking',
+    tag: 'Speed Demo',
+    command: 'python benchmark_mesh_generation.py --runs 30',
+    summary: 'Track throughput trends and compare optimization wins across commits.',
   },
 ];
 
 export default function HomePage() {
   return (
-    <main className="container">
-      <header className="hero">
-        <p className="eyebrow">Deepflow-Surrogate</p>
-        <h1>Vercel-ready frontend showcase</h1>
-        <p>
-          This frontend demonstrates how the project can be presented as a clean product page while highlighting mesh generation,
-          testing, and benchmarking capabilities.
+    <main className="page">
+      <section className="hero glass">
+        <p className="kicker">Deepflow-Surrogate</p>
+        <h1>Show, don&apos;t tell.</h1>
+        <p className="lead">
+          A modern demo-driven showcase inspired by clean product storytelling—so visitors can immediately run,
+          verify, and benchmark what this library does.
         </p>
-      </header>
+        <div className="heroActions">
+          <a className="button primary" href="#demos">Explore demos</a>
+          <a className="button ghost" href={REPO_URL} target="_blank" rel="noreferrer">View on GitHub</a>
+        </div>
+      </section>
 
-      <section>
-        <h2>Project capabilities</h2>
-        <div className="grid">
-          {capabilities.map((item) => (
-            <article key={item.title} className="card">
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
+      <section id="demos" className="section">
+        <div className="sectionHeading">
+          <h2>Demo flows</h2>
+          <p>Each card is a practical workflow you can run in seconds.</p>
+        </div>
+        <div className="cards">
+          {demos.map((demo) => (
+            <article className="card glass" key={demo.name}>
+              <span className="chip">{demo.tag}</span>
+              <h3>{demo.name}</h3>
+              <p>{demo.summary}</p>
+              <code>{demo.command}</code>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="codeBlock">
-        <h2>Quick start commands</h2>
+      <section className="section glass stack">
+        <div className="sectionHeading">
+          <h2>Run everything</h2>
+          <p>Use the full sequence to preview generation, confidence checks, and performance baselines.</p>
+        </div>
         <pre>
 {`python mesh_generation.py
 pytest -q
 python benchmark_mesh_generation.py`}
         </pre>
       </section>
-
-      <footer>
-        <a href={REPO_URL} target="_blank" rel="noreferrer">GitHub Repository</a>
-        <a href={LICENSE_URL} target="_blank" rel="noreferrer">License</a>
-        <a href="https://dhruvhaldar.vercel.app/" target="_blank" rel="noreferrer">Dhruv Haldar</a>
-      </footer>
     </main>
   );
 }

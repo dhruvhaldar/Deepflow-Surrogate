@@ -1,63 +1,148 @@
 :root {
-  color-scheme: light dark;
-  --bg: #0b1020;
-  --card: #111934;
-  --text: #f2f5ff;
-  --muted: #b7c2e6;
-  --accent: #4f8cff;
+  --bg: #f5f6f8;
+  --surface: rgba(255, 255, 255, 0.72);
+  --text: #0f172a;
+  --muted: #475569;
+  --line: rgba(15, 23, 42, 0.1);
+  --accent: #0a84ff;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  background: radial-gradient(circle at top, #18284f, var(--bg));
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 500px at 85% -5%, rgba(10, 132, 255, 0.18), transparent 60%),
+    radial-gradient(900px 500px at -20% 20%, rgba(175, 82, 222, 0.12), transparent 60%),
+    var(--bg);
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 4rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+}
+
+.hero {
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+h1 {
+  margin: 0.4rem 0 0.8rem;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.04;
+}
+
+.lead,
+.sectionHeading p,
+.card p {
+  color: var(--muted);
+}
+
+.lead {
+  max-width: 70ch;
+  font-size: 1.08rem;
+}
+
+.heroActions {
+  margin-top: 1.4rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  padding: 0.65rem 1.05rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+
+.button:hover { transform: translateY(-1px); }
+
+.button.primary {
+  background: var(--accent);
+  color: white;
+}
+
+.button.ghost {
+  border: 1px solid var(--line);
   color: var(--text);
 }
 
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 3rem 1rem;
-  display: grid;
-  gap: 2rem;
+.section {
+  padding: 1.5rem;
 }
 
-.hero h1 { font-size: 2.25rem; margin: 0.5rem 0; }
-.eyebrow { color: var(--accent); font-weight: 600; margin: 0; }
-.hero p { color: var(--muted); max-width: 70ch; }
+.sectionHeading h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+}
 
-.grid {
+.sectionHeading p { margin-top: 0.35rem; }
+
+.cards {
+  margin-top: 1rem;
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .card {
-  background: color-mix(in oklab, var(--card), black 8%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 1rem;
+  padding: 1.1rem;
+  display: grid;
+  gap: 0.65rem;
 }
 
-.card p { color: var(--muted); }
+.chip {
+  width: fit-content;
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  background: rgba(10, 132, 255, 0.08);
+  color: #0657b7;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
 
-.codeBlock pre {
-  margin: 0;
-  background: #070b17;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  padding: 1rem;
+.card h3 { margin: 0; }
+
+code,
+pre {
+  background: #0f172a;
+  color: #dbeafe;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.card code {
+  font-size: 0.84rem;
+  padding: 0.65rem 0.75rem;
   overflow-x: auto;
 }
 
-footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  padding-top: 1rem;
+.stack pre {
+  margin: 0.3rem 0 0;
+  padding: 1rem;
+  overflow-x: auto;
 }
-
-a { color: #8db3ff; text-underline-offset: 3px; }
