@@ -91,3 +91,7 @@
 ## 2024-05-30 - map vs zip for gmsh list iteration
 **Learning:** We previously optimized repeatedly calling a C API function (like `gmsh.model.geo.addPoint`) by using `list(map(func, xs, ys, itertools.repeat(0.0), itertools.repeat(lc)))`. However, benchmarking shows that for the `gmsh.model.geo.addPoint` function and general Python functions in Python 3.12, a list comprehension with `zip` (`[add_point(x, y, 0.0, lc) for x, y in zip(xs, ys)]`) is consistently faster than using `map` with `itertools.repeat` because the overhead of `itertools.repeat` inside the C implementation of `map` negates the benefits.
 **Action:** Revert to using a list comprehension with `zip()` for iterating over parallel lists when calling C API functions like `gmsh.model.geo.addPoint`, as it is faster and cleaner.
+
+## 2024-06-03 - Optimization Limits Reached
+**Learning:** After extensive profiling of `mesh_generation.py`, testing `np.array_equal` vs `np.allclose`, testing NumPy execution order, evaluating Gmsh bulk coordinate insertion (`addPoint` via maps, list comprehensions, and OCC kernel comparisons), and analyzing React UI rendering, we confirmed that all practical optimizations listed in the memory and standard checklists have already been applied. No new bottlenecks exist that can be fixed cleanly in <50 lines without sacrificing readability or correctness.
+**Action:** Stop and do not create a PR when no suitable performance optimization can be identified that guarantees correctness and preserves code readability. Wait for tomorrow's opportunity.
