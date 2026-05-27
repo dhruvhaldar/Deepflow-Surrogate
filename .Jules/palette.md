@@ -17,3 +17,7 @@
 ## 2024-05-25 - Provide Actionable Tips for CLI Warnings
 **Learning:** When displaying a warning about an unsupported user action or input (like an invalid file extension), providing a concrete, actionable tip (e.g., suggesting the preferred `.msh` extension) significantly reduces user friction and helps them self-correct without needing to consult documentation.
 **Action:** Always follow up CLI warnings with a `Colors.OKBLUE` tip explicitly stating the recommended fix or preferred value.
+
+## 2024-05-27 - Frictionless Core Actions via Clipboard Integration
+**Learning:** For developer tooling sites where the core user journey involves running CLI commands, manually selecting and copying code snippets is a high-friction interaction. Providing an explicit, accessible one-click "Copy to Clipboard" button directly alongside the commands dramatically improves UX. Adding temporary visual feedback ("Copied ✓") with `aria-live` regions ensures confidence without disorienting screen readers.
+**Action:** When displaying instructional CLI commands or code snippets in a web interface, always accompany them with an accessible one-click copy button to make the execution path as frictionless as possible.

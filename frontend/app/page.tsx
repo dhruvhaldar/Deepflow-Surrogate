@@ -1,3 +1,5 @@
+import CopyButton from './CopyButton';
+
 const REPO_URL = 'https://github.com/<your-username>/Deepflow-Surrogate';
 
 const demos = [
@@ -57,7 +59,10 @@ export default function HomePage() {
               <span className="chip">{demo.tag}</span>
               <h3>{demo.name}</h3>
               <p>{demo.summary}</p>
-              <code>{demo.command}</code>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between' }}>
+                <code style={{ flex: 1, margin: 0 }}>{demo.command}</code>
+                <CopyButton text={demo.command} />
+              </div>
             </article>
           ))}
         </div>
@@ -68,11 +73,16 @@ export default function HomePage() {
           <h2>Run everything</h2>
           <p>Use the full sequence to preview generation, confidence checks, and performance baselines.</p>
         </div>
-        <pre>
+        <div style={{ position: 'relative' }}>
+          <pre style={{ paddingRight: '5rem', margin: 0 }}>
 {`python mesh_generation.py
 pytest -q
 python benchmark_mesh_generation.py`}
-        </pre>
+          </pre>
+          <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}>
+            <CopyButton text={"python mesh_generation.py\npytest -q\npython benchmark_mesh_generation.py"} />
+          </div>
+        </div>
       </section>
     </main>
   );
