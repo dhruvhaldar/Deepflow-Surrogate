@@ -27,7 +27,8 @@ export default function CopyButton({ text }: { text: string }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '0.3rem'
+        gap: '0.3rem',
+        minWidth: '5.5rem'
       }}
     >
       {copied ? (
