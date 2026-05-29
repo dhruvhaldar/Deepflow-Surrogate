@@ -21,3 +21,6 @@
 ## 2024-05-27 - Frictionless Core Actions via Clipboard Integration
 **Learning:** For developer tooling sites where the core user journey involves running CLI commands, manually selecting and copying code snippets is a high-friction interaction. Providing an explicit, accessible one-click "Copy to Clipboard" button directly alongside the commands dramatically improves UX. Adding temporary visual feedback ("Copied ✓") with `aria-live` regions ensures confidence without disorienting screen readers.
 **Action:** When displaying instructional CLI commands or code snippets in a web interface, always accompany them with an accessible one-click copy button to make the execution path as frictionless as possible.
+## 2024-05-29 - Making Scrollable Code Blocks Keyboard Accessible
+**Learning:** Elements like `<pre>` or `<code>` with `overflow-x: auto` are often inaccessible to keyboard-only users because they are not focusable by default, meaning users cannot use arrow keys to scroll horizontally to see the full content.
+**Action:** Always add `tabIndex={0}` and clear `:focus-visible` styles to any container with scrollable overflow to ensure keyboard-only users can focus and interact with the hidden content.
