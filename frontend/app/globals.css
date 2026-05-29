@@ -147,7 +147,9 @@ pre {
   overflow-x: auto;
 }
 
-.button:focus-visible {
+.button:focus-visible,
+code:focus-visible,
+pre:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
