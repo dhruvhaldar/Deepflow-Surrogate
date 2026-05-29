@@ -7,6 +7,12 @@
   --accent: #0a84ff;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 * { box-sizing: border-box; }
 
 body {
