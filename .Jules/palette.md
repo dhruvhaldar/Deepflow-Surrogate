@@ -24,3 +24,11 @@
 ## 2024-05-29 - Making Scrollable Code Blocks Keyboard Accessible
 **Learning:** Elements like `<pre>` or `<code>` with `overflow-x: auto` are often inaccessible to keyboard-only users because they are not focusable by default, meaning users cannot use arrow keys to scroll horizontally to see the full content.
 **Action:** Always add `tabIndex={0}` and clear `:focus-visible` styles to any container with scrollable overflow to ensure keyboard-only users can focus and interact with the hidden content.
+
+## 2025-05-30 - Inclusive Smooth Scrolling
+**Learning:** Adding `scroll-behavior: smooth` drastically improves the experience of anchor link navigation by providing context of where the user is moving on the page, instead of a jarring instant jump. However, this motion can trigger nausea or dizziness in users with vestibular disorders.
+**Action:** Always wrap `scroll-behavior: smooth` inside a `@media (prefers-reduced-motion: no-preference)` query to respect system-level accessibility settings and ensure inclusive UX.
+
+## 2025-05-30 - Prevent Checking in Build Artifacts
+**Learning:** During frontend development or testing with Next.js, running `pnpm build` creates a `frontend/.next` folder with massive build artifacts. If these files are added to git, it bloats the repository and pollutes pull requests.
+**Action:** Ensure that the `frontend/.next` folder is properly excluded in `.gitignore` (which it was), but also be extremely careful when staging files (e.g. `git add -A`) to avoid adding ignored or untracked build output to the index. Always verify `git status` before requesting code review.
