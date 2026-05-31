@@ -32,3 +32,7 @@
 ## 2025-05-30 - Prevent Checking in Build Artifacts
 **Learning:** During frontend development or testing with Next.js, running `pnpm build` creates a `frontend/.next` folder with massive build artifacts. If these files are added to git, it bloats the repository and pollutes pull requests.
 **Action:** Ensure that the `frontend/.next` folder is properly excluded in `.gitignore` (which it was), but also be extremely careful when staging files (e.g. `git add -A`) to avoid adding ignored or untracked build output to the index. Always verify `git status` before requesting code review.
+
+## 2025-05-30 - Clarify Internal Scroll Navigation
+**Learning:** For single-page layouts, users can hesitate when clicking links like "Explore demos" because they fear being navigated away to a completely different page.
+**Action:** Always add a downward directional arrow (`↓`) to internal anchor links (e.g. `href="#demos"`) to visually communicate that the link will simply scroll them down the current page, reducing hesitation and setting correct expectations.
