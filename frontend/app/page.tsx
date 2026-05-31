@@ -34,7 +34,13 @@ export default function HomePage() {
           verify, and benchmark what this library does.
         </p>
         <div className="heroActions">
-          <a className="button primary" href="#demos">Explore demos</a>
+          <a
+            className="button primary"
+            href="#demos"
+            style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
+          >
+            Explore demos <span aria-hidden="true">↓</span>
+          </a>
           <a
             className="button ghost"
             href={REPO_URL}
@@ -48,9 +54,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="demos" className="section">
+      <section id="demos" className="section" aria-labelledby="demos-heading">
         <div className="sectionHeading">
-          <h2>Demo flows</h2>
+          <h2 id="demos-heading">Demo flows</h2>
           <p>Each card is a practical workflow you can run in seconds.</p>
         </div>
         <div className="cards">
@@ -68,9 +74,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section glass stack">
+      <section className="section glass stack" aria-labelledby="run-everything-heading">
         <div className="sectionHeading">
-          <h2>Run everything</h2>
+          <h2 id="run-everything-heading">Run everything</h2>
           <p>Use the full sequence to preview generation, confidence checks, and performance baselines.</p>
         </div>
         <div style={{ position: 'relative' }}>
