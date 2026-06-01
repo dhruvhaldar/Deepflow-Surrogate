@@ -36,3 +36,6 @@
 ## 2025-05-30 - Clarify Internal Scroll Navigation
 **Learning:** For single-page layouts, users can hesitate when clicking links like "Explore demos" because they fear being navigated away to a completely different page.
 **Action:** Always add a downward directional arrow (`↓`) to internal anchor links (e.g. `href="#demos"`) to visually communicate that the link will simply scroll them down the current page, reducing hesitation and setting correct expectations.
+## 2024-06-01 - Context-Aware ARIA Labels for Repeated UI Elements
+**Learning:** When using repeated generic interactive elements (like a "Copy" button inside a list of demo cards), providing a static generic `aria-label` (e.g., "Copy to clipboard") forces screen reader users to listen to the surrounding context to understand *what* is being copied.
+**Action:** Always provide unique, context-aware `aria-label`s for repeated interactive elements (e.g., "Copy command for Deterministic Mesh Generation") to make their purpose immediately clear in isolation.

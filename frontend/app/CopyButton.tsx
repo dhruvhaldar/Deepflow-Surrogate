@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function CopyButton({ text }: { text: string }) {
+export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { text: string; ariaLabel?: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -21,8 +21,8 @@ export default function CopyButton({ text }: { text: string }) {
         type="button"
         onClick={handleCopy}
         className="button ghost"
-        aria-label="Copy to clipboard"
-        title="Copy to clipboard"
+        aria-label={ariaLabel}
+        title={ariaLabel}
         style={{
           padding: '0.3rem 0.6rem',
           fontSize: '0.8rem',
