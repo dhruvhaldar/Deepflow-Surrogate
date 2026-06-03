@@ -1,0 +1,12 @@
+
+> deepflow-surrogate-frontend@0.1.0 dev /app/frontend
+> next dev
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1969ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.5s (462 modules)
+ GET / 200 in 7988ms
