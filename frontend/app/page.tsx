@@ -25,7 +25,7 @@ const demos = [
 
 export default function HomePage() {
   return (
-    <main className="page">
+    <main id="main-content" tabIndex={-1} className="page">
       <section className="hero glass">
         <p className="kicker">Deepflow-Surrogate</p>
         <h1>Show, don&apos;t tell.</h1>

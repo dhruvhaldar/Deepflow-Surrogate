@@ -39,3 +39,11 @@
 ## 2024-06-01 - Context-Aware ARIA Labels for Repeated UI Elements
 **Learning:** When using repeated generic interactive elements (like a "Copy" button inside a list of demo cards), providing a static generic `aria-label` (e.g., "Copy to clipboard") forces screen reader users to listen to the surrounding context to understand *what* is being copied.
 **Action:** Always provide unique, context-aware `aria-label`s for repeated interactive elements (e.g., "Copy command for Deterministic Mesh Generation") to make their purpose immediately clear in isolation.
+
+## 2025-06-03 - Accessible Skip Links for SPAs
+**Learning:** In Single Page Applications (like Next.js React apps), screen reader and keyboard-only users often have to tab through repetitive global navigation or header structures on every route change. Adding a visually hidden "Skip to main content" link as the first focusable element on the page drastically improves accessibility.
+**Action:** Always include an accessible skip link (`<a href="#main-content" className="skip-link">...</a>`) positioned off-screen that reveals itself on `:focus`, and ensure the target `<main>` container has `id="main-content"` and `tabIndex={-1}` to programmatically receive focus without a jarring focus outline.
+
+## 2025-06-03 - Native Button Pointer Feedback
+**Learning:** While CSS frameworks or standard resets often strip default styling from native `<button>` elements, they often forget to explicitly add `cursor: pointer`. This causes buttons (like standalone Copy Buttons) to display a default text or arrow cursor, leading to user hesitation as it breaks the expected interaction model of clickable web elements (like `<a>` tags).
+**Action:** Always ensure any class used on native `<button>` elements (e.g., `.button`) explicitly includes `cursor: pointer;` to provide confident, expected hover feedback.
