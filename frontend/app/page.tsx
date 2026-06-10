@@ -66,7 +66,7 @@ export default function HomePage() {
               <h3>{demo.name}</h3>
               <p>{demo.summary}</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between' }}>
-                <code tabIndex={0} style={{ flex: 1, margin: 0 }}>{demo.command}</code>
+                <code tabIndex={0} style={{ flex: 1, margin: 0, minWidth: 0 }}>{demo.command}</code>
                 <CopyButton text={demo.command} ariaLabel={`Copy command for ${demo.name}`} />
               </div>
             </article>

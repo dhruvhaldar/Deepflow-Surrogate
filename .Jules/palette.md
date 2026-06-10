@@ -47,3 +47,7 @@
 ## 2025-06-03 - Native Button Pointer Feedback
 **Learning:** While CSS frameworks or standard resets often strip default styling from native `<button>` elements, they often forget to explicitly add `cursor: pointer`. This causes buttons (like standalone Copy Buttons) to display a default text or arrow cursor, leading to user hesitation as it breaks the expected interaction model of clickable web elements (like `<a>` tags).
 **Action:** Always ensure any class used on native `<button>` elements (e.g., `.button`) explicitly includes `cursor: pointer;` to provide confident, expected hover feedback.
+
+## 2025-06-10 - Prevent Flex Container Overflow with Scrollable Elements
+**Learning:** By default, Flexbox items have `min-width: auto`, which prevents them from shrinking smaller than their intrinsic content size. When a flex item contains a horizontally scrollable element (like a `<code>` or `<pre>` block with `overflow-x: auto`) containing long, unbroken text, the code block will stretch the flex container and break the layout on small screens instead of scrolling.
+**Action:** Always add `minWidth: 0` (or `min-width: 0` in CSS) to flex children that contain scrollable content to allow them to shrink below their content size, enabling proper overflow and responsive behavior.
