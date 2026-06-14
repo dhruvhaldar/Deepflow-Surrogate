@@ -59,3 +59,6 @@
 ## 2025-06-15 - Tactile Button Feedback
 **Learning:** While `:hover` states provide visual feedback that an element is interactive, users also expect tactile feedback when they actually click or press a button, similar to native OS interactions. Without it, buttons can feel unresponsive or "dead" during the click phase.
 **Action:** Always include an `:active` state for buttons (e.g., `.button:active { transform: translateY(1px); }`) to provide immediate, satisfying visual feedback during the click interaction, making the interface feel more responsive.
+## 2026-06-14 - Reliable Timeout Tracking for Visual States
+**Learning:** In interactive components with temporary visual states (e.g., 'Copy' -> 'Copied' managed via `setTimeout`), allowing rapid multiple clicks can cause a race condition where earlier timeouts clear the state prematurely. This results in jarring visual flashes and broken feedback.
+**Action:** Always use a `useRef` to track the active timeout ID, and explicitly `clearTimeout(timeoutRef.current)` before setting a new one to ensure the temporary state correctly persists for the intended duration after the *last* user interaction.
