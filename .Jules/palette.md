@@ -51,3 +51,11 @@
 ## 2025-06-10 - Prevent Flex Container Overflow with Scrollable Elements
 **Learning:** By default, Flexbox items have `min-width: auto`, which prevents them from shrinking smaller than their intrinsic content size. When a flex item contains a horizontally scrollable element (like a `<code>` or `<pre>` block with `overflow-x: auto`) containing long, unbroken text, the code block will stretch the flex container and break the layout on small screens instead of scrolling.
 **Action:** Always add `minWidth: 0` (or `min-width: 0` in CSS) to flex children that contain scrollable content to allow them to shrink below their content size, enabling proper overflow and responsive behavior.
+
+## 2025-06-15 - Meaningful Context for Scrollable Code Blocks
+**Learning:** Adding `tabIndex={0}` to scrollable containers (like `<code>` or `<pre>`) makes them keyboard accessible, but screen readers will often treat them as generic, unlabelled focusable elements. This causes confusion because users can tab to them but won't hear what they are.
+**Action:** Always add `role="region"` and an appropriate `aria-label` (e.g., `aria-label="Code snippet for [Feature]"`) to scrollable code blocks when making them focusable, ensuring screen readers provide meaningful context when they receive focus.
+
+## 2025-06-15 - Tactile Button Feedback
+**Learning:** While `:hover` states provide visual feedback that an element is interactive, users also expect tactile feedback when they actually click or press a button, similar to native OS interactions. Without it, buttons can feel unresponsive or "dead" during the click phase.
+**Action:** Always include an `:active` state for buttons (e.g., `.button:active { transform: translateY(1px); }`) to provide immediate, satisfying visual feedback during the click interaction, making the interface feel more responsive.

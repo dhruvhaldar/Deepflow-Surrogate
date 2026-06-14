@@ -106,6 +106,7 @@ h1 {
 }
 
 .button:hover { transform: translateY(-1px); }
+.button:active { transform: translateY(1px); }
 
 .button.primary {
   background: var(--accent);
