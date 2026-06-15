@@ -62,3 +62,7 @@
 ## 2026-06-14 - Reliable Timeout Tracking for Visual States
 **Learning:** In interactive components with temporary visual states (e.g., 'Copy' -> 'Copied' managed via `setTimeout`), allowing rapid multiple clicks can cause a race condition where earlier timeouts clear the state prematurely. This results in jarring visual flashes and broken feedback.
 **Action:** Always use a `useRef` to track the active timeout ID, and explicitly `clearTimeout(timeoutRef.current)` before setting a new one to ensure the temporary state correctly persists for the intended duration after the *last* user interaction.
+
+## 2026-06-15 - Consistent Labeled Landmark Regions
+**Learning:** Screen reader users rely on landmark regions (like `<section>`) to navigate page structure quickly. However, a `<section>` only becomes a proper, discoverable landmark if it has an accessible name. Leaving a major section (like a Hero component) without a label while other sections have them creates an inconsistent navigation experience.
+**Action:** Always assign an `id` to the primary heading (e.g., `<h1>`, `<h2>`) of major structural sections, and reference it using `aria-labelledby` on the parent `<section>` element to ensure all major content areas are discoverable and labeled landmarks.
