@@ -26,9 +26,9 @@ const demos = [
 export default function HomePage() {
   return (
     <main id="main-content" tabIndex={-1} className="page">
-      <section className="hero glass">
+      <section className="hero glass" aria-labelledby="hero-heading">
         <p className="kicker">Deepflow-Surrogate</p>
-        <h1>Show, don&apos;t tell.</h1>
+        <h1 id="hero-heading">Show, don&apos;t tell.</h1>
         <p className="lead">
           A modern demo-driven showcase inspired by clean product storytelling—so visitors can immediately run,
           verify, and benchmark what this library does.
