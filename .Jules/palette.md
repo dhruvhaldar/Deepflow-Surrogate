@@ -66,3 +66,7 @@
 ## 2026-06-15 - Consistent Labeled Landmark Regions
 **Learning:** Screen reader users rely on landmark regions (like `<section>`) to navigate page structure quickly. However, a `<section>` only becomes a proper, discoverable landmark if it has an accessible name. Leaving a major section (like a Hero component) without a label while other sections have them creates an inconsistent navigation experience.
 **Action:** Always assign an `id` to the primary heading (e.g., `<h1>`, `<h2>`) of major structural sections, and reference it using `aria-labelledby` on the parent `<section>` element to ensure all major content areas are discoverable and labeled landmarks.
+
+## 2025-06-17 - Maintain Code Block Formatting Without Wrapping
+**Learning:** To prevent text wrapping in horizontally scrollable `<code>` or `<pre>` blocks, using `white-space: nowrap` correctly prevents wrapping, but it collapses consecutive spaces and strips newlines, which destroys the specific formatting of multi-line code snippets.
+**Action:** Always use `white-space: pre` instead of `nowrap` for code blocks. This ensures that formatting (including spaces and newlines) is exactly preserved while also preventing unwanted line wrapping, allowing horizontal scrolling to function as intended.
