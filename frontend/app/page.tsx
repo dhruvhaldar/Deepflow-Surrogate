@@ -65,7 +65,7 @@ export default function HomePage() {
               <span className="chip">{demo.tag}</span>
               <h3>{demo.name}</h3>
               <p>{demo.summary}</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between', minWidth: 0 }}>
                 <code tabIndex={0} role="region" aria-label={`Code snippet for ${demo.name}`} style={{ flex: 1, margin: 0, minWidth: 0 }}>{demo.command}</code>
                 <CopyButton text={demo.command} ariaLabel={`Copy command for ${demo.name}`} />
               </div>
