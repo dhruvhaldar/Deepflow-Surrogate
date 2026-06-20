@@ -74,3 +74,7 @@
 ## 2025-06-20 - Prevent Grid Item Overflow with Flex Containers
 **Learning:** In CSS Grid layouts, grid items have a default `min-width: auto` that prevents them from shrinking below their content size. If a grid item contains a flex container with horizontally scrollable content (like a code block), the layout can stretch and break on narrow screens.
 **Action:** Apply `min-width: 0` to both the flex item (e.g. the code block) and the grid item container (e.g. the `.card` or the flex container within the grid) so it can shrink and properly overflow instead of stretching the layout.
+
+## 2026-06-21 - Context-Aware ARIA Live Regions
+**Learning:** Providing a static `aria-live` success message (e.g., "Copied to clipboard") for repeated elements can cause screen readers to ignore subsequent announcements if the text hasn't changed. Deriving the success message from a context-aware label (e.g., "Copied command for X") ensures every action is distinctly announced.
+**Action:** Always derive `aria-live` success states from context-aware labels to prevent screen reader ambiguity and deduplication bugs.

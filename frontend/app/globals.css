@@ -101,11 +101,12 @@ h1 {
   border-radius: 999px;
   font-weight: 600;
   text-decoration: none;
-  transition: transform 0.18s ease;
+  transition: transform 0.18s ease, background-color 0.18s ease;
   cursor: pointer;
 }
 
 .button:hover { transform: translateY(-1px); }
+.button.ghost:hover { background: rgba(15, 23, 42, 0.05); }
 .button:active { transform: translateY(1px); }
 
 .button.primary {
