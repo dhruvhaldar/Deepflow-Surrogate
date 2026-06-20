@@ -70,3 +70,7 @@
 ## 2025-06-17 - Maintain Code Block Formatting Without Wrapping
 **Learning:** To prevent text wrapping in horizontally scrollable `<code>` or `<pre>` blocks, using `white-space: nowrap` correctly prevents wrapping, but it collapses consecutive spaces and strips newlines, which destroys the specific formatting of multi-line code snippets.
 **Action:** Always use `white-space: pre` instead of `nowrap` for code blocks. This ensures that formatting (including spaces and newlines) is exactly preserved while also preventing unwanted line wrapping, allowing horizontal scrolling to function as intended.
+
+## 2025-06-20 - Prevent Grid Item Overflow with Flex Containers
+**Learning:** In CSS Grid layouts, grid items have a default `min-width: auto` that prevents them from shrinking below their content size. If a grid item contains a flex container with horizontally scrollable content (like a code block), the layout can stretch and break on narrow screens.
+**Action:** Apply `min-width: 0` to both the flex item (e.g. the code block) and the grid item container (e.g. the `.card` or the flex container within the grid) so it can shrink and properly overflow instead of stretching the layout.
