@@ -78,3 +78,7 @@
 ## 2026-06-21 - Context-Aware ARIA Live Regions
 **Learning:** Providing a static `aria-live` success message (e.g., "Copied to clipboard") for repeated elements can cause screen readers to ignore subsequent announcements if the text hasn't changed. Deriving the success message from a context-aware label (e.g., "Copied command for X") ensures every action is distinctly announced.
 **Action:** Always derive `aria-live` success states from context-aware labels to prevent screen reader ambiguity and deduplication bugs.
+
+## 2024-06-21 - Accessible In-Page Anchor Links
+**Learning:** In-page anchor links (e.g., `href='#demos'`) require the target container element to have `tabIndex={-1}` to ensure keyboard focus correctly shifts to the section when the link is activated.
+**Action:** Always add `tabIndex={-1}` to the target container of anchor links, and combine this with a global CSS rule `[tabIndex='-1']:focus { outline: none; }` to suppress jarring browser default outlines on programmatically focused containers.
