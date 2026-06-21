@@ -54,7 +54,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="demos" className="section" aria-labelledby="demos-heading">
+      <section id="demos" tabIndex={-1} className="section" aria-labelledby="demos-heading">
         <div className="sectionHeading">
           <h2 id="demos-heading">Demo flows</h2>
           <p>Each card is a practical workflow you can run in seconds.</p>
