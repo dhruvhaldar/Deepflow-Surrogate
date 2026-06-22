@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 
 export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { text: string; ariaLabel?: string }) {
   const [copied, setCopied] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -15,13 +16,14 @@ export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { 
   }, []);
 
   const handleCopy = async () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      setHasError(false);
 
       timeoutRef.current = setTimeout(() => {
         setCopied(false);
@@ -29,6 +31,13 @@ export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { 
       }, 2000);
     } catch (err) {
       console.error('Failed to copy text: ', err);
+      setHasError(true);
+      setCopied(false);
+
+      timeoutRef.current = setTimeout(() => {
+        setHasError(false);
+        timeoutRef.current = null;
+      }, 2000);
     }
   };
 
@@ -39,7 +48,7 @@ export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { 
         onClick={handleCopy}
         className="button ghost"
         aria-label={ariaLabel}
-        title={copied ? "Copied!" : ariaLabel}
+        title={hasError ? "Failed to copy" : copied ? "Copied!" : ariaLabel}
         style={{
           padding: '0.3rem 0.6rem',
           fontSize: '0.8rem',
@@ -50,7 +59,11 @@ export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { 
           minWidth: '5.5rem'
         }}
       >
-        {copied ? (
+        {hasError ? (
+          <>
+            <span aria-hidden="true">✕</span> Error
+          </>
+        ) : copied ? (
           <>
             <span aria-hidden="true">✓</span> Copied
           </>
@@ -75,7 +88,7 @@ export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { 
         )}
       </button>
       <span aria-live="polite" style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }}>
-        {copied ? (ariaLabel.startsWith("Copy") ? ariaLabel.replace("Copy", "Copied") : "Copied to clipboard") : ""}
+        {hasError ? "Failed to copy to clipboard" : copied ? (ariaLabel.startsWith("Copy") ? ariaLabel.replace("Copy", "Copied") : "Copied to clipboard") : ""}
       </span>
     </>
   );

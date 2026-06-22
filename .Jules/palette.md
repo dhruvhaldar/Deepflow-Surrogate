@@ -82,3 +82,6 @@
 ## 2024-06-21 - Accessible In-Page Anchor Links
 **Learning:** In-page anchor links (e.g., `href='#demos'`) require the target container element to have `tabIndex={-1}` to ensure keyboard focus correctly shifts to the section when the link is activated.
 **Action:** Always add `tabIndex={-1}` to the target container of anchor links, and combine this with a global CSS rule `[tabIndex='-1']:focus { outline: none; }` to suppress jarring browser default outlines on programmatically focused containers.
+## 2025-02-24 - Handling Clipboard API Failures
+**Learning:** `navigator.clipboard.writeText` can fail silently or throw exceptions in certain environments (like headless browsers or when clipboard permissions are denied). Users and screen readers receive no feedback if a custom `try-catch` isn't managing an explicit error state, causing frustrating interaction dead-ends.
+**Action:** Always implement a clear error state (`hasError`) with visual feedback (e.g., ✕ Error) and screen reader announcements (`aria-live`) when using the Clipboard API, and ensure the state clears gracefully to allow retries.
