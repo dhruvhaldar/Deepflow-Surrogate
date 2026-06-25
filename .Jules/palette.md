@@ -85,3 +85,7 @@
 ## 2025-02-24 - Handling Clipboard API Failures
 **Learning:** `navigator.clipboard.writeText` can fail silently or throw exceptions in certain environments (like headless browsers or when clipboard permissions are denied). Users and screen readers receive no feedback if a custom `try-catch` isn't managing an explicit error state, causing frustrating interaction dead-ends.
 **Action:** Always implement a clear error state (`hasError`) with visual feedback (e.g., ✕ Error) and screen reader announcements (`aria-live`) when using the Clipboard API, and ensure the state clears gracefully to allow retries.
+
+## 2025-06-25 - Consistent Iconography in Dynamic Buttons
+**Learning:** When a button visually transitions between states (e.g., "Copy" to "Copied" to "Error"), switching from an SVG icon to a raw text character (like ✓ or ✕) causes a jarring visual weight shift and inconsistent aesthetics that disrupt the micro-interaction.
+**Action:** Always maintain consistent visual weight across dynamic button states by using inline SVGs that share the same `viewBox`, `strokeWidth`, and dimensions for all icons (default, success, and error).

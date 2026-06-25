@@ -59,9 +59,9 @@ export default function HomePage() {
           <h2 id="demos-heading">Demo flows</h2>
           <p>Each card is a practical workflow you can run in seconds.</p>
         </div>
-        <div className="cards">
+        <ul className="cards" style={{ listStyle: 'none', padding: 0 }}>
           {demos.map((demo) => (
-            <article className="card glass" key={demo.name}>
+            <li className="card glass" key={demo.name}>
               <span className="chip">{demo.tag}</span>
               <h3>{demo.name}</h3>
               <p>{demo.summary}</p>
@@ -69,9 +69,9 @@ export default function HomePage() {
                 <code tabIndex={0} role="region" aria-label={`Code snippet for ${demo.name}`} style={{ flex: 1, margin: 0, minWidth: 0 }}>{demo.command}</code>
                 <CopyButton text={demo.command} ariaLabel={`Copy command for ${demo.name}`} />
               </div>
-            </article>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="section glass stack" aria-labelledby="run-everything-heading">
