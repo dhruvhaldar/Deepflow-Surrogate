@@ -93,3 +93,6 @@
 ## 2025-07-03 - Contrast Failures with Ghost Buttons on Dark Backgrounds
 **Learning:** Reusing a light-theme transparent "ghost" button over a dark-themed element (like a `<code>` or `<pre>` block) causes a critical contrast failure, rendering the button invisible. Furthermore, users often cannot see the button overlay, which may unintentionally block horizontal scrolling interactions or text selection on the code block.
 **Action:** Always create a dedicated `.overlay` button class for floating actions over dark containers (e.g. code snippets). Ensure this class provides a solid, contrasting background (e.g., `rgba(255, 255, 255, 0.1)`) with light text, making it visually distinct from the dark background and immediately recognizable as an interactive element.
+## 2026-07-03 - VoiceOver List Semantics Bug with list-style: none
+**Learning:** Applying `list-style: none` to a semantic `<ul>` or `<ol>` element removes list semantics in Safari/VoiceOver, preventing screen readers from announcing the list or the total number of items. This occurred in the Deepflow-Surrogate demos list.
+**Action:** When using `list-style: none` (or equivalent framework classes) on a list, always explicitly add `role="list"` to the container to restore native screen reader semantics without affecting visual presentation.

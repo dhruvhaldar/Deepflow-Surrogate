@@ -59,7 +59,7 @@ export default function HomePage() {
           <h2 id="demos-heading">Demo flows</h2>
           <p>Each card is a practical workflow you can run in seconds.</p>
         </div>
-        <ul className="cards" style={{ listStyle: 'none', padding: 0 }}>
+        <ul role="list" className="cards" style={{ listStyle: 'none', padding: 0 }}>
           {demos.map((demo) => (
             <li className="card glass" key={demo.name}>
               <span className="chip">{demo.tag}</span>
