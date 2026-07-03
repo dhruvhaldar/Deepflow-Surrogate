@@ -86,7 +86,7 @@ pytest -q
 python benchmark_mesh_generation.py`}
           </pre>
           <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}>
-            <CopyButton text={"python mesh_generation.py\npytest -q\npython benchmark_mesh_generation.py"} ariaLabel="Copy all commands" />
+            <CopyButton text={"python mesh_generation.py\npytest -q\npython benchmark_mesh_generation.py"} ariaLabel="Copy all commands" className="button overlay" />
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { text: string; ariaLabel?: string }) {
+export default function CopyButton({ text, ariaLabel = "Copy to clipboard", className = "button ghost" }: { text: string; ariaLabel?: string; className?: string }) {
   const [copied, setCopied] = useState(false);
   const [hasError, setHasError] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -46,7 +46,7 @@ export default function CopyButton({ text, ariaLabel = "Copy to clipboard" }: { 
       <button
         type="button"
         onClick={handleCopy}
-        className="button ghost"
+        className={className}
         aria-label={ariaLabel}
         title={hasError ? "Failed to copy" : copied ? "Copied!" : ariaLabel}
         style={{

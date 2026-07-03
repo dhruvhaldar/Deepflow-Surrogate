@@ -119,6 +119,16 @@ h1 {
   color: var(--text);
 }
 
+.button.overlay {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.button.overlay:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 .section {
   padding: 1.5rem;
 }

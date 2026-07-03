@@ -89,3 +89,7 @@
 ## 2025-06-25 - Consistent Iconography in Dynamic Buttons
 **Learning:** When a button visually transitions between states (e.g., "Copy" to "Copied" to "Error"), switching from an SVG icon to a raw text character (like ✓ or ✕) causes a jarring visual weight shift and inconsistent aesthetics that disrupt the micro-interaction.
 **Action:** Always maintain consistent visual weight across dynamic button states by using inline SVGs that share the same `viewBox`, `strokeWidth`, and dimensions for all icons (default, success, and error).
+
+## 2025-07-03 - Contrast Failures with Ghost Buttons on Dark Backgrounds
+**Learning:** Reusing a light-theme transparent "ghost" button over a dark-themed element (like a `<code>` or `<pre>` block) causes a critical contrast failure, rendering the button invisible. Furthermore, users often cannot see the button overlay, which may unintentionally block horizontal scrolling interactions or text selection on the code block.
+**Action:** Always create a dedicated `.overlay` button class for floating actions over dark containers (e.g. code snippets). Ensure this class provides a solid, contrasting background (e.g., `rgba(255, 255, 255, 0.1)`) with light text, making it visually distinct from the dark background and immediately recognizable as an interactive element.
