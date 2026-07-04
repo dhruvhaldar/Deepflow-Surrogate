@@ -187,3 +187,11 @@
 **Learning:** When linking to external resources using `target="_blank"`, it's critical to include `rel="noopener noreferrer"` for security reasons, to prevent the new tab from maliciously accessing the window of the original tab. In addition, providing context to screen reader users with an `aria-label` stating "(opens in a new tab)" is crucial for accessibility, so the change in context doesn't come as a surprise. Finally, adding a visual indicator like `↗` (hidden from screen readers via `aria-hidden="true"`) gives immediate visual feedback to sighted users that the link goes off-site.
 
 **Action:** Whenever adding external links that open in a new tab, ensure `rel="noopener noreferrer"` is included, an `aria-label` is provided to indicate the new tab behavior, and a visual icon is added (and hidden from screen readers) to clarify the external nature of the link.
+
+## 2026-07-04 - Native Tactile Feedback for Buttons
+**Learning:** Rapidly clicking interactive elements (like a "Copy" button) can trigger native text selection behaviors, causing jarring highlighting that breaks the tactile, native-app feel.
+**Action:** Apply `user-select: none;` to generic `.button` components to prevent accidental text selection on rapid clicks, ensuring a smooth interactive experience.
+
+## 2026-07-04 - Code Snippet Translation Preservation
+**Learning:** Browser translation tools (like Google Translate) often attempt to translate the contents of `<code>` or `<pre>` blocks containing technical commands, which breaks copy-paste functionality for non-native speakers because the command syntax gets mangled.
+**Action:** Always add the HTML5 `translate="no"` attribute to `<code>` and `<pre>` blocks containing actionable code or shell commands to protect them from automatic translation APIs.

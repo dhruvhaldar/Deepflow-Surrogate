@@ -66,7 +66,7 @@ export default function HomePage() {
               <h3>{demo.name}</h3>
               <p>{demo.summary}</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between', minWidth: 0 }}>
-                <code tabIndex={0} role="region" aria-label={`Code snippet for ${demo.name}`} style={{ flex: 1, margin: 0, minWidth: 0 }}>{demo.command}</code>
+                <code tabIndex={0} role="region" aria-label={`Code snippet for ${demo.name}`} translate="no" style={{ flex: 1, margin: 0, minWidth: 0 }}>{demo.command}</code>
                 <CopyButton text={demo.command} ariaLabel={`Copy command for ${demo.name}`} />
               </div>
             </li>
@@ -80,7 +80,7 @@ export default function HomePage() {
           <p>Use the full sequence to preview generation, confidence checks, and performance baselines.</p>
         </div>
         <div style={{ position: 'relative' }}>
-          <pre tabIndex={0} role="region" aria-label="Code snippet for full sequence" style={{ paddingRight: '5rem', margin: 0 }}>
+          <pre tabIndex={0} role="region" aria-label="Code snippet for full sequence" translate="no" style={{ paddingRight: '5rem', margin: 0 }}>
 {`python mesh_generation.py
 pytest -q
 python benchmark_mesh_generation.py`}
