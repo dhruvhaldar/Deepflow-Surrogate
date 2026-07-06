@@ -96,3 +96,7 @@
 ## 2026-07-03 - VoiceOver List Semantics Bug with list-style: none
 **Learning:** Applying `list-style: none` to a semantic `<ul>` or `<ol>` element removes list semantics in Safari/VoiceOver, preventing screen readers from announcing the list or the total number of items. This occurred in the Deepflow-Surrogate demos list.
 **Action:** When using `list-style: none` (or equivalent framework classes) on a list, always explicitly add `role="list"` to the container to restore native screen reader semantics without affecting visual presentation.
+
+## 2025-07-06 - Polished Skip Link Presentation
+**Learning:** While placing a "Skip to content" link at `top: 0; left: 0` makes it functionally accessible to screen readers and keyboard users, it often results in the browser's focus ring being clipped by the viewport edges. Additionally, an unstyled, edge-hugging box feels like a debug artifact rather than a deliberate part of the product experience.
+**Action:** Always provide skip links with proper offset margins (e.g., `top: 1rem; left: 1rem`) on focus, rounded corners, and a shadow to match the application's primary button styles. This ensures focus rings are fully visible and treats keyboard-only users to the same level of UI polish as mouse users.

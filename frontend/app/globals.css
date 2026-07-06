@@ -17,18 +17,27 @@
 
 .skip-link {
   position: absolute;
-  top: -40px;
-  left: 0;
+  top: -100px;
+  left: 1rem;
   background: var(--accent);
   color: white;
-  padding: 8px;
+  padding: 0.65rem 1.05rem;
+  border-radius: 999px;
+  font-weight: 600;
   z-index: 100;
-  transition: top 0.2s;
+  transition: top 0.2s ease, transform 0.18s ease;
   text-decoration: none;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.25);
 }
 
 .skip-link:focus {
-  top: 0;
+  top: 1rem;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link:active {
+  transform: translateY(1px);
 }
 
 [tabIndex="-1"]:focus {
